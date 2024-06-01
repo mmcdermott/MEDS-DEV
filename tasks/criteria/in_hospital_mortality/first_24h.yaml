@@ -8,16 +8,16 @@ description: >- This file specifies the base configuration for the prediction of
   different tasks.
 
 predicates:
-  admission:
+  hospital_admission:
     code: ???
-  discharge:
+  hospital_discharge:
     code: ???
   death:
     code: ???
   discharge_or_death:
-    expr: or(discharge, death)
+    expr: or(hospital_discharge, death)
 
-trigger_event: admission
+trigger_event: hospital_admission
 
 windows:
   input:
@@ -31,8 +31,8 @@ windows:
     start_inclusive: False
     end_inclusive: True
     has:
-      admission: (None, 0)
-      discharge: (None, 0)
+      hospital_admission: (None, 0)
+      hospital_discharge: (None, 0)
       death: (None, 0)
   target:
     start: gap.end
