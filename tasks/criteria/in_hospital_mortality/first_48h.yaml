@@ -1,0 +1,42 @@
+description: >- This file specifies the base configuration for the prediction of in hospital mortality,
+  leveraging only the first 48 hours of data after admission, with a 24 hour gap between the input window and
+  the target window. Patients who die or are discharged in the gap window are excluded.
+  Note that this task is in-**hospital** mortality, not in-**ICU** mortality or **30-day** mortality, which
+  are different tasks.
+  Note that this task is predicting the outcome for a patient's entire hospital stay, not just the first 48
+  hours or the subsequent 48 hours after the trigger event. Imminent mortality (on various time-scales) are
+  different tasks.
+
+predicates:
+  hospital_admission:
+    code: ???
+  hospital_discharge:
+    code: ???
+  death:
+    code: ???
+  discharge_or_death:
+    expr: or(hospital_discharge, death)
+
+trigger_event: hospital_admission
+
+windows:
+  input:
+    start: NULL
+    end: trigger + 48h
+    start_inclusive: True
+    end_inclusive: True
+  gap:
+    start: input.end
+    end: start + 24h
+    start_inclusive: False
+    end_inclusive: True
+    has:
+      hospital_admission: (None, 0)
+      hospital_discharge: (None, 0)
+      death: (None, 0)
+  target:
+    start: gap.end
+    end: start -> discharge_or_death
+    start_inclusive: False
+    end_inclusive: True
+    label: death
