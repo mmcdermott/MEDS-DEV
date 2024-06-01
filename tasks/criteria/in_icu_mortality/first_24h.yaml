@@ -19,7 +19,7 @@ predicates:
   discharge_or_death:
     expr: or(icu_discharge, death)
 
-trigger_event: icu_admission
+trigger: icu_admission
 
 windows:
   input:
