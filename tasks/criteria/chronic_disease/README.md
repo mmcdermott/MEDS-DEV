@@ -1,0 +1,4 @@
+# Chronic Disease Management
+
+TODO: References
+- https://www.researchgate.net/publication/374921995_Title_Machine_Learning_and_Chronic_Disease_Management_Customizing_Care_for_Better_Outcomes

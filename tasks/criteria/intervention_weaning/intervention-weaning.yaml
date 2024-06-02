@@ -1,0 +1,27 @@
+# Task: Ventilation Weaning Prediction
+predicates:
+  procedure_start:
+    code: event_type//PROCEDURE_START
+  procedure_end:
+    code: event_type//PROCEDURE_END
+  ventilation:
+    code: procedure//Invasive Ventilation
+  ventilation_start:
+    expr: and(procedure_start, ventilation)
+  ventilation_end:
+    expr: and(procedure_end, ventilation)
+
+trigger: ventilation_start
+
+windows:
+  input:
+    start: NULL
+    end: trigger
+    start_inclusive: True
+    end_inclusive: True
+    index_timestamp: end
+  target:
+    start: trigger
+    end: start -> ventilation_end
+    start_inclusive: False
+    end_inclusive: True
