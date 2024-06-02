@@ -18,4 +18,8 @@ Missing:
     - [ ] Sepsis:
       * https://translational-medicine.biomedcentral.com/articles/10.1186/s12967-020-02620-5
 
-Some common references for the prediction of mortality in various settings include: TODO
+Some common references for the prediction of mortality in various settings include: TODO:
+
+
+TODO: References
+- Predicting 30-days mortality for MIMIC-III patients with sepsis-3: a machine learning approach using XGboost: https://translational-medicine.biomedcentral.com/articles/10.1186/s12967-020-02620-5
