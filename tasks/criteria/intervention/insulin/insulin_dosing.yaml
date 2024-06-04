@@ -1,0 +1,81 @@
+description: >-
+  This file specifies the base configuration for the extraction and analysis of insulin dosing in hospital patients,
+  leveraging data from the MIMIC-IV database. The study focuses on adult patients and aims to match blood glucose values
+  before and after insulin injection to predict the effect of insulin doses.
+
+predicates:
+  hospital_admission:
+    code: event_type//HOSPITAL_ADMISSION
+  hospital_discharge:
+    code: event_type//HOSPITAL_DISCHARGE
+  age:
+    code: demographics//AGE
+    value_min: 18
+    value_min_inclusive: true
+  insulin_injection:
+    code: treatment//INSULIN_INJECTION
+  glucose_lab:
+    code: lab//GLUCOSE
+  glucose_chart:
+    code: chart//GLUCOSE
+  glucose_before:
+    expr: closest(glucose_lab, insulin_injection - 90m) or closest(glucose_chart, insulin_injection - 90m)
+  glucose_after:
+    expr: closest(glucose_lab, insulin_injection + 4h) or closest(glucose_chart, insulin_injection + 4h)
+  abnormal_glucose:
+    expr: glucose_before > 180 or glucose_after > 180
+
+trigger: hospital_admission
+
+windows:
+  input:
+    start: NULL
+    end: trigger + 24h
+    start_inclusive: true
+    end_inclusive: true
+    has:
+      age: (18, None)
+      insulin_injection: (None, None)
+      glucose_lab: (None, None)
+      glucose_chart: (None, None)
+  gap:
+    start: input.end
+    end: trigger + 6h
+    start_inclusive: false
+    end_inclusive: true
+    has:
+      glucose_before: (None, None)
+      glucose_after: (None, None)
+  target:
+    start: gap.end
+    end: hospital_discharge
+    start_inclusive: false
+    end_inclusive: true
+    label: abnormal_glucose
+
+
+# cohort:
+#   inclusion_criteria:
+#     - age >= 18
+#     - hospital_admission
+#     - insulin_injection
+#   exclusion_criteria:
+#     - missing or erroneous values
+#   data_extracted:
+#     - age
+#     - gender
+#     - ethnicity
+#     - insulin_injection
+#     - glucose_lab
+#     - glucose_chart
+#     - glucose_before
+#     - glucose_after
+#     - vital_signs
+#     - lab_values
+#     - clinical_notes
+#     - weight
+#     - nutritional_intake
+#     - systolic_bp
+#     - diastolic_bp
+#     - creatinine
+#     - bun
