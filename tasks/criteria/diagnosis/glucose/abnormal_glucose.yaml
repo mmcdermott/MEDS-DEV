@@ -1,0 +1,87 @@
+description: >-
+  This file specifies the base configuration for the extraction and analysis of abnormal blood glucose measurements
+  in patients admitted to the ICU, leveraging data from the MIMIC-IV database. The study focuses on adult patients 
+  and aims to predict the effect of insulin doses on blood glucose concentrations using various clinical measurements.
+  https://www.ncbi.nlm.nih.gov/pmc/articles/PMC9653564/pdf/sensors-22-08454.pdf
+
+predicates:
+  icu_admission:
+    code: event_type//ICU_ADMISSION
+  icu_discharge:
+    code: event_type//ICU_DISCHARGE
+  age:
+    code: demographics//AGE
+    value_min: 18
+    value_min_inclusive: true
+  insulin_injection:
+    code: treatment//INSULIN_INJECTION
+  glucose_lab:
+    code: lab//GLUCOSE
+  glucose_chart:
+    code: chart//GLUCOSE
+  glucose_before:
+    expr: closest(glucose_lab, insulin_injection - 90m) or closest(glucose_chart, insulin_injection - 90m)
+  glucose_after:
+    expr: closest(glucose_lab, insulin_injection + 4h) or closest(glucose_chart, insulin_injection + 4h)
+  abnormal_glucose:
+    expr: glucose_before > 180 or glucose_after > 180
+
+trigger: icu_admission
+
+windows:
+  input:
+    start: NULL
+    end: trigger + 24h
+    start_inclusive: true
+    end_inclusive: true
+    has:
+      age: (18, None)
+      insulin_injection: (None, None)
+      glucose_lab: (None, None)
+      glucose_chart: (None, None)
+  gap:
+    start: input.end
+    end: trigger + 6h
+    start_inclusive: false
+    end_inclusive: true
+    has:
+      glucose_before: (None, None)
+      glucose_after: (None, None)
+  target:
+    start: gap.end
+    end: icu_discharge
+    start_inclusive: false
+    end_inclusive: true
+    label: abnormal_glucose
+
+
+# cohort:
+#   inclusion_criteria:
+#     - age >= 18
+#     - icu_admission
+#     - insulin_injection
+#   exclusion_criteria:
+#     - missing or erroneous values
+#   data_extracted:
+#     - age
+#     - gender
+#     - ethnicity
+#     - insulin_injection
+#     - glucose_lab
+#     - glucose_chart
+#     - glucose_before
+#     - glucose_after
+#     - vital_signs
+#     - lab_values
+#     - clinical_notes
+#     - weight
+#     - nutritional_intake
+#     - systolic_bp
+#     - diastolic_bp
+#     - creatinine
+#     - bun
+
+# abnormal_glucose_definition:
+#   criteria:
+#     - condition: blood glucose level before or after insulin injection > 180 mg/dL
+#   exclusion: missing or erroneous values

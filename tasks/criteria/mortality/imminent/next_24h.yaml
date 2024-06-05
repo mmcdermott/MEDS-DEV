@@ -1,0 +1,28 @@
+description: >- This file specifies the base configuration for the prediction of within-24h imminent
+  mortality. Given this is within 24 hours, a very short time frame, we will not use any gap window
+  here. Note that there is no censoring protection for this task -- e.g., if the patient has no data after 24
+  hours from the trigger event, they will be assumed to have survived.
+  Note that this task is imminent mortality prediction, unconditioned on the trigger event, not in-hospital,
+  in-ICU, or post-discharge mortality.
+  This task will have a very large number of negative examples, and a very small number of positive examples.
+
+predicates:
+  death:
+    code: ???
+
+trigger: _ANY_EVENT
+
+windows:
+  input:
+    start: NULL
+    end: trigger
+    start_inclusive: True
+    end_inclusive: True
+    has:
+      death: (null, 0) # death must not have occurred before the trigger event
+  target:
+    start: trigger
+    end: start + 24h
+    start_inclusive: False
+    end_inclusive: True
+    label: death

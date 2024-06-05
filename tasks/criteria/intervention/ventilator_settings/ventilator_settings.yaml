@@ -1,0 +1,62 @@
+description: >-
+  This file specifies the base configuration for the extraction and analysis of ventilator settings prediction in hospital patients,
+  leveraging data from the MIMIC-IV database. The study focuses on adult patients and aims to predict optimal ventilator settings 
+  during the course of invasive ventilation.
+
+predicates:
+  hospital_admission:
+    code: event_type//HOSPITAL_ADMISSION
+  hospital_discharge:
+    code: event_type//HOSPITAL_DISCHARGE
+  age:
+    code: demographics//AGE
+    value_min: 18
+    value_min_inclusive: true
+  procedure_start:
+    code: event_type//PROCEDURE_START
+  procedure_end:
+    code: event_type//PROCEDURE_END
+  ventilation:
+    code: procedure//INVASIVE_VENTILATION
+  ventilation_start:
+    expr: and(procedure_start, ventilation)
+  ventilation_end:
+    expr: and(procedure_end, ventilation)
+  ventilator_settings:
+    code: treatment//VENTILATOR_SETTINGS
+
+trigger: ventilation_start
+
+windows:
+  input:
+    start: NULL
+    end: trigger
+    start_inclusive: true
+    end_inclusive: true
+    index_timestamp: end
+  target:
+    start: trigger
+    end: start -> ventilation_end
+    start_inclusive: false
+    end_inclusive: true
+    label: ventilator_settings
+
+
+# cohort:
+#   inclusion_criteria:
+#     - age >= 18
+#     - hospital_admission
+#     - ventilation_start
+#   exclusion_criteria:
+#     - missing or erroneous values
+#   data_extracted:
+#     - age
+#     - gender
+#     - ethnicity
+#     - procedure_start
+#     - procedure_end
+#     - ventilation
+#     - ventilator_settings
+#     - vital_signs
+#     - lab_values
+#     - clinical_notes
