@@ -1,8 +1,8 @@
-description: >- This file specifies the base configuration for the prediction of in hospital mortality,
-  leveraging only the first 48 hours of data after admission, with a 24 hour gap between the input window and
-  the target window. Patients who die or are discharged in the gap window are excluded.
-  Note that this task is in-**hospital** mortality, not in-**ICU** mortality or **30-day** mortality, which
-  are different tasks.
+description: >-
+  This file specifies the base configuration for the prediction of in hospital mortality, leveraging only the
+  first 48 hours of data after admission, with a 24 hour gap between the input window and the target window.
+  Patients who die or are discharged in the gap window are excluded. Note that this task is in-**hospital**
+  mortality, not in-**ICU** mortality or **30-day** mortality, which are different tasks.
   Note that this task is predicting the outcome for a patient's entire hospital stay, not just the first 48
   hours or the subsequent 48 hours after the trigger event. Imminent mortality (on various time-scales) are
   different tasks.
@@ -127,7 +127,7 @@ predicates:
   hospital_admission_58:
     code: HOSPITAL_ADMISSION//SURGICAL SAME DAY ADMISSION//TRANSFER FROM HOSPITAL
   hospital_admission:
-    or(hospital_admission_0,hospital_admission_1,hospital_admission_2,hospital_admission_3,hospital_admission_4,hospital_admission_5,hospital_admission_6,hospital_admission_7,hospital_admission_8,hospital_admission_9,hospital_admission_10,hospital_admission_11,hospital_admission_12,hospital_admission_13,hospital_admission_14,hospital_admission_15,hospital_admission_16,hospital_admission_17,hospital_admission_18,hospital_admission_19,hospital_admission_20,hospital_admission_21,hospital_admission_22,hospital_admission_23,hospital_admission_24,hospital_admission_25,hospital_admission_26,hospital_admission_27,hospital_admission_28,hospital_admission_29,hospital_admission_30,hospital_admission_31,hospital_admission_32,hospital_admission_33,hospital_admission_34,hospital_admission_35,hospital_admission_36,hospital_admission_37,hospital_admission_38,hospital_admission_39,hospital_admission_40,hospital_admission_41,hospital_admission_42,hospital_admission_43,hospital_admission_44,hospital_admission_45,hospital_admission_46,hospital_admission_47,hospital_admission_48,hospital_admission_49,hospital_admission_50,hospital_admission_51,hospital_admission_52,hospital_admission_53,hospital_admission_54,hospital_admission_55,hospital_admission_56,hospital_admission_57,hospital_admission_58)
+    expr: or(hospital_admission_0,hospital_admission_1,hospital_admission_2,hospital_admission_3,hospital_admission_4,hospital_admission_5,hospital_admission_6,hospital_admission_7,hospital_admission_8,hospital_admission_9,hospital_admission_10,hospital_admission_11,hospital_admission_12,hospital_admission_13,hospital_admission_14,hospital_admission_15,hospital_admission_16,hospital_admission_17,hospital_admission_18,hospital_admission_19,hospital_admission_20,hospital_admission_21,hospital_admission_22,hospital_admission_23,hospital_admission_24,hospital_admission_25,hospital_admission_26,hospital_admission_27,hospital_admission_28,hospital_admission_29,hospital_admission_30,hospital_admission_31,hospital_admission_32,hospital_admission_33,hospital_admission_34,hospital_admission_35,hospital_admission_36,hospital_admission_37,hospital_admission_38,hospital_admission_39,hospital_admission_40,hospital_admission_41,hospital_admission_42,hospital_admission_43,hospital_admission_44,hospital_admission_45,hospital_admission_46,hospital_admission_47,hospital_admission_48,hospital_admission_49,hospital_admission_50,hospital_admission_51,hospital_admission_52,hospital_admission_53,hospital_admission_54,hospital_admission_55,hospital_admission_56,hospital_admission_57,hospital_admission_58)
 
   hospital_discharge_0:
     code: HOSPITAL_DISCHARGE//HOME
@@ -158,7 +158,7 @@ predicates:
   hospital_discharge_13:
     code: HOSPITAL_DISCHARGE//HEALTHCARE FACILITY
   hospital_discharge:
-    or(hospital_discharge_0,hospital_discharge_1,hospital_discharge_2,hospital_discharge_3,hospital_discharge_4,hospital_discharge_5,hospital_discharge_6,hospital_discharge_7,hospital_discharge_8,hospital_discharge_9,hospital_discharge_10,hospital_discharge_11,hospital_discharge_12,hospital_discharge_13)
+    expr: or(hospital_discharge_0,hospital_discharge_1,hospital_discharge_2,hospital_discharge_3,hospital_discharge_4,hospital_discharge_5,hospital_discharge_6,hospital_discharge_7,hospital_discharge_8,hospital_discharge_9,hospital_discharge_10,hospital_discharge_11,hospital_discharge_12,hospital_discharge_13)
 
   death:
     code: DEATH

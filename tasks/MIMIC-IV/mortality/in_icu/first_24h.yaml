@@ -1,8 +1,8 @@
-description: >- This file specifies the base configuration for the prediction of in ICU mortality,
-  leveraging only the first 24 hours of data after ICU admission, with a 24 hour gap between the input window
-  and the target window. Patients who die or are discharged from the ICU in the gap window are excluded.
-  Patients who die in the same hospital stay but in a subsequent ICU stay are **not** postiive labels for this
-  task.
+description: >-
+  This file specifies the base configuration for the prediction of in ICU mortality, leveraging only the first
+  24 hours of data after ICU admission, with a 24 hour gap between the input window and the target window.
+  Patients who die or are discharged from the ICU in the gap window are excluded. Patients who die in the same
+  hospital stay but in a subsequent ICU stay are **not** postiive labels for this task.
   Note that this task is in-**ICU** mortality, not in-**hospital** mortality or **30-day** mortality, which
   are different tasks.
   Note that this task is predicting the outcome for a patient's entire ICU admission, not just the first 24
@@ -29,7 +29,7 @@ predicates:
   icu_admission_8:
     code: ICU_ADMISSION//Neuro Stepdown
   icu_admission:
-    or(icu_admission_0,icu_admission_1,icu_admission_2,icu_admission_3,icu_admission_4,icu_admission_5,icu_admission_6,icu_admission_7,icu_admission_8)
+    expr: or(icu_admission_0,icu_admission_1,icu_admission_2,icu_admission_3,icu_admission_4,icu_admission_5,icu_admission_6,icu_admission_7,icu_admission_8)
 
   icu_discharge_0:
     code: ICU_DISCHARGE//Medical Intensive Care Unit (MICU)
@@ -50,7 +50,7 @@ predicates:
   icu_discharge_8:
     code: ICU_DISCHARGE//Neuro Surgical Intensive Care Unit (Neuro SICU)
   icu_discharge:
-    or(icu_discharge_0,icu_discharge_1,icu_discharge_2,icu_discharge_3,icu_discharge_4,icu_discharge_5,icu_discharge_6,icu_discharge_7,icu_discharge_8)
+    expr: or(icu_discharge_0,icu_discharge_1,icu_discharge_2,icu_discharge_3,icu_discharge_4,icu_discharge_5,icu_discharge_6,icu_discharge_7,icu_discharge_8)
 
   death:
     code: DEATH
