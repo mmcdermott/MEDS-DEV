@@ -1,0 +1,190 @@
+description: >- This file specifies the base configuration for the prediction of in hospital mortality,
+  leveraging only the first 24 hours of data after admission, with a 24 hour gap between the input window and
+  the target window. Patients who die or are discharged in the gap window are excluded.
+  Note that this task is in-**hospital** mortality, not in-**ICU** mortality or **30-day** mortality, which
+  are different tasks.
+  Note that this task is predicting the outcome for a patient's entire hospital stay, not just the first 24
+  hours or the subsequent 24 hours after the trigger event. Imminent mortality (on various time-scales) are
+  different tasks.
+
+predicates:
+  hospital_admission_0:
+    code: HOSPITAL_ADMISSION//EW EMER.//EMERGENCY ROOM
+  hospital_admission_1:
+    code: HOSPITAL_ADMISSION//EU OBSERVATION//EMERGENCY ROOM
+  hospital_admission_2:
+    code: HOSPITAL_ADMISSION//SURGICAL SAME DAY ADMISSION//PHYSICIAN REFERRAL
+  hospital_admission_3:
+    code: HOSPITAL_ADMISSION//OBSERVATION ADMIT//EMERGENCY ROOM
+  hospital_admission_4:
+    code: HOSPITAL_ADMISSION//URGENT//TRANSFER FROM HOSPITAL
+  hospital_admission_5:
+    code: HOSPITAL_ADMISSION//URGENT//PHYSICIAN REFERRAL
+  hospital_admission_6:
+    code: HOSPITAL_ADMISSION//DIRECT EMER.//PHYSICIAN REFERRAL
+  hospital_admission_7:
+    code: HOSPITAL_ADMISSION//OBSERVATION ADMIT//PHYSICIAN REFERRAL
+  hospital_admission_8:
+    code: HOSPITAL_ADMISSION//DIRECT OBSERVATION//PHYSICIAN REFERRAL
+  hospital_admission_9:
+    code: HOSPITAL_ADMISSION//ELECTIVE//PHYSICIAN REFERRAL
+  hospital_admission_10:
+    code: HOSPITAL_ADMISSION//EU OBSERVATION//PHYSICIAN REFERRAL
+  hospital_admission_11:
+    code: HOSPITAL_ADMISSION//OBSERVATION ADMIT//TRANSFER FROM HOSPITAL
+  hospital_admission_12:
+    code: HOSPITAL_ADMISSION//OBSERVATION ADMIT//WALK-IN/SELF REFERRAL
+  hospital_admission_13:
+    code: HOSPITAL_ADMISSION//DIRECT EMER.//CLINIC REFERRAL
+  hospital_admission_14:
+    code: HOSPITAL_ADMISSION//EU OBSERVATION//WALK-IN/SELF REFERRAL
+  hospital_admission_15:
+    code: HOSPITAL_ADMISSION//EW EMER.//TRANSFER FROM HOSPITAL
+  hospital_admission_16:
+    code: HOSPITAL_ADMISSION//EW EMER.//PHYSICIAN REFERRAL
+  hospital_admission_17:
+    code: HOSPITAL_ADMISSION//AMBULATORY OBSERVATION//PROCEDURE SITE
+  hospital_admission_18:
+    code: HOSPITAL_ADMISSION//URGENT//INTERNAL TRANSFER TO OR FROM PSYCH
+  hospital_admission_19:
+    code: HOSPITAL_ADMISSION//EW EMER.//PROCEDURE SITE
+  hospital_admission_20:
+    code: HOSPITAL_ADMISSION//EW EMER.//WALK-IN/SELF REFERRAL
+  hospital_admission_21:
+    code: HOSPITAL_ADMISSION//AMBULATORY OBSERVATION//PACU
+  hospital_admission_22:
+    code: HOSPITAL_ADMISSION//EW EMER.//PACU
+  hospital_admission_23:
+    code: HOSPITAL_ADMISSION//OBSERVATION ADMIT//CLINIC REFERRAL
+  hospital_admission_24:
+    code: HOSPITAL_ADMISSION//DIRECT OBSERVATION//TRANSFER FROM HOSPITAL
+  hospital_admission_25:
+    code: HOSPITAL_ADMISSION//URGENT//TRANSFER FROM SKILLED NURSING FACILITY
+  hospital_admission_26:
+    code: HOSPITAL_ADMISSION//EU OBSERVATION//TRANSFER FROM HOSPITAL
+  hospital_admission_27:
+    code: HOSPITAL_ADMISSION//DIRECT OBSERVATION//CLINIC REFERRAL
+  hospital_admission_28:
+    code: HOSPITAL_ADMISSION//OBSERVATION ADMIT//TRANSFER FROM SKILLED NURSING FACILITY
+  hospital_admission_29:
+    code: HOSPITAL_ADMISSION//DIRECT OBSERVATION//EMERGENCY ROOM
+  hospital_admission_30:
+    code: HOSPITAL_ADMISSION//DIRECT OBSERVATION//WALK-IN/SELF REFERRAL
+  hospital_admission_31:
+    code: HOSPITAL_ADMISSION//EU OBSERVATION//CLINIC REFERRAL
+  hospital_admission_32:
+    code: HOSPITAL_ADMISSION//EW EMER.//TRANSFER FROM SKILLED NURSING FACILITY
+  hospital_admission_33:
+    code: HOSPITAL_ADMISSION//EW EMER.//INTERNAL TRANSFER TO OR FROM PSYCH
+  hospital_admission_34:
+    code: HOSPITAL_ADMISSION//URGENT//WALK-IN/SELF REFERRAL
+  hospital_admission_35:
+    code: HOSPITAL_ADMISSION//DIRECT OBSERVATION//TRANSFER FROM SKILLED NURSING FACILITY
+  hospital_admission_36:
+    code: HOSPITAL_ADMISSION//EW EMER.//CLINIC REFERRAL
+  hospital_admission_37:
+    code: HOSPITAL_ADMISSION//OBSERVATION ADMIT//PROCEDURE SITE
+  hospital_admission_38:
+    code: HOSPITAL_ADMISSION//DIRECT OBSERVATION//PROCEDURE SITE
+  hospital_admission_39:
+    code: HOSPITAL_ADMISSION//EU OBSERVATION//TRANSFER FROM SKILLED NURSING FACILITY
+  hospital_admission_40:
+    code: HOSPITAL_ADMISSION//URGENT//CLINIC REFERRAL
+  hospital_admission_41:
+    code: HOSPITAL_ADMISSION//EW EMER.//INFORMATION NOT AVAILABLE
+  hospital_admission_42:
+    code: HOSPITAL_ADMISSION//URGENT//PROCEDURE SITE
+  hospital_admission_43:
+    code: HOSPITAL_ADMISSION//OBSERVATION ADMIT//INTERNAL TRANSFER TO OR FROM PSYCH
+  hospital_admission_44:
+    code: HOSPITAL_ADMISSION//URGENT//EMERGENCY ROOM
+  hospital_admission_45:
+    code: HOSPITAL_ADMISSION//DIRECT OBSERVATION//PACU
+  hospital_admission_46:
+    code: HOSPITAL_ADMISSION//OBSERVATION ADMIT//PACU
+  hospital_admission_47:
+    code: HOSPITAL_ADMISSION//OBSERVATION ADMIT//AMBULATORY SURGERY TRANSFER
+  hospital_admission_48:
+    code: HOSPITAL_ADMISSION//OBSERVATION ADMIT//INFORMATION NOT AVAILABLE
+  hospital_admission_49:
+    code: HOSPITAL_ADMISSION//DIRECT OBSERVATION//INFORMATION NOT AVAILABLE
+  hospital_admission_50:
+    code: HOSPITAL_ADMISSION//URGENT//PACU
+  hospital_admission_51:
+    code: HOSPITAL_ADMISSION//EW EMER.//AMBULATORY SURGERY TRANSFER
+  hospital_admission_52:
+    code: HOSPITAL_ADMISSION//DIRECT OBSERVATION//INTERNAL TRANSFER TO OR FROM PSYCH
+  hospital_admission_53:
+    code: HOSPITAL_ADMISSION//URGENT//AMBULATORY SURGERY TRANSFER
+  hospital_admission_54:
+    code: HOSPITAL_ADMISSION//SURGICAL SAME DAY ADMISSION//TRANSFER FROM SKILLED NURSING FACILITY
+  hospital_admission_55:
+    code: HOSPITAL_ADMISSION//EU OBSERVATION//INFORMATION NOT AVAILABLE
+  hospital_admission_56:
+    code: HOSPITAL_ADMISSION//URGENT//INFORMATION NOT AVAILABLE
+  hospital_admission_57:
+    code: HOSPITAL_ADMISSION//EU OBSERVATION//AMBULATORY SURGERY TRANSFER
+  hospital_admission_58:
+    code: HOSPITAL_ADMISSION//SURGICAL SAME DAY ADMISSION//TRANSFER FROM HOSPITAL
+  hospital_admission:
+    or(hospital_admission_0,hospital_admission_1,hospital_admission_2,hospital_admission_3,hospital_admission_4,hospital_admission_5,hospital_admission_6,hospital_admission_7,hospital_admission_8,hospital_admission_9,hospital_admission_10,hospital_admission_11,hospital_admission_12,hospital_admission_13,hospital_admission_14,hospital_admission_15,hospital_admission_16,hospital_admission_17,hospital_admission_18,hospital_admission_19,hospital_admission_20,hospital_admission_21,hospital_admission_22,hospital_admission_23,hospital_admission_24,hospital_admission_25,hospital_admission_26,hospital_admission_27,hospital_admission_28,hospital_admission_29,hospital_admission_30,hospital_admission_31,hospital_admission_32,hospital_admission_33,hospital_admission_34,hospital_admission_35,hospital_admission_36,hospital_admission_37,hospital_admission_38,hospital_admission_39,hospital_admission_40,hospital_admission_41,hospital_admission_42,hospital_admission_43,hospital_admission_44,hospital_admission_45,hospital_admission_46,hospital_admission_47,hospital_admission_48,hospital_admission_49,hospital_admission_50,hospital_admission_51,hospital_admission_52,hospital_admission_53,hospital_admission_54,hospital_admission_55,hospital_admission_56,hospital_admission_57,hospital_admission_58)
+
+  hospital_discharge_0:
+    code: HOSPITAL_DISCHARGE//HOME
+  hospital_discharge_1:
+    code: HOSPITAL_DISCHARGE//UNK
+  hospital_discharge_2:
+    code: HOSPITAL_DISCHARGE//HOME HEALTH CARE
+  hospital_discharge_3:
+    code: HOSPITAL_DISCHARGE//SKILLED NURSING FACILITY
+  hospital_discharge_4:
+    code: HOSPITAL_DISCHARGE//REHAB
+  hospital_discharge_5:
+    code: HOSPITAL_DISCHARGE//DIED
+  hospital_discharge_6:
+    code: HOSPITAL_DISCHARGE//CHRONIC/LONG TERM ACUTE CARE
+  hospital_discharge_7:
+    code: HOSPITAL_DISCHARGE//HOSPICE
+  hospital_discharge_8:
+    code: HOSPITAL_DISCHARGE//AGAINST ADVICE
+  hospital_discharge_9:
+    code: HOSPITAL_DISCHARGE//PSYCH FACILITY
+  hospital_discharge_10:
+    code: HOSPITAL_DISCHARGE//ACUTE HOSPITAL
+  hospital_discharge_11:
+    code: HOSPITAL_DISCHARGE//OTHER FACILITY
+  hospital_discharge_12:
+    code: HOSPITAL_DISCHARGE//ASSISTED LIVING
+  hospital_discharge_13:
+    code: HOSPITAL_DISCHARGE//HEALTHCARE FACILITY
+  hospital_discharge:
+    or(hospital_discharge_0,hospital_discharge_1,hospital_discharge_2,hospital_discharge_3,hospital_discharge_4,hospital_discharge_5,hospital_discharge_6,hospital_discharge_7,hospital_discharge_8,hospital_discharge_9,hospital_discharge_10,hospital_discharge_11,hospital_discharge_12,hospital_discharge_13)
+
+  death:
+    code: DEATH
+  discharge_or_death:
+    expr: or(hospital_discharge, death)
+
+trigger: hospital_admission
+
+windows:
+  input:
+    start: NULL
+    end: trigger + 24h
+    start_inclusive: True
+    end_inclusive: True
+  gap:
+    start: input.end
+    end: start + 24h
+    start_inclusive: False
+    end_inclusive: True
+    has:
+      hospital_admission: (None, 0)
+      hospital_discharge: (None, 0)
+      death: (None, 0)
+  target:
+    start: gap.end
+    end: start -> discharge_or_death
+    start_inclusive: False
+    end_inclusive: True
+    label: death
