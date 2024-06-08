@@ -42,6 +42,7 @@ windows:
     end_inclusive: True
     has:
       death: (None, 0) # They must be alive at the time of hospital discharge
+    index_timestamp: end
   target:
     start: trigger
     end: start + 30d
