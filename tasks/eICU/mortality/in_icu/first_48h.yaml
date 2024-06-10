@@ -1,0 +1,109 @@
+description: >-
+  This file specifies the base configuration for the prediction of in ICU mortality, leveraging only the first
+  48 hours of data after ICU admission, with a 24 hour gap between the input window and the target window.
+  Patients who die or are discharged from the ICU in the gap window are excluded. Patients who die in the same
+  hospital stay but in a subsequent ICU stay are **not** postiive labels for this task.
+  Note that this task is in-**ICU** mortality, not in-**hospital** mortality or **30-day** mortality, which
+  are different tasks.
+  Note that this task is predicting the outcome for a patient's entire ICU admission, not just the first 48
+  hours or the subsequent 48 hours after the trigger event. Imminent mortality (on various time-scales) are
+  different tasks.
+
+predicates:
+  # TODO: Some of these are likely not right!!!
+  unit_admission_0:
+    code: UNIT_ADMISSION//ICU to SDU//stepdown/other
+  unit_admission_1:
+    code: UNIT_ADMISSION//ICU//stepdown/other
+  unit_admission_2:
+    code: UNIT_ADMISSION//Other ICU//transfer
+  unit_admission_3:
+    code: UNIT_ADMISSION//ICU//transfer
+  unit_admission_4:
+    code: UNIT_ADMISSION//Other ICU//admit
+  unit_admission_5:
+    code: UNIT_ADMISSION//Other ICU//stepdown/other
+  unit_admission_6:
+    code: UNIT_ADMISSION//ICU to SDU//readmit
+  unit_admission_7:
+    code: UNIT_ADMISSION//Other ICU//readmit
+  unit_admission_8:
+    code: UNIT_ADMISSION//ICU//admit
+  unit_admission_9:
+    code: UNIT_ADMISSION//ICU to SDU//admit
+  unit_admission_10:
+    code: UNIT_ADMISSION//ICU//readmit
+  icu_admission:
+    expr: or(unit_admission_0,unit_admission_1,unit_admission_2,unit_admission_3,unit_admission_4,unit_admission_5,unit_admission_6,unit_admission_7,unit_admission_8,unit_admission_9,unit_admission_10)
+
+  # ICU DISCHARGE -- SOME OF THESE ARE LIKELY NOT RIGHT
+  unit_discharge_0:
+    code: UNIT_DISCHARGE//Alive//Floor
+  unit_discharge_1:
+    code: UNIT_DISCHARGE//Alive//Step-Down Unit (SDU)
+  unit_discharge_2:
+    code: UNIT_DISCHARGE//Alive//Acute Care/Floor
+  unit_discharge_3:
+    code: UNIT_DISCHARGE//Alive//Home
+  unit_discharge_4:
+    code: UNIT_DISCHARGE//Expired//Death
+  unit_discharge_5:
+    code: UNIT_DISCHARGE//Alive//Telemetry
+  unit_discharge_6:
+    code: UNIT_DISCHARGE//Alive//Other ICU
+  unit_discharge_7:
+    code: UNIT_DISCHARGE//Alive//Other Hospital
+  unit_discharge_8:
+    code: UNIT_DISCHARGE//Alive//Other External
+  unit_discharge_9:
+    code: UNIT_DISCHARGE//Alive//Skilled Nursing Facility
+  unit_discharge_10:
+    code: UNIT_DISCHARGE//Alive//Other
+  unit_discharge_11:
+    code: UNIT_DISCHARGE//Alive//ICU
+  unit_discharge_12:
+    code: UNIT_DISCHARGE//Alive//Rehabilitation
+  unit_discharge_13:
+    code: UNIT_DISCHARGE//Alive//Other Internal
+  unit_discharge_14:
+    code: UNIT_DISCHARGE//Alive//Nursing Home
+  unit_discharge_15:
+    code: UNIT_DISCHARGE//Alive//
+  unit_discharge_16:
+    code: UNIT_DISCHARGE////
+  icu_discharge:
+    expr: or(unit_discharge_0,unit_discharge_1,unit_discharge_2,unit_discharge_3,unit_discharge_4,unit_discharge_5,unit_discharge_6,unit_discharge_7,unit_discharge_8,unit_discharge_9,unit_discharge_10,unit_discharge_11,unit_discharge_12,unit_discharge_13,unit_discharge_14,unit_discharge_15,unit_discharge_16)
+
+  # DEATH
+  death_0:
+    code: HOSPITAL_DISCHARGE//Expired//Death
+  death_1:
+    code: UNIT_DISCHARGE//Expired//Death
+  death:
+    expr: or(death_0,death_1)
+  discharge_or_death:
+    expr: or(icu_discharge, death)
+
+trigger: icu_admission
+
+windows:
+  input:
+    start: NULL
+    end: trigger + 48h
+    start_inclusive: True
+    end_inclusive: True
+  gap:
+    start: input.end
+    end: start + 24h
+    start_inclusive: False
+    end_inclusive: True
+    has:
+      icu_admission: (None, 0)
+      icu_discharge: (None, 0)
+      death: (None, 0)
+  target:
+    start: gap.end
+    end: start -> discharge_or_death
+    start_inclusive: False
+    end_inclusive: True
+    label: death

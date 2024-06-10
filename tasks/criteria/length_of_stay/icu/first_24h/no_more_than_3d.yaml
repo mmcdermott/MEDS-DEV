@@ -9,16 +9,16 @@ description: >-
   predicting _short_ length of stay, not _long_ length of stay.
 
 predicates:
-  ICU_admission:
+  icu_admission:
     code: ???
-  ICU_discharge:
+  icu_discharge:
     code: ???
   death:
     code: ???
   discharge_or_death:
-    expr: or(ICU_discharge, death)
+    expr: or(icu_discharge, death)
 
-trigger: ICU_admission
+trigger: icu_admission
 
 windows:
   input:
@@ -32,7 +32,7 @@ windows:
     start_inclusive: False
     end_inclusive: True
     has:
-      ICU_admission: (None, 0)
+      icu_admission: (None, 0)
       discharge_or_death: (None, 0)
   target:
     start: trigger
