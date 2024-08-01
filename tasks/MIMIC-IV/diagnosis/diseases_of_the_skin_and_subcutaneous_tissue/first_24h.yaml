@@ -1,7 +1,7 @@
 description: >-
   This file specifies the base configuration for the extraction and analysis of "diseases of the
   skin and subcutaneous tissue" based on ICD codes in patients admitted to the hospital.
-  This task predictes whether the relevant ICD codes will be assigned to a patient at the time of
+  This task predicts whether the relevant ICD codes will be assigned to a patient at the time of
   the hospital discharge, leveraging only the data from the first 24 hours of their admission to
   the hospital. Only patients whose hospital stay is at least 24 hours will be included.
   This task uses mapping definitions from ICD9CM codes to Clinical Classifications Software (CCS)
