@@ -1,0 +1,605 @@
+predicates:
+  # Hospital Admission
+  hospital_admission_0:
+    code: HOSPITAL_ADMISSION//Emergency Department//South//f//>= 500
+  hospital_admission_1:
+    code: HOSPITAL_ADMISSION//Emergency Department//Midwest//t//>= 500
+  hospital_admission_2:
+    code: HOSPITAL_ADMISSION////Midwest//f//100 - 249
+  hospital_admission_3:
+    code: HOSPITAL_ADMISSION//Emergency Department//West//f//250 - 499
+  hospital_admission_4:
+    code: HOSPITAL_ADMISSION//Emergency Department//South//f//100 - 249
+  hospital_admission_5:
+    code: HOSPITAL_ADMISSION//Emergency Department//South//f//250 - 499
+  hospital_admission_6:
+    code: HOSPITAL_ADMISSION////Midwest//t//>= 500
+  hospital_admission_7:
+    code: HOSPITAL_ADMISSION////Midwest//f//250 - 499
+  hospital_admission_8:
+    code: HOSPITAL_ADMISSION//Emergency Department//Midwest//f//100 - 249
+  hospital_admission_9:
+    code: HOSPITAL_ADMISSION////West//f//250 - 499
+  hospital_admission_10:
+    code: HOSPITAL_ADMISSION////South//f//250 - 499
+  hospital_admission_11:
+    code: HOSPITAL_ADMISSION//Emergency Department//Northeast//t//>= 500
+  hospital_admission_12:
+    code: HOSPITAL_ADMISSION//Emergency Department//West//f//100 - 249
+  hospital_admission_13:
+    code: HOSPITAL_ADMISSION//Emergency Department//Midwest//f//<100
+  hospital_admission_14:
+    code: HOSPITAL_ADMISSION////South//t//>= 500
+  hospital_admission_15:
+    code: HOSPITAL_ADMISSION//Direct Admit//Midwest//t//>= 500
+  hospital_admission_16:
+    code: HOSPITAL_ADMISSION////UNK//f//UNK
+  hospital_admission_17:
+    code: HOSPITAL_ADMISSION//Emergency Department//UNK//f//UNK
+  hospital_admission_18:
+    code: HOSPITAL_ADMISSION//Emergency Department//South//t//>= 500
+  hospital_admission_19:
+    code: HOSPITAL_ADMISSION//Operating Room//Midwest//t//>= 500
+  hospital_admission_20:
+    code: HOSPITAL_ADMISSION////West//f//100 - 249
+  hospital_admission_21:
+    code: HOSPITAL_ADMISSION////Midwest//f//UNK
+  hospital_admission_22:
+    code: HOSPITAL_ADMISSION//Emergency Department//Midwest//f//>= 500
+  hospital_admission_23:
+    code: HOSPITAL_ADMISSION//Floor//South//f//>= 500
+  hospital_admission_24:
+    code: HOSPITAL_ADMISSION//Direct Admit//South//f//>= 500
+  hospital_admission_25:
+    code: HOSPITAL_ADMISSION//Emergency Department//Midwest//f//UNK
+  hospital_admission_26:
+    code: HOSPITAL_ADMISSION//Operating Room//South//f//>= 500
+  hospital_admission_27:
+    code: HOSPITAL_ADMISSION//Emergency Department//South//f//UNK
+  hospital_admission_28:
+    code: HOSPITAL_ADMISSION//Operating Room//West//f//250 - 499
+  hospital_admission_29:
+    code: HOSPITAL_ADMISSION////South//f//>= 500
+  hospital_admission_30:
+    code: HOSPITAL_ADMISSION//Emergency Department//West//f//UNK
+  hospital_admission_31:
+    code: HOSPITAL_ADMISSION//Floor//Midwest//t//>= 500
+  hospital_admission_32:
+    code: HOSPITAL_ADMISSION//Emergency Department//West//t//>= 500
+  hospital_admission_33:
+    code: HOSPITAL_ADMISSION//Floor//West//f//250 - 499
+  hospital_admission_34:
+    code: HOSPITAL_ADMISSION//Emergency Department//West//f//<100
+  hospital_admission_35:
+    code: HOSPITAL_ADMISSION//Floor//South//f//100 - 249
+  hospital_admission_36:
+    code: HOSPITAL_ADMISSION////West//f//<100
+  hospital_admission_37:
+    code: HOSPITAL_ADMISSION//Emergency Department//Northeast//f//100 - 249
+  hospital_admission_38:
+    code: HOSPITAL_ADMISSION//Floor//South//f//250 - 499
+  hospital_admission_39:
+    code: HOSPITAL_ADMISSION//Operating Room//Midwest//f//100 - 249
+  hospital_admission_40:
+    code: HOSPITAL_ADMISSION//Emergency Department//Northeast//f//<100
+  hospital_admission_41:
+    code: HOSPITAL_ADMISSION//Operating Room//Northeast//t//>= 500
+  hospital_admission_42:
+    code: HOSPITAL_ADMISSION//Emergency Department//UNK//f//250 - 499
+  hospital_admission_43:
+    code: HOSPITAL_ADMISSION//Recovery Room//West//f//UNK
+  hospital_admission_44:
+    code: HOSPITAL_ADMISSION//Direct Admit//Midwest//f//100 - 249
+  hospital_admission_45:
+    code: HOSPITAL_ADMISSION//Emergency Department//West//f//>= 500
+  hospital_admission_46:
+    code: HOSPITAL_ADMISSION//Emergency Department//South//f//<100
+  hospital_admission_47:
+    code: HOSPITAL_ADMISSION//Recovery Room//Midwest//t//>= 500
+  hospital_admission_48:
+    code: HOSPITAL_ADMISSION////South//f//100 - 249
+  hospital_admission_49:
+    code: HOSPITAL_ADMISSION//Operating Room//South//t//>= 500
+  hospital_admission_50:
+    code: HOSPITAL_ADMISSION//Recovery Room//South//f//>= 500
+  hospital_admission_51:
+    code: HOSPITAL_ADMISSION//Operating Room//South//f//250 - 499
+  hospital_admission_52:
+    code: HOSPITAL_ADMISSION////UNK//f//250 - 499
+  hospital_admission_53:
+    code: HOSPITAL_ADMISSION//Operating Room//West//f//100 - 249
+  hospital_admission_54:
+    code: HOSPITAL_ADMISSION//Floor//Midwest//f//100 - 249
+  hospital_admission_55:
+    code: HOSPITAL_ADMISSION////Midwest//f//>= 500
+  hospital_admission_56:
+    code: HOSPITAL_ADMISSION//Other Hospital//Midwest//t//>= 500
+  hospital_admission_57:
+    code: HOSPITAL_ADMISSION////West//t//>= 500
+  hospital_admission_58:
+    code: HOSPITAL_ADMISSION//Direct Admit//South//f//250 - 499
+  hospital_admission_59:
+    code: HOSPITAL_ADMISSION//Direct Admit//Midwest//f//>= 500
+  hospital_admission_60:
+    code: HOSPITAL_ADMISSION//Emergency Department//Midwest//f//250 - 499
+  hospital_admission_61:
+    code: HOSPITAL_ADMISSION//Floor//Northeast//t//>= 500
+  hospital_admission_62:
+    code: HOSPITAL_ADMISSION//Emergency Department//South//t//250 - 499
+  hospital_admission_63:
+    code: HOSPITAL_ADMISSION//Emergency Department//South//t//100 - 249
+  hospital_admission_64:
+    code: HOSPITAL_ADMISSION//Emergency Department//Midwest//t//UNK
+  hospital_admission_65:
+    code: HOSPITAL_ADMISSION//Operating Room//West//f//UNK
+  hospital_admission_66:
+    code: HOSPITAL_ADMISSION//Emergency Department//Northeast//f//250 - 499
+  hospital_admission_67:
+    code: HOSPITAL_ADMISSION////South//f//UNK
+  hospital_admission_68:
+    code: HOSPITAL_ADMISSION////Midwest//f//<100
+  hospital_admission_69:
+    code: HOSPITAL_ADMISSION//Operating Room//Midwest//f//>= 500
+  hospital_admission_70:
+    code: HOSPITAL_ADMISSION//Operating Room//West//t//>= 500
+  hospital_admission_71:
+    code: HOSPITAL_ADMISSION//Floor//West//f//UNK
+  hospital_admission_72:
+    code: HOSPITAL_ADMISSION//Floor//Midwest//f//<100
+  hospital_admission_73:
+    code: HOSPITAL_ADMISSION//Direct Admit//Northeast//t//>= 500
+  hospital_admission_74:
+    code: HOSPITAL_ADMISSION////West//f//>= 500
+  hospital_admission_75:
+    code: HOSPITAL_ADMISSION//Floor//West//f//100 - 249
+  hospital_admission_76:
+    code: HOSPITAL_ADMISSION//Other Hospital//South//f//>= 500
+  hospital_admission_77:
+    code: HOSPITAL_ADMISSION//Floor//South//f//UNK
+  hospital_admission_78:
+    code: HOSPITAL_ADMISSION//Direct Admit//South//f//100 - 249
+  hospital_admission_79:
+    code: HOSPITAL_ADMISSION////South//t//250 - 499
+  hospital_admission_80:
+    code: HOSPITAL_ADMISSION//Operating Room//South//f//100 - 249
+  hospital_admission_81:
+    code: HOSPITAL_ADMISSION//Floor//South//t//>= 500
+  hospital_admission_82:
+    code: HOSPITAL_ADMISSION//Operating Room//West//f//>= 500
+  hospital_admission_83:
+    code: HOSPITAL_ADMISSION//Operating Room//South//t//250 - 499
+  hospital_admission_84:
+    code: HOSPITAL_ADMISSION//Other Hospital//Northeast//t//>= 500
+  hospital_admission_85:
+    code: HOSPITAL_ADMISSION////UNK//f//100 - 249
+  hospital_admission_86:
+    code: HOSPITAL_ADMISSION//Operating Room//UNK//f//UNK
+  hospital_admission_87:
+    code: HOSPITAL_ADMISSION//Recovery Room//South//f//100 - 249
+  hospital_admission_88:
+    code: HOSPITAL_ADMISSION//Acute Care/Floor//South//f//250 - 499
+  hospital_admission_89:
+    code: HOSPITAL_ADMISSION////West//f//UNK
+  hospital_admission_90:
+    code: HOSPITAL_ADMISSION//Floor//Midwest//f//UNK
+  hospital_admission_91:
+    code: HOSPITAL_ADMISSION//Other Hospital//West//f//UNK
+  hospital_admission_92:
+    code: HOSPITAL_ADMISSION//Acute Care/Floor//UNK//f//UNK
+  hospital_admission_93:
+    code: HOSPITAL_ADMISSION//Step-Down Unit (SDU)//Midwest//t//>= 500
+  hospital_admission_94:
+    code: HOSPITAL_ADMISSION//Floor//UNK//f//UNK
+  hospital_admission_95:
+    code: HOSPITAL_ADMISSION//Step-Down Unit (SDU)//South//f//>= 500
+  hospital_admission_96:
+    code: HOSPITAL_ADMISSION//Operating Room//Midwest//f//<100
+  hospital_admission_97:
+    code: HOSPITAL_ADMISSION//Acute Care/Floor//Midwest//f//>= 500
+  hospital_admission_98:
+    code: HOSPITAL_ADMISSION//Floor//Midwest//f//>= 500
+  hospital_admission_99:
+    code: HOSPITAL_ADMISSION//Operating Room//Northeast//f//250 - 499
+  hospital_admission_100:
+    code: HOSPITAL_ADMISSION//Operating Room//UNK//f//>= 500
+  hospital_admission_101:
+    code: HOSPITAL_ADMISSION//Direct Admit//West//f//250 - 499
+  hospital_admission_102:
+    code: HOSPITAL_ADMISSION//Recovery Room//South//f//UNK
+  hospital_admission_103:
+    code: HOSPITAL_ADMISSION//Direct Admit//Midwest//f//<100
+  hospital_admission_104:
+    code: HOSPITAL_ADMISSION//Floor//Northeast//f//<100
+  hospital_admission_105:
+    code: HOSPITAL_ADMISSION//Operating Room//Northeast//f//100 - 249
+  hospital_admission_106:
+    code: HOSPITAL_ADMISSION//PACU//Midwest//t//>= 500
+  hospital_admission_107:
+    code: HOSPITAL_ADMISSION//Recovery Room//Midwest//f//100 - 249
+  hospital_admission_108:
+    code: HOSPITAL_ADMISSION//Floor//Northeast//f//100 - 249
+  hospital_admission_109:
+    code: HOSPITAL_ADMISSION//Operating Room//UNK//f//250 - 499
+  hospital_admission_110:
+    code: HOSPITAL_ADMISSION//Direct Admit//Midwest//t//UNK
+  hospital_admission_111:
+    code: HOSPITAL_ADMISSION//Acute Care/Floor//West//f//250 - 499
+  hospital_admission_112:
+    code: HOSPITAL_ADMISSION//Emergency Department//Midwest//t//250 - 499
+  hospital_admission_113:
+    code: HOSPITAL_ADMISSION//Direct Admit//UNK//f//UNK
+  hospital_admission_114:
+    code: HOSPITAL_ADMISSION//Emergency Department//UNK//f//>= 500
+  hospital_admission_115:
+    code: HOSPITAL_ADMISSION//Floor//UNK//f//250 - 499
+  hospital_admission_116:
+    code: HOSPITAL_ADMISSION//PACU//South//f//250 - 499
+  hospital_admission_117:
+    code: HOSPITAL_ADMISSION//Floor//West//f//<100
+  hospital_admission_118:
+    code: HOSPITAL_ADMISSION////UNK//f//>= 500
+  hospital_admission_119:
+    code: HOSPITAL_ADMISSION//Acute Care/Floor//South//f//100 - 249
+  hospital_admission_120:
+    code: HOSPITAL_ADMISSION//Direct Admit//Midwest//f//UNK
+  hospital_admission_121:
+    code: HOSPITAL_ADMISSION//Recovery Room//South//t//>= 500
+  hospital_admission_122:
+    code: HOSPITAL_ADMISSION//Acute Care/Floor//Midwest//f//100 - 249
+  hospital_admission_123:
+    code: HOSPITAL_ADMISSION//Floor//West//t//>= 500
+  hospital_admission_124:
+    code: HOSPITAL_ADMISSION//Step-Down Unit (SDU)//Northeast//t//>= 500
+  hospital_admission_125:
+    code: HOSPITAL_ADMISSION//Floor//South//t//250 - 499
+  hospital_admission_126:
+    code: HOSPITAL_ADMISSION//Recovery Room//West//f//250 - 499
+  hospital_admission_127:
+    code: HOSPITAL_ADMISSION//Floor//South//t//100 - 249
+  hospital_admission_128:
+    code: HOSPITAL_ADMISSION//Recovery Room//South//f//250 - 499
+  hospital_admission_129:
+    code: HOSPITAL_ADMISSION//Floor//South//f//<100
+  hospital_admission_130:
+    code: HOSPITAL_ADMISSION//Floor//Midwest//t//UNK
+  hospital_admission_131:
+    code: HOSPITAL_ADMISSION//Emergency Department//UNK//f//100 - 249
+  hospital_admission_132:
+    code: HOSPITAL_ADMISSION////South//f//<100
+  hospital_admission_133:
+    code: HOSPITAL_ADMISSION//Direct Admit//UNK//f//>= 500
+  hospital_admission_134:
+    code: HOSPITAL_ADMISSION//Operating Room//South//f//UNK
+  hospital_admission_135:
+    code: HOSPITAL_ADMISSION//Acute Care/Floor//Midwest//t//>= 500
+  hospital_admission_136:
+    code: HOSPITAL_ADMISSION//Floor//West//f//>= 500
+  hospital_admission_137:
+    code: HOSPITAL_ADMISSION////Northeast//t//>= 500
+  hospital_admission_138:
+    code: HOSPITAL_ADMISSION//Floor//Midwest//f//250 - 499
+  hospital_admission_139:
+    code: HOSPITAL_ADMISSION//Step-Down Unit (SDU)//Midwest//f//100 - 249
+  hospital_admission_140:
+    code: HOSPITAL_ADMISSION//Other Hospital//South//t//>= 500
+  hospital_admission_141:
+    code: HOSPITAL_ADMISSION//Step-Down Unit (SDU)//South//f//100 - 249
+  hospital_admission_142:
+    code: HOSPITAL_ADMISSION//Acute Care/Floor//West//f//100 - 249
+  hospital_admission_143:
+    code: HOSPITAL_ADMISSION//Other Hospital//West//f//250 - 499
+  hospital_admission_144:
+    code: HOSPITAL_ADMISSION//Direct Admit//Midwest//f//250 - 499
+  hospital_admission_145:
+    code: HOSPITAL_ADMISSION//Floor//Northeast//f//250 - 499
+  hospital_admission_146:
+    code: HOSPITAL_ADMISSION//Direct Admit//West//f//100 - 249
+  hospital_admission_147:
+    code: HOSPITAL_ADMISSION//Chest Pain Center//South//f//>= 500
+  hospital_admission_148:
+    code: HOSPITAL_ADMISSION//Direct Admit//West//t//>= 500
+  hospital_admission_149:
+    code: HOSPITAL_ADMISSION//PACU//Midwest//f//>= 500
+  hospital_admission_150:
+    code: HOSPITAL_ADMISSION////South//t//100 - 249
+  hospital_admission_151:
+    code: HOSPITAL_ADMISSION//PACU//UNK//f//UNK
+  hospital_admission_152:
+    code: HOSPITAL_ADMISSION//Recovery Room//Northeast//t//>= 500
+  hospital_admission_153:
+    code: HOSPITAL_ADMISSION//Direct Admit//South//f//UNK
+  hospital_admission_154:
+    code: HOSPITAL_ADMISSION//Acute Care/Floor//West//t//>= 500
+  hospital_admission_155:
+    code: HOSPITAL_ADMISSION////Midwest//t//250 - 499
+  hospital_admission_156:
+    code: HOSPITAL_ADMISSION//Recovery Room//West//f//100 - 249
+  hospital_admission_157:
+    code: HOSPITAL_ADMISSION//Recovery Room//West//t//>= 500
+  hospital_admission_158:
+    code: HOSPITAL_ADMISSION//Acute Care/Floor//Midwest//t//UNK
+  hospital_admission_159:
+    code: HOSPITAL_ADMISSION//Step-Down Unit (SDU)//South//f//250 - 499
+  hospital_admission_160:
+    code: HOSPITAL_ADMISSION////Northeast//f//100 - 249
+  hospital_admission_161:
+    code: HOSPITAL_ADMISSION//Recovery Room//UNK//f//250 - 499
+  hospital_admission_162:
+    code: HOSPITAL_ADMISSION//Direct Admit//South//t//>= 500
+  hospital_admission_163:
+    code: HOSPITAL_ADMISSION//Operating Room//Midwest//f//UNK
+  hospital_admission_164:
+    code: HOSPITAL_ADMISSION//Direct Admit//South//f//<100
+  hospital_admission_165:
+    code: HOSPITAL_ADMISSION//Operating Room//Midwest//f//250 - 499
+  hospital_admission_166:
+    code: HOSPITAL_ADMISSION//Step-Down Unit (SDU)//South//t//>= 500
+  hospital_admission_167:
+    code: HOSPITAL_ADMISSION////Midwest//t//UNK
+  hospital_admission_168:
+    code: HOSPITAL_ADMISSION//Other Hospital//South//f//250 - 499
+  hospital_admission_169:
+    code: HOSPITAL_ADMISSION//Other Hospital//Midwest//f//100 - 249
+  hospital_admission_170:
+    code: HOSPITAL_ADMISSION//Recovery Room//Midwest//f//<100
+  hospital_admission_171:
+    code: HOSPITAL_ADMISSION//Direct Admit//West//f//UNK
+  hospital_admission_172:
+    code: HOSPITAL_ADMISSION//Acute Care/Floor//West//f//>= 500
+  hospital_admission_173:
+    code: HOSPITAL_ADMISSION//Step-Down Unit (SDU)//Northeast//f//250 - 499
+  hospital_admission_174:
+    code: HOSPITAL_ADMISSION//Recovery Room//UNK//f//UNK
+  hospital_admission_175:
+    code: HOSPITAL_ADMISSION//Recovery Room//South//f//<100
+  hospital_admission_176:
+    code: HOSPITAL_ADMISSION//Chest Pain Center//Northeast//t//>= 500
+  hospital_admission_177:
+    code: HOSPITAL_ADMISSION//PACU//West//f//100 - 249
+  hospital_admission_178:
+    code: HOSPITAL_ADMISSION//Acute Care/Floor//Midwest//f//<100
+  hospital_admission_179:
+    code: HOSPITAL_ADMISSION//Other ICU//Midwest//t//>= 500
+  hospital_admission_180:
+    code: HOSPITAL_ADMISSION//Operating Room//Midwest//t//UNK
+  hospital_admission_181:
+    code: HOSPITAL_ADMISSION//Acute Care/Floor//Midwest//f//UNK
+  hospital_admission_182:
+    code: HOSPITAL_ADMISSION//Recovery Room//West//f//>= 500
+  hospital_admission_183:
+    code: HOSPITAL_ADMISSION//Step-Down Unit (SDU)//West//f//250 - 499
+  hospital_admission_184:
+    code: HOSPITAL_ADMISSION//Other Hospital//West//t//>= 500
+  hospital_admission_185:
+    code: HOSPITAL_ADMISSION//PACU//West//f//250 - 499
+  hospital_admission_186:
+    code: HOSPITAL_ADMISSION//Floor//Midwest//t//250 - 499
+  hospital_admission_187:
+    code: HOSPITAL_ADMISSION//Recovery Room//UNK//f//>= 500
+  hospital_admission_188:
+    code: HOSPITAL_ADMISSION//Step-Down Unit (SDU)//West//f//100 - 249
+  hospital_admission_189:
+    code: HOSPITAL_ADMISSION//Floor//UNK//f//>= 500
+  hospital_admission_190:
+    code: HOSPITAL_ADMISSION////Northeast//f//250 - 499
+  hospital_admission_191:
+    code: HOSPITAL_ADMISSION//Recovery Room//Midwest//f//UNK
+  hospital_admission_192:
+    code: HOSPITAL_ADMISSION//Direct Admit//UNK//f//250 - 499
+  hospital_admission_193:
+    code: HOSPITAL_ADMISSION//PACU//West//t//>= 500
+  hospital_admission_194:
+    code: HOSPITAL_ADMISSION//Acute Care/Floor//South//f//>= 500
+  hospital_admission_195:
+    code: HOSPITAL_ADMISSION//Operating Room//South//t//100 - 249
+  hospital_admission_196:
+    code: HOSPITAL_ADMISSION//Other Hospital//South//f//UNK
+  hospital_admission_197:
+    code: HOSPITAL_ADMISSION//Recovery Room//Northeast//f//250 - 499
+  hospital_admission_198:
+    code: HOSPITAL_ADMISSION//PACU//Midwest//f//100 - 249
+  hospital_admission_199:
+    code: HOSPITAL_ADMISSION//Other ICU//UNK//f//100 - 249
+  hospital_admission_200:
+    code: HOSPITAL_ADMISSION//Acute Care/Floor//South//t//>= 500
+  hospital_admission_201:
+    code: HOSPITAL_ADMISSION//Operating Room//West//f//<100
+  hospital_admission_202:
+    code: HOSPITAL_ADMISSION//Other Hospital//West//f//100 - 249
+  hospital_admission_203:
+    code: HOSPITAL_ADMISSION////Northeast//f//<100
+  hospital_admission_204:
+    code: HOSPITAL_ADMISSION//Other Hospital//Midwest//f//UNK
+  hospital_admission_205:
+    code: HOSPITAL_ADMISSION//Operating Room//Northeast//f//<100
+  hospital_admission_206:
+    code: HOSPITAL_ADMISSION//Operating Room//South//f//<100
+  hospital_admission_207:
+    code: HOSPITAL_ADMISSION//PACU//South//f//100 - 249
+  hospital_admission_208:
+    code: HOSPITAL_ADMISSION//Step-Down Unit (SDU)//Northeast//f//100 - 249
+  hospital_admission_209:
+    code: HOSPITAL_ADMISSION//PACU//South//f//>= 500
+  hospital_admission_210:
+    code: HOSPITAL_ADMISSION//Direct Admit//South//t//250 - 499
+  hospital_admission_211:
+    code: HOSPITAL_ADMISSION//Direct Admit//West//f//>= 500
+  hospital_admission_212:
+    code: HOSPITAL_ADMISSION//Chest Pain Center//South//f//100 - 249
+  hospital_admission_213:
+    code: HOSPITAL_ADMISSION//Direct Admit//Northeast//f//250 - 499
+  hospital_admission_214:
+    code: HOSPITAL_ADMISSION//Recovery Room//Midwest//f//>= 500
+  hospital_admission_215:
+    code: HOSPITAL_ADMISSION//Operating Room//UNK//f//100 - 249
+  hospital_admission_216:
+    code: HOSPITAL_ADMISSION//Other Hospital//Northeast//f//100 - 249
+  hospital_admission_217:
+    code: HOSPITAL_ADMISSION//Other ICU//West//f//UNK
+  hospital_admission_218:
+    code: HOSPITAL_ADMISSION//Step-Down Unit (SDU)//South//f//<100
+  hospital_admission_219:
+    code: HOSPITAL_ADMISSION//PACU//West//f//>= 500
+  hospital_admission_220:
+    code: HOSPITAL_ADMISSION//Other Hospital//South//f//100 - 249
+  hospital_admission_221:
+    code: HOSPITAL_ADMISSION//Direct Admit//Northeast//f//100 - 249
+  hospital_admission_222:
+    code: HOSPITAL_ADMISSION//Recovery Room//West//f//<100
+  hospital_admission_223:
+    code: HOSPITAL_ADMISSION//Other ICU//Northeast//t//>= 500
+  hospital_admission_224:
+    code: HOSPITAL_ADMISSION//Step-Down Unit (SDU)//South//f//UNK
+  hospital_admission_225:
+    code: HOSPITAL_ADMISSION//Direct Admit//West//f//<100
+  hospital_admission_226:
+    code: HOSPITAL_ADMISSION//Step-Down Unit (SDU)//Midwest//f//<100
+  hospital_admission_227:
+    code: HOSPITAL_ADMISSION//Floor//UNK//f//100 - 249
+  hospital_admission_228:
+    code: HOSPITAL_ADMISSION//Other Hospital//South//t//250 - 499
+  hospital_admission_229:
+    code: HOSPITAL_ADMISSION//Other Hospital//UNK//f//UNK
+  hospital_admission_230:
+    code: HOSPITAL_ADMISSION//Other Hospital//Midwest//t//UNK
+  hospital_admission_231:
+    code: HOSPITAL_ADMISSION//Step-Down Unit (SDU)//UNK//f//UNK
+  hospital_admission_232:
+    code: HOSPITAL_ADMISSION//Other Hospital//West//f//>= 500
+  hospital_admission_233:
+    code: HOSPITAL_ADMISSION//Other Hospital//Midwest//f//>= 500
+  hospital_admission_234:
+    code: HOSPITAL_ADMISSION//Chest Pain Center//Northeast//f//250 - 499
+  hospital_admission_235:
+    code: HOSPITAL_ADMISSION//Recovery Room//South//t//100 - 249
+  hospital_admission_236:
+    code: HOSPITAL_ADMISSION//Other ICU//South//t//>= 500
+  hospital_admission_237:
+    code: HOSPITAL_ADMISSION//Acute Care/Floor//Midwest//t//250 - 499
+  hospital_admission_238:
+    code: HOSPITAL_ADMISSION//Acute Care/Floor//South//f//<100
+  hospital_admission_239:
+    code: HOSPITAL_ADMISSION//Other Hospital//UNK//f//250 - 499
+  hospital_admission_240:
+    code: HOSPITAL_ADMISSION//Other Hospital//UNK//f//>= 500
+  hospital_admission_241:
+    code: HOSPITAL_ADMISSION//Other ICU//Northeast//f//100 - 249
+  hospital_admission_242:
+    code: HOSPITAL_ADMISSION//Other Hospital//South//f//<100
+  hospital_admission_243:
+    code: HOSPITAL_ADMISSION//Step-Down Unit (SDU)//West//t//>= 500
+  hospital_admission_244:
+    code: HOSPITAL_ADMISSION//PACU//South//t//>= 500
+  hospital_admission_245:
+    code: HOSPITAL_ADMISSION//Recovery Room//Northeast//f//100 - 249
+  hospital_admission_246:
+    code: HOSPITAL_ADMISSION//Acute Care/Floor//West//f//<100
+  hospital_admission_247:
+    code: HOSPITAL_ADMISSION//Step-Down Unit (SDU)//UNK//f//250 - 499
+  hospital_admission_248:
+    code: HOSPITAL_ADMISSION//Other ICU//South//f//UNK
+  hospital_admission_249:
+    code: HOSPITAL_ADMISSION//Recovery Room//Midwest//t//250 - 499
+  hospital_admission_250:
+    code: HOSPITAL_ADMISSION//PACU//Midwest//t//250 - 499
+  hospital_admission_251:
+    code: HOSPITAL_ADMISSION//Recovery Room//South//t//250 - 499
+  hospital_admission:
+    expr: or(hospital_admission_0,hospital_admission_1,hospital_admission_2,hospital_admission_3,hospital_admission_4,hospital_admission_5,hospital_admission_6,hospital_admission_7,hospital_admission_8,hospital_admission_9,hospital_admission_10,hospital_admission_11,hospital_admission_12,hospital_admission_13,hospital_admission_14,hospital_admission_15,hospital_admission_16,hospital_admission_17,hospital_admission_18,hospital_admission_19,hospital_admission_20,hospital_admission_21,hospital_admission_22,hospital_admission_23,hospital_admission_24,hospital_admission_25,hospital_admission_26,hospital_admission_27,hospital_admission_28,hospital_admission_29,hospital_admission_30,hospital_admission_31,hospital_admission_32,hospital_admission_33,hospital_admission_34,hospital_admission_35,hospital_admission_36,hospital_admission_37,hospital_admission_38,hospital_admission_39,hospital_admission_40,hospital_admission_41,hospital_admission_42,hospital_admission_43,hospital_admission_44,hospital_admission_45,hospital_admission_46,hospital_admission_47,hospital_admission_48,hospital_admission_49,hospital_admission_50,hospital_admission_51,hospital_admission_52,hospital_admission_53,hospital_admission_54,hospital_admission_55,hospital_admission_56,hospital_admission_57,hospital_admission_58,hospital_admission_59,hospital_admission_60,hospital_admission_61,hospital_admission_62,hospital_admission_63,hospital_admission_64,hospital_admission_65,hospital_admission_66,hospital_admission_67,hospital_admission_68,hospital_admission_69,hospital_admission_70,hospital_admission_71,hospital_admission_72,hospital_admission_73,hospital_admission_74,hospital_admission_75,hospital_admission_76,hospital_admission_77,hospital_admission_78,hospital_admission_79,hospital_admission_80,hospital_admission_81,hospital_admission_82,hospital_admission_83,hospital_admission_84,hospital_admission_85,hospital_admission_86,hospital_admission_87,hospital_admission_88,hospital_admission_89,hospital_admission_90,hospital_admission_91,hospital_admission_92,hospital_admission_93,hospital_admission_94,hospital_admission_95,hospital_admission_96,hospital_admission_97,hospital_admission_98,hospital_admission_99,hospital_admission_100,hospital_admission_101,hospital_admission_102,hospital_admission_103,hospital_admission_104,hospital_admission_105,hospital_admission_106,hospital_admission_107,hospital_admission_108,hospital_admission_109,hospital_admission_110,hospital_admission_111,hospital_admission_112,hospital_admission_113,hospital_admission_114,hospital_admission_115,hospital_admission_116,hospital_admission_117,hospital_admission_118,hospital_admission_119,hospital_admission_120,hospital_admission_121,hospital_admission_122,hospital_admission_123,hospital_admission_124,hospital_admission_125,hospital_admission_126,hospital_admission_127,hospital_admission_128,hospital_admission_129,hospital_admission_130,hospital_admission_131,hospital_admission_132,hospital_admission_133,hospital_admission_134,hospital_admission_135,hospital_admission_136,hospital_admission_137,hospital_admission_138,hospital_admission_139,hospital_admission_140,hospital_admission_141,hospital_admission_142,hospital_admission_143,hospital_admission_144,hospital_admission_145,hospital_admission_146,hospital_admission_147,hospital_admission_148,hospital_admission_149,hospital_admission_150,hospital_admission_151,hospital_admission_152,hospital_admission_153,hospital_admission_154,hospital_admission_155,hospital_admission_156,hospital_admission_157,hospital_admission_158,hospital_admission_159,hospital_admission_160,hospital_admission_161,hospital_admission_162,hospital_admission_163,hospital_admission_164,hospital_admission_165,hospital_admission_166,hospital_admission_167,hospital_admission_168,hospital_admission_169,hospital_admission_170,hospital_admission_171,hospital_admission_172,hospital_admission_173,hospital_admission_174,hospital_admission_175,hospital_admission_176,hospital_admission_177,hospital_admission_178,hospital_admission_179,hospital_admission_180,hospital_admission_181,hospital_admission_182,hospital_admission_183,hospital_admission_184,hospital_admission_185,hospital_admission_186,hospital_admission_187,hospital_admission_188,hospital_admission_189,hospital_admission_190,hospital_admission_191,hospital_admission_192,hospital_admission_193,hospital_admission_194,hospital_admission_195,hospital_admission_196,hospital_admission_197,hospital_admission_198,hospital_admission_199,hospital_admission_200,hospital_admission_201,hospital_admission_202,hospital_admission_203,hospital_admission_204,hospital_admission_205,hospital_admission_206,hospital_admission_207,hospital_admission_208,hospital_admission_209,hospital_admission_210,hospital_admission_211,hospital_admission_212,hospital_admission_213,hospital_admission_214,hospital_admission_215,hospital_admission_216,hospital_admission_217,hospital_admission_218,hospital_admission_219,hospital_admission_220,hospital_admission_221,hospital_admission_222,hospital_admission_223,hospital_admission_224,hospital_admission_225,hospital_admission_226,hospital_admission_227,hospital_admission_228,hospital_admission_229,hospital_admission_230,hospital_admission_231,hospital_admission_232,hospital_admission_233,hospital_admission_234,hospital_admission_235,hospital_admission_236,hospital_admission_237,hospital_admission_238,hospital_admission_239,hospital_admission_240,hospital_admission_241,hospital_admission_242,hospital_admission_243,hospital_admission_244,hospital_admission_245,hospital_admission_246,hospital_admission_247,hospital_admission_248,hospital_admission_249,hospital_admission_250,hospital_admission_251)
+
+  # Hospital Discharge
+  hospital_discharge_0:
+    code: HOSPITAL_DISCHARGE//Alive//Home
+  hospital_discharge_1:
+    code: HOSPITAL_DISCHARGE//Alive//Skilled Nursing Facility
+  hospital_discharge_2:
+    code: HOSPITAL_DISCHARGE//Expired//Death
+  hospital_discharge_3:
+    code: HOSPITAL_DISCHARGE//Alive//Other External
+  hospital_discharge_4:
+    code: HOSPITAL_DISCHARGE//Alive//Rehabilitation
+  hospital_discharge_5:
+    code: HOSPITAL_DISCHARGE//Alive//Other
+  hospital_discharge_6:
+    code: HOSPITAL_DISCHARGE//Alive//Other Hospital
+  hospital_discharge_7:
+    code: HOSPITAL_DISCHARGE//Alive//Nursing Home
+  hospital_discharge_8:
+    code: HOSPITAL_DISCHARGE////
+  hospital_discharge_9:
+    code: HOSPITAL_DISCHARGE//Alive//
+  hospital_discharge:
+    expr: or(hospital_discharge_0,hospital_discharge_1,hospital_discharge_2,hospital_discharge_3,hospital_discharge_4,hospital_discharge_5,hospital_discharge_6,hospital_discharge_7,hospital_discharge_8,hospital_discharge_9)
+
+  # ICU Admission
+  # TODO: Some of these are likely not right!!!
+  unit_admission_0:
+    code: UNIT_ADMISSION//ICU to SDU//stepdown/other
+  unit_admission_1:
+    code: UNIT_ADMISSION//ICU//stepdown/other
+  unit_admission_2:
+    code: UNIT_ADMISSION//Other ICU//transfer
+  unit_admission_3:
+    code: UNIT_ADMISSION//ICU//transfer
+  unit_admission_4:
+    code: UNIT_ADMISSION//Other ICU//admit
+  unit_admission_5:
+    code: UNIT_ADMISSION//Other ICU//stepdown/other
+  unit_admission_6:
+    code: UNIT_ADMISSION//ICU to SDU//readmit
+  unit_admission_7:
+    code: UNIT_ADMISSION//Other ICU//readmit
+  unit_admission_8:
+    code: UNIT_ADMISSION//ICU//admit
+  unit_admission_9:
+    code: UNIT_ADMISSION//ICU to SDU//admit
+  unit_admission_10:
+    code: UNIT_ADMISSION//ICU//readmit
+  ICU_admission:
+    expr: or(unit_admission_0,unit_admission_1,unit_admission_2,unit_admission_3,unit_admission_4,unit_admission_5,unit_admission_6,unit_admission_7,unit_admission_8,unit_admission_9,unit_admission_10)
+
+  # ICU DISCHARGE -- SOME OF THESE ARE LIKELY NOT RIGHT
+  unit_discharge_0:
+    code: UNIT_DISCHARGE//Alive//Floor
+  unit_discharge_1:
+    code: UNIT_DISCHARGE//Alive//Step-Down Unit (SDU)
+  unit_discharge_2:
+    code: UNIT_DISCHARGE//Alive//Acute Care/Floor
+  unit_discharge_3:
+    code: UNIT_DISCHARGE//Alive//Home
+  unit_discharge_4:
+    code: UNIT_DISCHARGE//Expired//Death
+  unit_discharge_5:
+    code: UNIT_DISCHARGE//Alive//Telemetry
+  unit_discharge_6:
+    code: UNIT_DISCHARGE//Alive//Other ICU
+  unit_discharge_7:
+    code: UNIT_DISCHARGE//Alive//Other Hospital
+  unit_discharge_8:
+    code: UNIT_DISCHARGE//Alive//Other External
+  unit_discharge_9:
+    code: UNIT_DISCHARGE//Alive//Skilled Nursing Facility
+  unit_discharge_10:
+    code: UNIT_DISCHARGE//Alive//Other
+  unit_discharge_11:
+    code: UNIT_DISCHARGE//Alive//ICU
+  unit_discharge_12:
+    code: UNIT_DISCHARGE//Alive//Rehabilitation
+  unit_discharge_13:
+    code: UNIT_DISCHARGE//Alive//Other Internal
+  unit_discharge_14:
+    code: UNIT_DISCHARGE//Alive//Nursing Home
+  unit_discharge_15:
+    code: UNIT_DISCHARGE//Alive//
+  unit_discharge_16:
+    code: UNIT_DISCHARGE////
+  ICU_discharge:
+    expr: or(unit_discharge_0,unit_discharge_1,unit_discharge_2,unit_discharge_3,unit_discharge_4,unit_discharge_5,unit_discharge_6,unit_discharge_7,unit_discharge_8,unit_discharge_9,unit_discharge_10,unit_discharge_11,unit_discharge_12,unit_discharge_13,unit_discharge_14,unit_discharge_15,unit_discharge_16)
+
+  # DEATH
+  death_0:
+    code: HOSPITAL_DISCHARGE//Expired//Death
+  death_1:
+    code: UNIT_DISCHARGE//Expired//Death
+  death:
+    expr: or(death_0,death_1)
