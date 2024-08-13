@@ -6,18 +6,40 @@ description: >-
 
 predicates:
   # Plain predicates
+  # Diabetes diagnosis
   diabetes_dx: ???
-  diabetes_hba1c: ???
-  diabetes_glucose: ???
-  diabetes_insulin: ???
 
+  # Biomechanical Definition of Diabetes
+  hba1c_high:
+    code: ???
+    value_min: 6.5 # %
+
+  2hr_oral_glucose:
+    code: ???
+    value_min: 200 # mg/dL
+  random_glucose:
+    code: ???
+    value_min: 200 # mg/dL
+  polyuria: ???
+  polydipsia: ???
+  polyphagia: ???
+
+  # CKD diagnosis
   ckd_dx: ???
 
+  # Kidney labs
   kidney_labs: ???
 
   # Derived predicates
+  any_classic_symptom:
+    expr: or(polyuria, polydipsia, polyphagia)
+  random_glucose_with_symptoms:
+    expr: and(random_glucose, any_classic_symptom)
+
+  # Final diabetes predicate
   diabetes:
-    expr: or(diabetes_dx, diabetes_hba1c, diabetes_glucose, diabetes_insulin)
+    expr: or(diabetes_dx, hba1c_high, 2hr_oral_glucose, random_glucose_with_symptoms)
+
 
 trigger: kidney_labs
 
