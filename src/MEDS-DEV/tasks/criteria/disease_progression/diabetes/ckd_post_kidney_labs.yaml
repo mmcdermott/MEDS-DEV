@@ -40,7 +40,6 @@ predicates:
   diabetes:
     expr: or(diabetes_dx, hba1c_high, 2hr_oral_glucose, random_glucose_with_symptoms)
 
-
 trigger: kidney_labs
 
 windows:
