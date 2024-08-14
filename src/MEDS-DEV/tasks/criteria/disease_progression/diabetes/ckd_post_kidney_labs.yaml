@@ -1,0 +1,85 @@
+description: >-
+  This task predicts the onset of new CKD in diabetic patients within 5 years of any laboratory test they
+  obtain that includes a kidney panel. Patient events are only eligible if those patients have (a) a standing
+  diabetes diagnosis, (b) no prior CKD diagnosis, (c) at least one data point more than 5 years after the
+  event, and (d) no events within 90 days prior to the event in which kidney panels will have been measured.
+
+predicates:
+  # Plain predicates
+  # Diabetes diagnosis
+  diabetes_dx: ???
+
+  # Biomechanical Definition of Diabetes
+  hba1c_high:
+    code: ???
+    value_min: 6.5 # %
+
+  2hr_oral_glucose:
+    code: ???
+    value_min: 200 # mg/dL
+  random_glucose:
+    code: ???
+    value_min: 200 # mg/dL
+  polyuria: ???
+  polydipsia: ???
+  polyphagia: ???
+
+  # CKD diagnosis
+  ckd_dx: ???
+
+  # Kidney labs
+  kidney_labs: ???
+
+  # Derived predicates
+  any_classic_symptom:
+    expr: or(polyuria, polydipsia, polyphagia)
+  random_glucose_with_symptoms:
+    expr: and(random_glucose, any_classic_symptom)
+
+  # Final diabetes predicate
+  diabetes:
+    expr: or(diabetes_dx, hba1c_high, 2hr_oral_glucose, random_glucose_with_symptoms)
+
+trigger: kidney_labs
+
+windows:
+  new_trigger_only:
+    start: end - 90d
+    end: trigger
+    start_inclusive: True
+    end_inclusive: False
+    has:
+      kidney_labs: (None, 0)
+  no_ckd:
+    start: null
+    end: trigger
+    start_inclusive: True
+    end_inclusive: True
+    has:
+      ckd_dx: (None, 0)
+  has_diabetes:
+    start: null
+    end: trigger
+    start_inclusive: True
+    end_inclusive: True
+    has:
+      diabetes: (1, None)
+  input:
+    start: null
+    end: trigger
+    start_inclusive: True
+    end_inclusive: True
+    index_timestamp: end
+  target:
+    start: input.end
+    end: start + 5y
+    start_inclusive: False
+    end_inclusive: True
+    label: ckd_dx
+  censoring:
+    start: target.end
+    end: null
+    start_inclusive: False
+    end_inclusive: True
+    has:
+      _ANY_EVENT: (1, 0)

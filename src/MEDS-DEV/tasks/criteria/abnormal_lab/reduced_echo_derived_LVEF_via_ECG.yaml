@@ -1,0 +1,45 @@
+description: >-
+  This task predicts whether the patient will have an echo-derived LVEF < 50% within 9 months of an ECG. To be
+  included, patients must have a prior diagnosis of HF and have at least one measurement at or more than 9
+  months after the ECG.
+
+predicates:
+  # Plain predicates
+  echo_derived_reduced_lvef:
+    code: ???
+    value_min: null
+    value_max: 0.40
+
+  ECG: ???
+
+  HF: ???
+
+trigger: ECG
+
+windows:
+  has_HF:
+    start: null
+    end: trigger
+    start_inclusive: True
+    end_inclusive: True
+    has:
+      HF: (1, None)
+  input:
+    start: null
+    end: trigger
+    start_inclusive: True
+    end_inclusive: True
+    index_timestamp: end
+  target:
+    start: input.end
+    end: start + 270d
+    start_inclusive: False
+    end_inclusive: True
+    label: echo_derived_reduced_lvef
+  censoring:
+    start: target.end
+    end: null
+    start_inclusive: False
+    end_inclusive: True
+    has:
+      _ANY_EVENT: (1, 0)
