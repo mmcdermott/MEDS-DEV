@@ -20,12 +20,16 @@ description: >-
   different tasks.
 
 predicates:
-  icu_admission: ICU_ADMISSION
-  icu_discharge: ICU_DISCHARGE
-  # hospital_discharge: ???
-  # death: ???
+  icu_admission: 
+    code: 
+      regex: "^ICU_ADMISSION"
+  icu_discharge: 
+    code: 
+      regex: "^ICU_DISCHARGE"
+  death: 
+    code: DEATH
   discharge_or_death:
-    expr: icu_discharge #or(icu_discharge, death, hospital_discharge)
+    expr: or(icu_discharge, death)
     
 trigger: icu_admission
 
@@ -43,7 +47,8 @@ windows:
     end_inclusive: True
     has:
       icu_admission: (None, 0)
-      discharge_or_death: (0, None)
+      icu_discharge: (None, 0)
+      death: (None, 0)
   target:
     start: gap.end
     end: start -> discharge_or_death
