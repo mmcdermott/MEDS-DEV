@@ -1,22 +1,27 @@
-# The Platform for Inductive Experiments over Medical Data (PIE MD)
-This repository contains the dataset, task, model training recipes, and results for the PIE MD benchmarking
-effort for EHR machine learning. See [this google doc](https://docs.google.com/document/d/1s-AR0qfoPmwJW4G7cIxdV6Z_cSEDGUir9BhO92Vb3wo/edit?usp=sharing) for more details.
+# The MEDS Dynamic Extensible Validation (MEDS-DEV) Benchmark: Re-thinking Reproducibility and Validation in ML for Health
+
+This repository contains the dataset, task, model training recipes, and results for the MEDS-DEV benchmarking
+effort for EHR machine learning.
 
 Note that this repository is _not_ a place where functional code is stored. Rather, this repository stores
-configuration files, training recipes, results, etc. for the PIE MD benchmarking effort -- runnable code will
+configuration files, training recipes, results, etc. for the MEDS-DEV benchmarking effort -- runnable code will
 often come from other repositories, with suitable permalinks being present in the various configuration files
 or commit messages for associated contributions to this repository.
 
-## Contributing to PIE MD
+## Contributing to MEDS-DEV
 
 ### To Add a Model
+
 TODO
 
 ### To Add a Dataset
+
 TODO
 
 ### To Add a Task
+
 TODO
 
 ### To Add Results
+
 TODO
