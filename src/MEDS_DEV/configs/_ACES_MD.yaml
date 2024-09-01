@@ -1,6 +1,6 @@
 defaults:
   - _aces
-  - data: sharded
+  - override data: sharded
   - _self_
 
 dataset_name: ${oc.env:MEDS_DATASET_NAME}

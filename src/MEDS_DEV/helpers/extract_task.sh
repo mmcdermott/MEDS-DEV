@@ -9,8 +9,7 @@ shift 3
 MEDS_DEV_REPO_DIR=$(python -c "from importlib.resources import files; print(files(\"MEDS_DEV\"))")
 export MEDS_DEV_REPO_DIR
 
-DATA_DIR="$MEDS_ROOT_DIR"/"$MEDS_DATASET_NAME"/data
-SHARDS=$(expand_shards "$DATA_DIR")
+SHARDS=$(expand_shards "$MEDS_ROOT_DIR"/data)
 
-aces-cli --config-name="_ACES_MD" "hydra.searchpath=[pkg://MEDS_DEV.configs,pkg://aces.configs]" \
-  "data.shard=$SHARDS" -m "$@"
+aces-cli --config-path="$MEDS_DEV_REPO_DIR"/configs --config-name="_ACES_MD" \
+  "hydra.searchpath=[pkg://aces.configs]" "data.shard=$SHARDS" -m "$@"
