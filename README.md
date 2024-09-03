@@ -10,35 +10,90 @@ or commit messages for associated contributions to this repository.
 
 ## Example workflow
 
+### (Optional) Set up the MEDS project with environment
+
 ```bash
 # Create and enter a MEDS project directory 
-mkdir <my-meds-project-root>
-cd <my-meds-project-root>
+mkdir $MY_MEDS_PROJECT_ROOT
+cd $MY_MEDS_PROJECT_ROOT
 
-# Locate the MEDS data root directory <my-meds-dataset-path> and <dataset-name> 
+conda create -n $MY_MEDS_CONDA_ENV python=3.10
+conda activate $MY_MEDS_CONDA_ENV
+```
 
-# Create a new python environment
-conda create -n <my-meds-env> python=3.10
-conda activate <my-meds-env>
+Additionally install any model-related dependencies.
 
-# In <my-meds-project-root>, install MEDS-DEV files and dependencies
-# TODO: this will be probably be replaced with `pip install MEDS-DEV` in the future
+### Install MEDS-DEV
+
+Clone the MEDS-DEV GitHub repo and install it locally.
+This will additionally install some MEDS data processing dependencies:
+
+```bash
 git clone https://github.com/mmcdermott/MEDS-DEV.git
-pip install -e ./MEDS-DEV
-# TODO: consider the other dependencies that have not been deployed yet and are not in MEDS-DEV dependencies yet, e.g.:
-# git clone https://github.com/kamilest/meds-evaluation.git
-# pip install -e ./meds-evaluation
-# etc.
+cd ./MEDS-DEV
+pip install -e .
+```
 
-# Install any model-specific dependencies
+Install the MEDS evaluation package: 
+```bash
+git clone https://github.com/kamilest/meds-evaluation.git
+pip install -e ./meds-evaluation
+```
 
-# TODO: locate and process task predicates in ./MEDS-DEV/tasks/, defining the unknown codes using predicates in
-#   ./MEDS-DEV/datasets/<dataset-name>
+Additionally, make sure any model-related dependencies are installed.
 
-aces-cli data.path='<my-meds-dataset-path>', data.standard='meds', cohort_dir=TODO, cohort_name=TODO
+### Extract a task from the MEDS dataset
 
-# TODO Figure out how ACES processes the cohort and where is the output stored: <aces-output>
+This step prepares the MEDS dataset for a task by extracting a cohort using inclusion/exclusion criteria and 
+processing the data to create the label files. 
 
+### Find the task configuration file
+
+Task-related information is stored in Hydra configuration files (in `.yaml` format) under 
+`MEDS-DEV/src/MEDS_DEV/tasks/criteria`.
+
+Task names are defined in a way that corresponds to the path to their configuration,  
+starting from the `MEDS-DEV/src/MEDS_DEV/tasks/criteria` directory.
+For example, 
+`MEDS-DEV/src/MEDS_DEV/tasks/criteria/mortality/in_icu/first_24h.yaml` directory corresponds to a `$TASK_NAME` of 
+`mortality/in_icu/first_24h`.
+
+**To add a task**
+
+If your task is not supported, you will need to add a directory and define an appropriate configuration file in 
+a corresponding location.
+
+### Dataset configuration file
+
+Task configuration files are incomplete, because some concepts (predicates) have to be defined in a dataset-specific 
+way (e.g. `icu_admission` in `mortality/in_icu/first_24h`).
+
+These dataset-specific predicate definitions are found in 
+`MEDS-DEV/src/MEDS_DEV/datasets/$DATASET_NAME/predicates.yaml` Hydra configuration files.
+
+In addition to `$DATASET_NAME` (e.g. `MIMIC-IV`), you will also need to have your MEDS dataset directory ready (i.e. 
+`$MEDS_ROOT_DIR`).
+
+**To add a dataset configuration file**
+
+If your dataset is not supported, you will need to add a directory and define an appropriate configuration file in 
+a corresponding location.
+
+### Run the MEDS task extraction helper
+
+From your project directory (`$MY_MEDS_PROJECT_ROOT`) where `MEDS-DEV` is located, run
+
+```bash
+./MEDS-DEV/src/MEDS_DEV/helpers/extract_task.sh $MEDS_ROOT_DIR $DATASET_NAME $TASK_NAME
+```
+
+This will use information from task and dataset-specific predicate configs to extract cohorts and labels from
+`$MEDS_ROOT_DIR/data`, and place them in `$MEDS_ROOT_DIR/task_labels/$TASK_NAME/` subdirectories, retaining the same 
+sharded structure [??? TODO check] as the `$MEDS_ROOT_DIR/data` directory.
+
+### TODO: train and evaluate the model 
+
+```
 # TODO Train model on <aces-output>, place the outputs in the MEDS prediction format in 
 #   <my-meds-project-root>/predictions
 
