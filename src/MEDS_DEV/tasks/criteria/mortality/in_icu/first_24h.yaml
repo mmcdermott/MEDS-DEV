@@ -43,7 +43,7 @@ windows:
     end_inclusive: True
     has:
       icu_admission: (None, 0)
-      discharge_or_death: (0, None)
+      discharge_or_death: (None, 0)
   target:
     start: gap.end
     end: start -> discharge_or_death
