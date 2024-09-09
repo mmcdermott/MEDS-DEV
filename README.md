@@ -13,7 +13,7 @@ or commit messages for associated contributions to this repository.
 ### (Optional) Set up the MEDS project with environment
 
 ```bash
-# Create and enter a MEDS project directory 
+# Create and enter a MEDS project directory
 mkdir $MY_MEDS_PROJECT_ROOT
 cd $MY_MEDS_PROJECT_ROOT
 
@@ -34,7 +34,8 @@ cd ./MEDS-DEV
 pip install -e .
 ```
 
-Install the MEDS evaluation package: 
+Install the MEDS evaluation package:
+
 ```bash
 git clone https://github.com/kamilest/meds-evaluation.git
 pip install -e ./meds-evaluation
@@ -44,39 +45,39 @@ Additionally, make sure any model-related dependencies are installed.
 
 ### Extract a task from the MEDS dataset
 
-This step prepares the MEDS dataset for a task by extracting a cohort using inclusion/exclusion criteria and 
-processing the data to create the label files. 
+This step prepares the MEDS dataset for a task by extracting a cohort using inclusion/exclusion criteria and
+processing the data to create the label files.
 
 ### Find the task configuration file
 
-Task-related information is stored in Hydra configuration files (in `.yaml` format) under 
+Task-related information is stored in Hydra configuration files (in `.yaml` format) under
 `MEDS-DEV/src/MEDS_DEV/tasks/criteria`.
 
-Task names are defined in a way that corresponds to the path to their configuration,  
+Task names are defined in a way that corresponds to the path to their configuration,
 starting from the `MEDS-DEV/src/MEDS_DEV/tasks/criteria` directory.
-For example, 
-`MEDS-DEV/src/MEDS_DEV/tasks/criteria/mortality/in_icu/first_24h.yaml` directory corresponds to a `$TASK_NAME` of 
+For example,
+`MEDS-DEV/src/MEDS_DEV/tasks/criteria/mortality/in_icu/first_24h.yaml` directory corresponds to a `$TASK_NAME` of
 `mortality/in_icu/first_24h`.
 
 **To add a task**
 
-If your task is not supported, you will need to add a directory and define an appropriate configuration file in 
+If your task is not supported, you will need to add a directory and define an appropriate configuration file in
 a corresponding location.
 
 ### Dataset configuration file
 
-Task configuration files are incomplete, because some concepts (predicates) have to be defined in a dataset-specific 
+Task configuration files are incomplete, because some concepts (predicates) have to be defined in a dataset-specific
 way (e.g. `icu_admission` in `mortality/in_icu/first_24h`).
 
-These dataset-specific predicate definitions are found in 
+These dataset-specific predicate definitions are found in
 `MEDS-DEV/src/MEDS_DEV/datasets/$DATASET_NAME/predicates.yaml` Hydra configuration files.
 
-In addition to `$DATASET_NAME` (e.g. `MIMIC-IV`), you will also need to have your MEDS dataset directory ready (i.e. 
+In addition to `$DATASET_NAME` (e.g. `MIMIC-IV`), you will also need to have your MEDS dataset directory ready (i.e.
 `$MEDS_ROOT_DIR`).
 
 **To add a dataset configuration file**
 
-If your dataset is not supported, you will need to add a directory and define an appropriate configuration file in 
+If your dataset is not supported, you will need to add a directory and define an appropriate configuration file in
 a corresponding location.
 
 ### Run the MEDS task extraction helper
@@ -88,19 +89,21 @@ From your project directory (`$MY_MEDS_PROJECT_ROOT`) where `MEDS-DEV` is locate
 ```
 
 This will use information from task and dataset-specific predicate configs to extract cohorts and labels from
-`$MEDS_ROOT_DIR/data`, and place them in `$MEDS_ROOT_DIR/task_labels/$TASK_NAME/` subdirectories, retaining the same 
-sharded structure [??? TODO check] as the `$MEDS_ROOT_DIR/data` directory.
+`$MEDS_ROOT_DIR/data`, and place them in `$MEDS_ROOT_DIR/task_labels/$TASK_NAME/` subdirectories, retaining the same
+sharded structure as the `$MEDS_ROOT_DIR/data` directory.
 
-### TODO: train and evaluate the model 
+### Train the model
 
+This step depends on the API of your particular model.
+
+For example, the command below will call a helper script that will generate random outputs for binary classification,
+conforming to MEDS binary classification prediction schema:
+
+```bash
+./MEDS-DEV/src/MEDS_DEV/helpers/generate_predictions.sh $MEDS_ROOT_DIR $TASK_NAME
 ```
-# TODO Train model on <aces-output>, place the outputs in the MEDS prediction format in 
-#   <my-meds-project-root>/predictions
 
-# Evaluate model
-meds-evaluation-cli predictions_path='<my-meds-project-root>/predictions', \ 
-  output_dir='<my-meds-project-root>/evaluation'
-```
+### TODO evaluate the model
 
 ## Contributing to MEDS-DEV
 
