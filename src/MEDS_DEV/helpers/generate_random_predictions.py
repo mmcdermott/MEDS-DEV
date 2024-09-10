@@ -8,6 +8,7 @@ import polars as pl
 from omegaconf import DictConfig
 
 SUBJECT_ID = "subject_id"
+PREDICTION_TIME = "prediction_time"
 
 BOOLEAN_VALUE_COLUMN = "boolean_value"
 PREDICTED_BOOLEAN_VALUE_COLUMN = "predicted_boolean_value"
@@ -53,7 +54,7 @@ def _generate_random_predictions(dataframe: pl.DataFrame) -> pl.DataFrame:
     """Creates a new dataframe with the same subject_id and boolean_value columns as in the input dataframe,
     along with predictions."""
 
-    output = dataframe.select([SUBJECT_ID, BOOLEAN_VALUE_COLUMN])
+    output = dataframe.select([SUBJECT_ID, PREDICTION_TIME, BOOLEAN_VALUE_COLUMN])
     probabilities = np.random.uniform(0, 1, len(dataframe))
     output.insert_column(-1, pl.Series(PREDICTED_BOOLEAN_VALUE_COLUMN, probabilities.round()))
     output.insert_column(-1, pl.Series(PREDICTED_BOOLEAN_PROBABILITY_COLUMN, probabilities))
