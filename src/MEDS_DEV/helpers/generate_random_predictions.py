@@ -56,8 +56,10 @@ def _generate_random_predictions(dataframe: pl.DataFrame) -> pl.DataFrame:
 
     output = dataframe.select([SUBJECT_ID, PREDICTION_TIME, BOOLEAN_VALUE_COLUMN])
     probabilities = np.random.uniform(0, 1, len(dataframe))
-    output.insert_column(-1, pl.Series(PREDICTED_BOOLEAN_VALUE_COLUMN, probabilities.round()))
-    output.insert_column(-1, pl.Series(PREDICTED_BOOLEAN_PROBABILITY_COLUMN, probabilities))
+    # TODO: meds-evaluation currently cares about the order of columns and types, so the new columns have to
+    #  be inserted at the correct position and cast to the correct type
+    output.insert_column(3, pl.Series(PREDICTED_BOOLEAN_VALUE_COLUMN, probabilities.round()).cast(pl.Boolean))
+    output.insert_column(4, pl.Series(PREDICTED_BOOLEAN_PROBABILITY_COLUMN, probabilities))
 
     return output
 
