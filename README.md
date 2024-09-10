@@ -103,7 +103,15 @@ conforming to MEDS binary classification prediction schema:
 ./MEDS-DEV/src/MEDS_DEV/helpers/generate_predictions.sh $MEDS_ROOT_DIR $TASK_NAME
 ```
 
-### TODO evaluate the model
+### Evaluate the model
+
+You can use the `meds-evaluation` package by running `meds-evaluation-cli` and providing the path to predictions
+dataframe as well as the output directory. For example,
+
+```bash
+meds-evaluation-cli predictions_path="./meds_dataset/task_predictions/mortality/in_icu/first_24h/train/0.parquet"
+\ output_dir="./meds_dataset/task_evaluation/mortality/in_icu/first_24h/train/"
+```
 
 ## Contributing to MEDS-DEV
 
