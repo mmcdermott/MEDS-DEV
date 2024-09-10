@@ -113,6 +113,10 @@ meds-evaluation-cli predictions_path="./meds_dataset/task_predictions/mortality/
 \ output_dir="./meds_dataset/task_evaluation/mortality/in_icu/first_24h/train/"
 ```
 
+This will create a JSON file with the results in the directory provided by the `output_dir` argument.
+
+Note this package currently supports binary classification only.
+
 ## Contributing to MEDS-DEV
 
 ### To Add a Model
