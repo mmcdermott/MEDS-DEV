@@ -72,7 +72,7 @@ windows:
     index_timestamp: end
   target:
     start: input.end
-    end: start + 5y
+    end: start + 1825D # 5 years
     start_inclusive: False
     end_inclusive: True
     label: ckd_dx
