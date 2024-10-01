@@ -22,14 +22,14 @@ windows:
     index_timestamp: end
   gap:
     start: trigger
-    end: trigger + 1y
+    end: trigger + 365D
     start_inclusive: True
     end_inclusive: True
     has:
       MI: (None, 0)
   target:
-    start: trigger + 1y
-    end: trigger + 5y
+    start: trigger + 365D
+    end: trigger + 1825D # 5 years
     start_inclusive: False
     end_inclusive: True
     label: MI
