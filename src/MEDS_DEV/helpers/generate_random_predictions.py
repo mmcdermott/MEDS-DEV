@@ -50,12 +50,38 @@ def generate_random_predictions(cfg: DictConfig) -> None:
             predictions.write_parquet(predictions_path / split.name)
 
 
-def _generate_random_predictions(dataframe: pl.DataFrame) -> pl.DataFrame:
-    """Creates a new dataframe with the same subject_id and boolean_value columns as in the input dataframe,
-    along with predictions."""
+def _generate_random_predictions(dataframe: pl.DataFrame, seed: int = 1) -> pl.DataFrame:
+    """Augments the input dataframe with random predictions.
+
+    Args:
+        dataframe: Input dataframe with at least the columns: [subject_id, prediction_time, boolean_value]
+        seed: Seed for the random number generator.
+
+    Returns:
+        An augmented dataframe with the boolean value and probability columns.
+
+    Example:
+        >>> df = pl.DataFrame({
+        ...     "subject_id": [1, 2, 3],
+        ...     "prediction_time": [0, 1, 2],
+        ...     "boolean_value": [True, False, True]
+        ... })
+        >>> _generate_random_predictions(df).drop(["prediction_time", "boolean_value"])
+        shape: (3, 3)
+        ┌────────────┬─────────────────────────┬───────────────────────────────┐
+        │ subject_id ┆ predicted_boolean_value ┆ predicted_boolean_probability │
+        │ ---        ┆ ---                     ┆ ---                           │
+        │ i64        ┆ bool                    ┆ f64                           │
+        ╞════════════╪═════════════════════════╪═══════════════════════════════╡
+        │ 1          ┆ true                    ┆ 0.511822                      │
+        │ 2          ┆ true                    ┆ 0.950464                      │
+        │ 3          ┆ false                   ┆ 0.14416                       │
+        └────────────┴─────────────────────────┴───────────────────────────────┘
+    """
 
     output = dataframe.select([SUBJECT_ID, PREDICTION_TIME, BOOLEAN_VALUE_COLUMN])
-    probabilities = np.random.uniform(0, 1, len(dataframe))
+    rng = np.random.default_rng(seed)
+    probabilities = rng.uniform(0, 1, len(dataframe))
     # TODO: meds-evaluation currently cares about the order of columns and types, so the new columns have to
     #  be inserted at the correct position and cast to the correct type
     output.insert_column(3, pl.Series(PREDICTED_BOOLEAN_VALUE_COLUMN, probabilities.round()).cast(pl.Boolean))
