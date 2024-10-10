@@ -22,7 +22,7 @@ jobs:
 
       - name: Install packages
         run: |
-          pip install -e .[dev]
+          pip install .[dev]
 
       - name: Run pre-commits
         uses: pre-commit/action@v3.0.1
