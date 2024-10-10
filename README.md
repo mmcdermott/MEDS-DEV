@@ -119,8 +119,8 @@ dataframe as well as the output directory. For example,
 
 ```bash
 meds-evaluation-cli  \
-      predictions_path="./<$MEDS_ROOT_DIR>/task_predictions/$TASK_NAME/<train|tuning|held_out>/*.parquet" \
-      output_dir="./<$MEDS_ROOT_DIR>/task_evaluation/$TASK_NAME/<train|tuning|held_out>/..."
+       predictions_path="./<$MEDS_ROOT_DIR>/task_predictions/$TASK_NAME/<train|tuning|held_out>/*.parquet" \
+       output_dir="./<$MEDS_ROOT_DIR>/task_evaluation/$TASK_NAME/<train|tuning|held_out>/..."
 ```
 
 This will create a JSON file with the results in the directory provided by the `output_dir` argument.
