@@ -1,6 +1,6 @@
 # [New model] \*\*Add your model name here\*\* 
 
-> [!DISCLAIMER]
+> [!Warning]
 > MEDS-DEV currently only supports binary classification tasks and therefore only accepts binary 
 > classification models for now.
 
