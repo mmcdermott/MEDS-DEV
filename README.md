@@ -118,7 +118,7 @@ predictions
 dataframe as well as the output directory. For example,
 
 ```bash
-meds-evaluation-cli  \
+meds-evaluation-cli \
        predictions_path="./<$MEDS_ROOT_DIR>/task_predictions/$TASK_NAME/<train|tuning|held_out>/*.parquet" \
        output_dir="./<$MEDS_ROOT_DIR>/task_evaluation/$TASK_NAME/<train|tuning|held_out>/..."
 ```
