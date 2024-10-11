@@ -138,8 +138,14 @@ Prediction = TypedDict(
 )
 ```
 
+where `boolean_value` represents the ground truth value, `predicted_boolean_value` is a binary prediction
+(which for most methods depends on the decision threshold), and `predicted_boolean_probability` could be
+interpreted as a score in \[0, 1\] or as a probabilistic uncertainty level for the prediction.
+
 TODO: make the predicted values/probabilities optional and evaluate metrics based on availability of these
 values
+
+TODO: update this in MEDS-evaluation README.
 
 ### Evaluate the model
 
