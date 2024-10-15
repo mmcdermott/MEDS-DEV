@@ -1,0 +1,51 @@
+description: >-
+  This task predicts whether the patient will have abnormal _hemoglobin_ values within a 24-hour window for a given patient. 
+  To be included, patients must have at least one measurement for hemoglobin within a given 24-hour period in the labs table
+  at UCLA.
+
+predicates:
+  labs:
+    code: { regex: "^LABS//.*" }
+
+  # Plain predicates for hemoglobin
+  hemoglobin_1:
+    code: LAB//220228//g/dl
+  hemoglobin_2:
+    code: LAB//50811//g/dL
+
+  abnormal_hemoglobin_1:
+    code: LAB//220228//g/dl
+    value_min: null
+    value_max: 13
+    value_max_inclusive: False
+  abnormal_hemoglobin_2:
+    code: LAB//50811//g/dL
+    value_min: null
+    value_max: 13
+    value_max_inclusive: False
+
+  # Combining the hemoglobin predicates
+  hemoglobin:
+    expr: or(hemoglobin_1, hemoglobin_2)
+  abnormal_hemoglobin:
+    expr: or(abnormal_hemoglobin_1, abnormal_hemoglobin_2)
+
+trigger: lab_start
+
+windows:
+  input:
+    start: trigger
+    end: trigger + 24h
+    start_inclusive: True
+    end_inclusive: True
+    index_timestamp: end
+    has:
+      hemoglobin: (1, None)
+  target:
+    start: input.end
+    end: start + 24h
+    start_inclusive: False
+    end_inclusive: True
+    has:
+      hemoglobin: (1, None)
+    label: abnormal_hemoglobin
