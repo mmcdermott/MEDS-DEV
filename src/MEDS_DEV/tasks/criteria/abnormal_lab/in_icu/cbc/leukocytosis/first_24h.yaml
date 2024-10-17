@@ -1,5 +1,5 @@
 description: >-
-  This task predicts whether the patient will have abnormal _WBC_ values within the next 24
+  This task predicts whether the patient will have high _WBC_ values (leukocytosis) within the next 24
   hours, given the first 24 hours of their admission to the ICU. To be included, patients must have
   at least one measurement for _WBC_ within the next 24 hours after their admission to ICU,
   and their length of stay in ICU should be at least 24 hours.
@@ -15,10 +15,10 @@ predicates:
   # Plain predicates
   wbc:
     code: ???
-  abnormal_wbc:
+  abnormally_high_wbc:
     code: ???
-    value_min: null
-    value_max: ???
+    value_min: ???
+    value_max: null
 
 trigger: icu_admission
 
@@ -29,9 +29,14 @@ windows:
     start_inclusive: True
     end_inclusive: True
     index_timestamp: end
+  # do not allow icu discharge to happen within the first 24h of this icu admission
+  no_discharge:
+    start: trigger
+    end: start + 24h
+    start_inclusive: False
+    end_inclusive: True
     has:
-      # do not allow icu discharge to happen in the input window
-      icu_admission: (None, 1)
+      icu_admission: (None, 0)
       discharge_or_death: (None, 0)
   target:
     start: input.end
@@ -40,4 +45,4 @@ windows:
     end_inclusive: True
     has:
       wbc: (1, None)
-    label: abnormal_wbc
+    label: abnormally_high_wbc

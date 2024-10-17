@@ -15,7 +15,7 @@ predicates:
   # Plain predicates
   sodium:
     code: ???
-  abnormal_sodium:
+  abnormally_low_sodium:
     code: ???
     value_min: null
     value_max: ???
@@ -29,9 +29,14 @@ windows:
     start_inclusive: True
     end_inclusive: True
     index_timestamp: end
+  # do not allow icu discharge to happen within the first 24h of this icu admission
+  no_discharge:
+    start: trigger
+    end: start + 24h
+    start_inclusive: False
+    end_inclusive: True
     has:
-      # do not allow icu discharge to happen in the input window
-      icu_admission: (None, 1)
+      icu_admission: (None, 0)
       discharge_or_death: (None, 0)
   target:
     start: input.end
@@ -40,4 +45,4 @@ windows:
     end_inclusive: True
     has:
       sodium: (1, None)
-    label: abnormal_sodium
+    label: abnormally_low_sodium

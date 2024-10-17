@@ -1,8 +1,8 @@
 description: >-
-  This task predicts whether the patient will have low _MAP_ values (hypotension) within the next 24
-  hours, given the first 24 hours of their admission to the ICU. To be included, patients must have
-  at least one measurement for _MAP_ within the next 24 hours after their admission to ICU,
-  and their length of stay in ICU should be at least 24 hours.
+  This task predicts whether the patient will have low _bicarbonate_ values (metabolic acidosis)
+  within the next 24 hours, given the first 24 hours of their admission to the ICU. To be included,
+  patients must have at least one measurement for _bicarbonate_ within the next 24 hours after
+  their admission to ICU, and their length of stay in ICU should be at least 24 hours.
 
 predicates:
   icu_admission: ???
@@ -13,9 +13,9 @@ predicates:
     expr: or(icu_discharge, death, hospital_discharge)
 
   # Plain predicates
-  map:
+  bicarbonate:
     code: ???
-  abnormally_low_map:
+  abnormally_low_bicarbonate:
     code: ???
     value_min: null
     value_max: ???
@@ -44,5 +44,5 @@ windows:
     start_inclusive: False
     end_inclusive: True
     has:
-      map: (1, None)
-    label: abnormally_low_map
+      bicarbonate: (1, None)
+    label: abnormally_low_bicarbonate
