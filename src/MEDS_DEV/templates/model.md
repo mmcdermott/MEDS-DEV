@@ -23,7 +23,17 @@ Provide information about the computational requirements of your model, includin
 
 ## Dependencies
 
-Add any dependencies that your model may have.
+List all dependencies required to run your model. For each dependency, provide:
+
+- Name of the dependency
+- Version number (if applicable)
+- Any specific installation instructions (if needed)
+
+Example:
+- Python 3.8+
+- TensorFlow 2.4.0
+- NumPy 1.19.5
+- Pandas 1.2.0
 
 ## Running the model
 
