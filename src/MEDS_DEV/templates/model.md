@@ -6,8 +6,20 @@
 
 ## Description
 
-Add a brief description of your model, including the details of its design and its intended purpose
-(what sorts of tasks is it designed for).
+Provide a brief description of your model, including:
+
+- Model architecture and key components
+- Intended purpose and target tasks
+- Any notable features or innovations
+- Limitations or constraints
+
+## Computational Requirements
+
+Provide information about the computational requirements of your model, including:
+
+- Hardware specifications used during testing (e.g., GPU type, memory)
+- Computational resources required for training and inference
+- Performance characteristics (e.g., training speed)
 
 ## Dependencies
 
