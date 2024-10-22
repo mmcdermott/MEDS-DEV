@@ -29,10 +29,10 @@ windows:
     start_inclusive: True
     end_inclusive: True
     index_timestamp: end
-  # do not allow icu discharge to happen within the first 24h of this icu admission
+  # do not allow icu discharge to happen within the input + target window.
   no_discharge:
     start: trigger
-    end: start + 24h
+    end: start + 48h
     start_inclusive: False
     end_inclusive: True
     has:
