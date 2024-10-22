@@ -30,6 +30,7 @@ List all dependencies required to run your model. For each dependency, provide:
 - Any specific installation instructions (if needed)
 
 Example:
+
 - Python 3.8+
 - TensorFlow 2.4.0
 - NumPy 1.19.5
@@ -37,17 +38,30 @@ Example:
 
 ## Running the model
 
-Please provide a step-by-step instructions for running your model, including installation,
-details on the commands or a remote API, and any parameters.
+Please provide detailed instructions for running your model, including:
+
+- Installation steps
+- Command-line instructions or API usage
+- Description of all parameters and their default values
+- Troubleshooting tips (if applicable)
 
 ## Resources and links
 
-Add a link to the repository to your model's implementation and any other useful resources
-(e.g. documentation).
+Please provide the following:
+
+- Link to the model's implementation repository
+- Link to the model's documentation (if separate from the repository)
+- Any relevant research papers or articles
+- Links to pre-trained model weights (if applicable)
+- Any additional resources that would be helpful for users
 
 ## Checklist
 
-Please make sure your model conforms to the MEDS-DEV API, including
+Please ensure your model conforms to the MEDS-DEV API by checking the following:
 
 - [ ] It is compatible with the most recent version of the MEDS data format.
-- [ ] Its outputs are compatible with the most recent version of the MEDS-DEV evaluation schema.
+- [ ] Its outputs are compatible with the most recent version of the MEDS-evaluation schema.
+- [ ] All required dependencies are clearly listed and versioned.
+- [ ] The model can be run using the provided instructions without errors.
+- [ ] The model documentation is complete and follows this template.
+- [ ] (If applicable) The model has been tested on a sample dataset provided by MEDS-DEV.
