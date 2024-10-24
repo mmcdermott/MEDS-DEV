@@ -1,6 +1,8 @@
 # AUMCdb
 The first freely accessible intensive care database from within the European Union containing de-identified health data related to tens of thousands of European intensive care unit admissions, including demographics, vital signs, laboratory tests and medications.
 
+## Supported Tasks
+- `tasks/mortality/in_icu/first_24h.yaml`
 
 ## URLs
 
