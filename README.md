@@ -1,5 +1,8 @@
 # The MEDS Dynamic Extensible Validation (MEDS-DEV) Benchmark: Re-thinking Reproducibility and Validation in ML for Health
 
+> \[!WARNING\]
+> MEDS-DEV currently only supports binary classification tasks.
+
 This repository contains the dataset, task, model training recipes, and results for the MEDS-DEV benchmarking
 effort for EHR machine learning.
 
@@ -130,8 +133,6 @@ Note this package currently supports binary classification only.
 ## Contributing to MEDS-DEV
 
 ### To Add a Model
-
-TODO
 
 ### To Add a Dataset
 
