@@ -7,7 +7,8 @@ To contribute a new dataset:
 1. Fork this repository
 2. Add your dataset predicates file in its respective folder (see `MIMIC-IV/predicates.yaml` for an example of predicate structure)
 3. Test locally to ensure your dataset works correctly
-4. Create a pull request with your changes
+4. Specify the dataset information in a README.md file in the dataset's folder and define the supported tasks.
+5. Create a pull request with your changes
 
 ## Notes
 
