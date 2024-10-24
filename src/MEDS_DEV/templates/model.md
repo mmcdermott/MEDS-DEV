@@ -36,12 +36,24 @@ Example:
 - NumPy 1.19.5
 - Pandas 1.2.0
 
+## Additional Requirements
+
+For each additional requirement, please provide:
+
+- **What is the requirement**: Describe the dependency (e.g., SNOMED codes, knowledge graphs, LOINC codes,
+    local SQL databases).
+- **What is it used for**: Explain the purpose of the requirement within your model.
+- **How do you set it up (installation and filepath information)**: Provide detailed setup instructions, including installation steps and file path configurations.
+- **How do you use it**: Describe how to interact with the requirement after setup.
+
 ## Running the model
 
 Please provide detailed instructions for running your model, including:
 
 - Installation steps
 - Command-line instructions or API usage
+- Description of all CLI arguments and their default values
+- Expected output format (where the best checkpoint is stored, where predictions are stored, etc.)
 - Description of all parameters and their default values
 - Troubleshooting tips (if applicable)
 
