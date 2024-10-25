@@ -17,8 +17,6 @@ Taken from [official website](https://amsterdammedicaldatascience.nl/amsterdamum
 [MEDS_transforms](https://github.com/mmcdermott/MEDS_transforms) now includes the AUMCdb example. Please refer to the [guide](https://github.com/mmcdermott/MEDS_transforms/tree/main/AUMC_Example).
 
 ## Sources
-
-Summarize the sources of the dataset. If the dataset is a combination of multiple sources, list them here.
 1. [AUMCdb dataset](https://amsterdammedicaldatascience.nl/amsterdamumcdb/)
 2. [AUMCdb Research Paper](https://journals.lww.com/ccmjournal/fulltext/2021/06000/sharing_icu_patient_data_responsibly_under_the.16.aspx)
 3. [AUMCdb Data Use Agreement](https://amsterdammedicaldatascience.nl/content/uploads/sites/2/2022/12/arfeula_v1.6.pdf)
