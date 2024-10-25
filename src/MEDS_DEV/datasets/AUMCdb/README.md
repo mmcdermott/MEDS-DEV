@@ -14,7 +14,7 @@ Taken from [official website](https://amsterdammedicaldatascience.nl/amsterdamum
 - `tasks/mortality/in_icu/first_24h.yaml`
 
 ## MEDS-transformation
-(MEDS_transforms)[https://github.com/mmcdermott/MEDS_transforms] now includes the AUMCdb example. Please refer to the (guide)[https://github.com/mmcdermott/MEDS_transforms/tree/main/AUMC_Example].
+[MEDS_transforms](https://github.com/mmcdermott/MEDS_transforms) now includes the AUMCdb example. Please refer to the [guide](https://github.com/mmcdermott/MEDS_transforms/tree/main/AUMC_Example).
 
 ## Sources
 
