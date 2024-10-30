@@ -6,8 +6,11 @@ This is a template for supporting a new dataset in MEDS-DEV. Please edit the inf
 
 Provide a brief description of your dataset, including:
 
-- Aggregate statistics
-- Cohort description (inclusion criteria and censoring)
+- Aggregate statistics (e.g., number of patients, time range, demographic distributions)
+- Cohort description:
+    - Inclusion/exclusion criteria
+    - Censoring rules
+    - Key demographic characteristics
 
 ## Supported tasks
 
@@ -23,10 +26,15 @@ If there are any currently undefined tasks that your dataset would be particular
 
 Please provide the following:
 
-- (Permanent) link to the dataset's webpage and/or documentation
-- If the dataset is a combination of multiple sources, list of sources with links
-- Any relevant research papers or articles
-- Any additional resources that would be helpful for users
+- Link to the dataset's webpage and/or documentation (e.g., institutional repository, GitHub)
+- Relevant research papers or articles, e.g.:
+    - Original dataset publication
+    - Key studies using this dataset
+    - Methodology papers
+- Additional resources, e.g.:
+    - Data dictionaries
+    - Code repositories
+    - Usage examples
 
 ## Access requirements
 
@@ -49,3 +57,7 @@ Please ensure your model conforms to the MEDS-DEV API by checking the following:
 
 - [ ] I filled out the above template and committed it as a `README.md` file in a directory named after the dataset in `src/MEDS_DEV/datasets`.
 - [ ] I included the predicates yaml file, defining all predictates required for the supported tasks.
+- [ ] I verified all resource links are accessible
+- [ ] I included example usage code (if applicable)
+- [ ] I documented any known limitations or biases in the dataset
+- [ ] I specified the dataset version or date of last update
