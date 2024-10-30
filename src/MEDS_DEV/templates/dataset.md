@@ -6,8 +6,11 @@ This is a template for creating a new dataset in MEDS-DEV. The dataset should be
 
 Provide a brief description of your dataset, including:
 
-- Aggregate statistics
-- Cohort description (inclusion criteria and censoring)
+- Aggregate statistics (e.g., number of patients, time range, demographic distributions)
+- Cohort description:
+  - Inclusion/exclusion criteria
+  - Censoring rules
+  - Key demographic characteristics
 
 ## Supported tasks
 
@@ -17,9 +20,15 @@ Describe the existing tasks already present in MEDS-DEV that are covered. If the
 
 Please provide the following:
 
-- Link to the dataset's webpage and/or documentation
-- Any relevant research papers or articles
-- Any additional resources that would be helpful for users
+Link to the dataset's webpage and/or documentation (e.g., institutional repository, GitHub)
+Relevant research papers or articles:
+  - Original dataset publication
+  - Key studies using this dataset
+  - Methodology papers
+Additional resources:
+  - Data dictionaries
+  - Code repositories
+  - Usage examples
 
 ## Access requirements
 
