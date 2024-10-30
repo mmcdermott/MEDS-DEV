@@ -22,10 +22,9 @@ description: >-
 predicates:
   icu_admission: ???
   icu_discharge: ???
-  hospital_discharge: ???
   death: ???
   discharge_or_death:
-    expr: or(icu_discharge, death, hospital_discharge)
+    expr: or(icu_discharge, death)
 
 trigger: icu_admission
 
