@@ -1,5 +1,8 @@
 # The MEDS Dynamic Extensible Validation (MEDS-DEV) Benchmark: Re-thinking Reproducibility and Validation in ML for Health
 
+> \[!WARNING\]
+> MEDS-DEV currently only supports binary classification tasks.
+
 This repository contains the dataset, task, model training recipes, and results for the MEDS-DEV benchmarking
 effort for EHR machine learning.
 
@@ -111,11 +114,46 @@ conforming to MEDS binary classification prediction schema:
 ./MEDS-DEV/src/MEDS_DEV/helpers/generate_predictions.sh $MEDS_ROOT_DIR $TASK_NAME
 ```
 
+In order to work with the evaluation package (see the next section),
+the model's outputs must conform to the _prediction schema_:
+
+```python
+prediction = pa.schema(
+    [
+        ("subject_id", pa.int64()),
+        ("prediction_time", pa.timestamp("us")),
+        ("boolean_value", pa.bool_()),
+        ("predicted_boolean_value", pa.bool_()),
+        ("predicted_boolean_probability", pa.float64()),
+    ]
+)
+
+Prediction = TypedDict(
+    "Prediction",
+    {
+        "subject_id": int,
+        "prediction_time": datetime.datetime,
+        "boolean_value": bool,
+        "predicted_boolean_value": bool,
+        "predicted_boolean_probability": bool,
+    },
+    total=False,
+)
+```
+
+where `boolean_value` represents the ground truth value, `predicted_boolean_value` is a binary prediction
+(which for most methods depends on the decision threshold), and `predicted_boolean_probability` is an
+uncertainty level in the range \[0, 1\].
+
+TODO: make the predicted values/probabilities optional and evaluate metrics based on availability of these
+values
+
+TODO: update this in MEDS-evaluation README.
+
 ### Evaluate the model
 
 You can use the `meds-evaluation` package by running `meds-evaluation-cli` and providing the path to
-predictions
-dataframe as well as the output directory. For example,
+predictions dataframe as well as the output directory. For example,
 
 ```bash
 meds-evaluation-cli \
@@ -130,8 +168,6 @@ Note this package currently supports binary classification only.
 ## Contributing to MEDS-DEV
 
 ### To Add a Model
-
-TODO
 
 ### To Add a Dataset
 
