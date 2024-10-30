@@ -46,6 +46,7 @@ Describe any access requirements for the dataset (e.g, human species research). 
 - **License (for files)**: Specify the license under which the dataset files are distributed.
 - **Data Use Agreement**: Specify any data use agreement that must be signed to access the dataset.
 - **Required training**: Specify any training or certification required to access the dataset.
+- **Point of Contact**: IF data is proprietary, include a point of contact to send model code and weights to for running the evaluation.
 
 ## MEDS compatibility
 
