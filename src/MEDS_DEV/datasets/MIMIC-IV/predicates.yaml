@@ -87,20 +87,20 @@ predicates:
     code: LAB//220228//g/dl
   hemoglobin_2:
     code: LAB//50811//g/dL
-  abnormal_hemoglobin_1:
+  abnormally_low_hemoglobin_1:
     code: LAB//220228//g/dl
     value_min: null
     value_max: 13 # g/dL
     value_max_inclusive: False
-  abnormal_hemoglobin_2:
+  abnormally_low_hemoglobin_2:
     code: LAB//50811//g/dL
     value_min: null
     value_max: 13 # g/dL
     value_max_inclusive: False
   hemoglobin:
     expr: or(hemoglobin_1, hemoglobin_2)
-  abnormal_hemoglobin:
-    expr: or(abnormal_hemoglobin_1, abnormal_hemoglobin_2)
+  abnormally_low_hemoglobin:
+    expr: or(abnormally_low_hemoglobin_1, abnormally_low_hemoglobin_2)
 
   wbc_1:
     code: LAB//220546//K/uL
