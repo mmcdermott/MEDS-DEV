@@ -6,11 +6,13 @@ This is a template for supporting a new dataset in MEDS-DEV. Please edit the inf
 
 Provide a brief description of your dataset, including:
 
-- Aggregate statistics (e.g., number of patients, time range, demographic distributions)
+- Aggregate statistics (e.g., number of patients, time range, age distributions, demographic distributions)
 - Cohort description:
     - Inclusion/exclusion criteria
     - Censoring rules
     - Key demographic characteristics
+    - Date Range of the dataset (e.g. Patients at Hospital A from 2013-2023)
+    - Coding Standards if known (e.g. OMOP, etc.)
 
 ## Supported tasks
 
