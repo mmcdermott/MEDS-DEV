@@ -1,25 +1,33 @@
-Users are expected to submit one pull request for each (meds_dev_version $\\times$ model $\\times$ dataset $\\times$ task) combination.
+# \[New result\] {task}, {dataset}, {model}
 
-In this pull request one file should be added with the following structure:
+*Replace the {task}, {dataset}, and {model} above with the actual names as appropriate*
+
+Users are expected to submit one pull request for each (task × dataset × model) combination.
+
+In this pull request, one file should be added with the following structure:
 
 ```yaml
-model: ???
-dataset: ???
 meds_dev_version: ???
 task_name: ???
+dataset: ???
+model: ???
 metrics:
   auc: ???
-  ... # Any other task-specific metrics
+  # TODO: this should follow the structure of meds-evaluation output.
 ```
 
-The directory of this file should be: `results/${meds_dev_version}/${task}/${dataset}/${model}.yaml`
+This file should be located in `src/MEDS_DEV/results/${meds_dev_version}/${task}/${dataset}/${model}.yaml`.
+
+TODO: the `metrics` field (and most of the submitted YAML configuration) should ideally be directly based on the output of the [`meds-evaluation`](https://github.com/kamilest/meds-evaluation) package—it should be possible to submit the output file directly with minimal to no manual modification.
 
 > \[!Warning\]
-> We should add a github action that runs a script that confirms the validity of the results yaml:
+> TODO: In the future updates, a GitHub Action will validate the results YAML using the following criteria:
 >
-> 1. Check existence of (meds_dev_version $\\times$ model $\\times$ dataset $\\times$ task) in MES-DEV
-> 2. Are they compatible? I.e. does the dataset support the task?
-> 3. Are all task metrics included?
-> 4. Does the yaml include all expected fields.
+> 1. The (task × dataset × model) is new to MEDS-DEV.
+> 2. The (task × dataset × model) combination is sound (e.g. the dataset supports the task).
+> 3. All supported task-specific metrics are included.
+> 4. The submitted YAML configuration contains all of the expected fields.
 
-To retract a result the user is expected to submit a pull request that removes it and explain why.
+## Retracted results
+
+To retract a result, the user is expected to submit a pull request that removes the result, with the explanation why.
