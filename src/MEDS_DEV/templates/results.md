@@ -7,10 +7,10 @@ Users are expected to submit one pull request for each (task × dataset × model
 In this pull request, one file should be added with the following structure:
 
 ```yaml
-meds_dev_version: ???
-task_name: ???
-dataset: ???
-model: ???
+meds_dev_version: ??? # e.g., v1.0.0
+task_name: ??? # follows the MEDS-DEV task directory structure, e.g. "criteria/mortality/in_icu/first_24h"
+dataset: ??? # follows the MEDS-DEV dataset directory name, e.g. "MIMIC-IV"
+model: ??? # follows the MEDS-DEV model directory name
 metrics:
   auc: ???
   # TODO: this should follow the structure of meds-evaluation output.
