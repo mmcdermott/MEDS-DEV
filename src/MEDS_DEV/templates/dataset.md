@@ -11,8 +11,8 @@ Provide a brief description of your dataset, including:
     - Inclusion/exclusion criteria
     - Censoring rules
     - Key demographic characteristics
-    - Date Range of the dataset (e.g. Patients at Hospital A from 2013-2023)
-    - Coding Standards if known (e.g. OMOP, etc.)
+- Date range of the dataset (e.g. patients at hospital A from 2013-2023)
+- Coding standards, if known (e.g. OMOP)
 
 ## Supported tasks
 
@@ -40,13 +40,15 @@ Please provide the following:
 
 ## Access requirements
 
-Describe any access requirements for the dataset (e.g, human species research). If the dataset is publicly available, state that here. If the dataset is not publicly available, describe the process for obtaining access. We recommend the following topics be covered:
+Describe any access requirements for the dataset (e.g, human species research). If the dataset is publicly available, state that here. If the dataset is not publicly available, describe the process for obtaining access and using the dataset (including any APIs and points of contact to send any models to for evaluation).
 
-- **Access Policy**: Describe the access policy for the dataset, including any restrictions or permissions required.
+We recommend the following topics be covered:
+
+- **Access policy**: Describe the access policy for the dataset, including any restrictions or permissions required.
 - **License (for files)**: Specify the license under which the dataset files are distributed.
-- **Data Use Agreement**: Specify any data use agreement that must be signed to access the dataset.
+- **Data use agreement**: Specify any data use agreement that must be signed to access the dataset.
 - **Required training**: Specify any training or certification required to access the dataset.
-- **Point of Contact**: IF data is proprietary, include a point of contact to send model code and weights to for running the evaluation.
+- **Point of contact**: Include a point of contact to send any queries about the dataset to (especially for private datasets).
 
 ## MEDS compatibility
 
@@ -59,8 +61,8 @@ Provide any other instructions for how to prepare the dataset for use with MEDS 
 Please ensure your model conforms to the MEDS-DEV API by checking the following:
 
 - [ ] I filled out the above template and committed it as a `README.md` file in a directory named after the dataset in `src/MEDS_DEV/datasets`.
-- [ ] I included the predicates yaml file, defining all predictates required for the supported tasks.
-- [ ] I verified all resource links are accessible
-- [ ] I included example usage code (if applicable)
-- [ ] I documented any known limitations or biases in the dataset
-- [ ] I specified the dataset version or date of last update
+- [ ] I included the `predicates.yaml` file, defining all predictates required for the supported tasks.
+- [ ] I verified all resource links are permanent and accessible to the public.
+- [ ] I included example usage code and API instructions (if applicable).
+- [ ] I documented any known limitations or biases in the dataset.
+- [ ] I specified the dataset version or date of the last update.
