@@ -55,3 +55,7 @@ Please ensure your model conforms to the MEDS-DEV API by checking the following:
 
 - [ ] I filled out the above template.
 - [ ] I included the predicates yaml file, defining all predictates required for the supported tasks.
+- [ ] I verified all resource links are accessible
+- [ ] I included example usage code (if applicable)
+- [ ] I documented any known limitations or biases in the dataset
+- [ ] I specified the dataset version or date of last update
