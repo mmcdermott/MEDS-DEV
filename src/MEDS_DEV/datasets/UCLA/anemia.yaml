@@ -1,5 +1,5 @@
 description: >-
-  This task predicts whether the patient will have abnormal _hemoglobin_ values within a 24-hour window for a given patient. 
+  This task predicts whether the patient will have abnormal _hemoglobin_ values within a 24-hour window for a given patient.
   To be included, patients must have at least one measurement for hemoglobin within a given 24-hour period in the labs table
   at UCLA.
 
