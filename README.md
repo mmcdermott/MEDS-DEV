@@ -1,4 +1,4 @@
-# The MEDS Distributed Extensible Validation (MEDS-DEV) Benchmark: Establishing Reproducibility and Comparability in ML for Health
+# The MEDS Decentralized Extensible Validation (MEDS-DEV) Benchmark: Establishing Reproducibility and Comparability in ML for Health
 
 This repository contains the dataset, task, model training recipes, and results for the MEDS-DEV benchmarking
 effort for EHR machine learning.
