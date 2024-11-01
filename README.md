@@ -165,22 +165,6 @@ This will create a JSON file with the results in the directory provided by the `
 
 Note this package currently supports binary classification only.
 
-## Contributing to MEDS-DEV
-
-### To Add a Model
-
-### To Add a Dataset
-
-TODO
-
-### To Add a Task
-
-TODO
-
-### To Add Results
-
-TODO
-
 ## Helpers
 
 ### To extract a task
