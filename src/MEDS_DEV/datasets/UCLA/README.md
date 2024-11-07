@@ -17,7 +17,7 @@ Currently the tasks supported by the UCLA-MEDS format are follows:
 
 ## MEDS-transformation
 
-Researchers at UCLA have transformed our DDR databse into the medsformat making it quick and easy to run any analyses at our institution. 
+Researchers at UCLA have transformed our DDR database into the medsformat making it quick and easy to run any analyses at our institution. 
 
 ## Sources
 
