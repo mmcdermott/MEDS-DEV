@@ -67,8 +67,7 @@ of
 **To add a task**
 
 If your task is not supported, you will need to add a directory and define an appropriate configuration file
-in
-a corresponding location.
+in a corresponding location.
 
 ### Dataset configuration file
 
@@ -86,8 +85,7 @@ ready (i.e.
 **To add a dataset configuration file**
 
 If your dataset is not supported, you will need to add a directory and define an appropriate configuration
-file in
-a corresponding location.
+file in a corresponding location.
 
 ### Run the MEDS task extraction helper
 
@@ -107,48 +105,34 @@ sharded structure as the `$MEDS_ROOT_DIR/data` directory.
 This step depends on the API of your particular model.
 
 For example, the command below will call a helper script that will generate random outputs for binary
-classification,
-conforming to MEDS binary classification prediction schema:
+classification, in a format compatible with the evaluation step (see below):
 
 ```bash
 ./MEDS-DEV/src/MEDS_DEV/helpers/generate_predictions.sh $MEDS_ROOT_DIR $TASK_NAME
 ```
 
-In order to work with the evaluation package (see the next section),
-the model's outputs must conform to the _prediction schema_:
+In order to work with MEDS-Evaluation (see the next section),
+the model's outputs must contain the first three and at least one of the remaining fields from the following
+`polars` schema:
 
 ```python
-prediction = pa.schema(
+Schema(
     [
-        ("subject_id", pa.int64()),
-        ("prediction_time", pa.timestamp("us")),
-        ("boolean_value", pa.bool_()),
-        ("predicted_boolean_value", pa.bool_()),
-        ("predicted_boolean_probability", pa.float64()),
+        ("subject_id", Int64),
+        ("prediction_time", Datetime(time_unit="us")),
+        ("boolean_value", Boolean),
+        ("predicted_boolean_value", Boolean),
+        ("predicted_boolean_probability", Float64),
     ]
-)
-
-Prediction = TypedDict(
-    "Prediction",
-    {
-        "subject_id": int,
-        "prediction_time": datetime.datetime,
-        "boolean_value": bool,
-        "predicted_boolean_value": bool,
-        "predicted_boolean_probability": bool,
-    },
-    total=False,
 )
 ```
 
 where `boolean_value` represents the ground truth value, `predicted_boolean_value` is a binary prediction
-(which for most methods depends on the decision threshold), and `predicted_boolean_probability` is an
+(which for most methods depends on a decision threshold), and `predicted_boolean_probability` is an
 uncertainty level in the range \[0, 1\].
 
-TODO: make the predicted values/probabilities optional and evaluate metrics based on availability of these
-values
-
-TODO: update this in MEDS-evaluation README.
+When predicting the label, models are allowed to use all data about a subject up to and
+including the `prediction_time`.
 
 ### Evaluate the model
 
@@ -157,13 +141,11 @@ predictions dataframe as well as the output directory. For example,
 
 ```bash
 meds-evaluation-cli \
-	predictions_path="./<$MEDS_ROOT_DIR>/task_predictions/$TASK_NAME/<train|tuning|held_out>/*.parquet" \
-	output_dir="./<$MEDS_ROOT_DIR>/task_evaluation/$TASK_NAME/<train|tuning|held_out>/..."
+	predictions_path="./<$MEDS_ROOT_DIR>/task_predictions/$TASK_NAME/.../*.parquet" \
+	output_dir="./<$MEDS_ROOT_DIR>/task_evaluation/$TASK_NAME/.../"
 ```
 
 This will create a JSON file with the results in the directory provided by the `output_dir` argument.
-
-Note this package currently supports binary classification only.
 
 ## Helpers
 
