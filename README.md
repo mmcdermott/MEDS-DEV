@@ -141,8 +141,8 @@ predictions dataframe as well as the output directory. For example,
 
 ```bash
 meds-evaluation-cli \
-    predictions_path="./$MEDS_ROOT_DIR/task_predictions/$DATASET_NAME/$TASK_NAME/$MODEL_NAME/.../*.parquet" \
-    output_dir="./$MEDS_ROOT_DIR/task_evaluation/$DATASET_NAME/$TASK_NAME/$MODEL_NAME/.../"
+	predictions_path="./$MEDS_ROOT_DIR/task_predictions/$DATASET_NAME/$TASK_NAME/$MODEL_NAME/.../*.parquet" \
+	output_dir="./$MEDS_ROOT_DIR/task_evaluation/$DATASET_NAME/$TASK_NAME/$MODEL_NAME/.../"
 ```
 
 This will create a JSON file with the results in the directory provided by the `output_dir` argument.
