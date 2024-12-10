@@ -33,7 +33,7 @@
 # ## Install dependencies
 
 # %%
-!pip -q install meds_etl==0.3.6 meds_transforms==0.0.9
+!pip -q install meds_etl==0.3.6 meds_transforms==0.0.7
 
 # TODO install meds-evaluation
 
@@ -100,7 +100,7 @@ data = pl.read_parquet('./content/meds/data/**/*.parquet')
 data[['subject_id', 'time', 'code', 'numeric_value']]
 
 # %% [markdown]
-# # A Simple Polars Analysis
+# # A simple Polars analysis
 
 # %%
 icd10_events = data.filter(pl.col('code').str.starts_with('DIAGNOSIS//ICD//10//'))
@@ -114,10 +114,10 @@ df
 # ## Using an example MEDS tool, ACES for labeling
 
 # %% [markdown]
-# ### Install ACES
+# ## Install ACES
 
 # %%
-!pip install es-aces==0.5.0
+!pip install es-aces
 
 # %%
 
@@ -171,9 +171,14 @@ with open(TASK_CONFIG_FP, 'w') as f:
     f.write(task_config)
 
 # %%
+!pip install es-aces
+
+# %%
 !aces-cli --multirun data=sharded data.standard=meds data.root="$MIMICIV_MEDS_DIR/data" "data.shard=$(expand_shards  ./content/meds/data/)" cohort_dir=" ./content/tasks" cohort_name="$TASK_NAME" config_path="$TASK_CONFIG_FP"
 
 # %%
+# TODO: reimporting polars due to dependencies?
+import polars as pl
 
 # Execute query and get results
 df = pl.read_parquet(f"./content/tasks/{TASK_NAME}/**/*.parquet")
