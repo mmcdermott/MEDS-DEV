@@ -357,3 +357,7 @@ $RECYCLE.BIN/
 *.lnk
 
 # End of https://www.toptal.com/developers/gitignore/api/macos,pycharm,visualstudiocode,windows
+
+meds_env/*
+src/MEDS_DEV/demo/download/*
+src/MEDS_DEV/demo/content/*
