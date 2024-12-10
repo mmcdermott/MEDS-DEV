@@ -1,7 +1,7 @@
 default_language_version:
   python: python3.10
 
-exclude: "docs/index.md"
+exclude: "docs/index.md|src/MEDS_DEV/demo/*"
 
 repos:
   - repo: https://github.com/pre-commit/pre-commit-hooks
