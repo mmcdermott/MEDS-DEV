@@ -363,3 +363,4 @@ src/MEDS_DEV/demo/download/*
 src/MEDS_DEV/demo/content/*
 
 demo/work_dir
+demo/outputs
