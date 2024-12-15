@@ -27,10 +27,10 @@ stage_configs:
     infer_schema_length: 999999999
   split_and_shard_subjects:
     n_subjects_per_shard: 1000
-  split_fracs:
-    train: 0.5
-    tuning: 0.25
-    held_out: 0.25
+    split_fracs:
+      train: 0.5
+      tuning: 0.25
+      held_out: 0.25
 
 stages:
   - shard_events
