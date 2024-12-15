@@ -24,16 +24,16 @@
 # sys.executable = '/content/meds_env/bin/python'
 
 # # Confirm python version is 3.12
-# !python --version
+!python --version
 
 # %%
-!pwd # Should be .../src/MEDS_DEV/demo
+!pwd # Should be MEDS-DEV/demo
 
 # %% [markdown]
 # ## Install dependencies
 
 # %%
-!pip -q install meds_etl==0.3.6 meds_transforms==0.0.7
+!pip -q install meds_etl==0.3.6 meds_transforms
 
 # TODO install meds-evaluation
 
@@ -117,7 +117,7 @@ df
 # ## Install ACES
 
 # %%
-!pip install es-aces
+!pip install es-aces==0.5.1
 
 # %%
 
