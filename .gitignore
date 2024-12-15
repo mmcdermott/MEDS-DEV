@@ -362,3 +362,5 @@ meds_env/*
 demo/content/*
 demo/data/*
 demo/task_labels/*
+demo/work_dir
+demo/outputs

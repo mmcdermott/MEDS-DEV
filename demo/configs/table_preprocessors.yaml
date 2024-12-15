@@ -1,0 +1,283 @@
+admissionDx:
+  offset_col: "admitdxenteredoffset"
+  pseudotime_col: "admitDxEnteredTimestamp"
+  output_data_cols: ["admitdxname", "admissiondxid"]
+  warning_items:
+    - "How should we use `admitdxtest`?"
+    - "How should we use `admitdxpath`?"
+
+allergy:
+  offset_col: "allergyenteredoffset"
+  pseudotime_col: "allergyEnteredTimestamp"
+  output_data_cols: ["allergytype", "allergyname"]
+  warning_items:
+    - "How should we use `allergyNoteType`?"
+    - "How should we use `specialtyType`?"
+    - "How should we use `userType`?"
+    - >-
+      Is `drugName` the name of the drug to which the patient is allergic or the drug given to the patient
+      (docs say 'name of the selected admission drug')?
+
+carePlanGeneral:
+  offset_col: "cplitemoffset"
+  pseudotime_col: "carePlanGeneralItemEnteredTimestamp"
+  output_data_cols: ["cplgroup", "cplitemvalue"]
+
+carePlanEOL:
+  offset_col: "cpleoldiscussionoffset"
+  pseudotime_col: "carePlanEolDiscussionOccurredTimestamp"
+  warning_items:
+    - "Is the DiscussionOffset time actually reliable? Should we fall back on the SaveOffset time?"
+
+carePlanGoal:
+  offset_col: "cplgoaloffset"
+  pseudotime_col: "carePlanGoalEnteredTimestamp"
+  output_data_cols: ["cplgoalcategory", "cplgoalvalue", "cplgoalstatus"]
+
+carePlanInfectiousDisease:
+  offset_col: "cplinfectdiseaseoffset"
+  pseudotime_col: "carePlanInfectDiseaseEnteredTimestamp"
+  output_data_cols:
+    - "infectdiseasesite"
+    - "infectdiseaseassessment"
+    - "responsetotherapy"
+    - "treatment"
+
+diagnosis:
+  offset_col: "diagnosisoffset"
+  pseudotime_col: "diagnosisEnteredTimestamp"
+  output_data_cols: ["icd9code", "diagnosispriority", "diagnosisstring"]
+  warning_items:
+    - "Though we use it, the `diagnosisString` field documentation is unclear -- by what is it separated?"
+
+infusionDrug:
+  offset_col: "infusionoffset"
+  pseudotime_col: "infusionEnteredTimestamp"
+  output_data_cols:
+    - "infusiondrugid"
+    - "drugname"
+    - "drugrate"
+    - "infusionrate"
+    - "drugamount"
+    - "volumeoffluid"
+    - "patientweight"
+
+lab:
+  offset_col: "labresultoffset"
+  pseudotime_col: "labResultDrawnTimestamp"
+  output_data_cols:
+    - "labname"
+    - "labresult"
+    - "labresulttext"
+    - "labmeasurenamesystem"
+    - "labmeasurenameinterface"
+    - "labtypeid"
+  warning_items:
+    - "Is this the time the lab was drawn? Entered? The time the result came in?"
+    - "We **IGNORE** the `labResultRevisedOffset` column -- this may be a mistake!"
+
+medication:
+  offset_col:
+    - "drugorderoffset"
+    - "drugstartoffset"
+    - "drugstopoffset"
+  pseudotime_col:
+    - "drugordertimestamp"
+    - "drugstarttimestamp"
+    - "drugstoptimestamp"
+  output_data_cols:
+    - "medicationid"
+    - "drugivadmixture"
+    - "drugname"
+    - "drughiclseqno"
+    - "dosage"
+    - "routeadmin"
+    - "frequency"
+    - "loadingdose"
+    - "prn"
+    - "gtc"
+  warning_items:
+    - "We **IGNORE** the `drugOrderCancelled` column -- this may be a mistake!"
+
+nurseAssessment:
+  offset_col:
+    - "nurseassessoffset"
+    - "nurseassessentryoffset"
+  pseudotime_col:
+    - "nurseAssessPerformedTimestamp"
+    - "nurseAssessEnteredTimestamp"
+  output_data_cols:
+    - "nurseassessid"
+    - "celllabel"
+    - "cellattribute"
+    - "cellattributevalue"
+  warning_items:
+    - "Should we be using `cellAttributePath` instead of `cellAttribute`?"
+    - "SOME MAY BE LISTS"
+
+nurseCare:
+  offset_col:
+    - "nursecareoffset"
+    - "nursecareentryoffset"
+  pseudotime_col:
+    - "nurseCarePerformedTimestamp"
+    - "nurseCareEnteredTimestamp"
+  output_data_cols:
+    - "nursecareid"
+    - "celllabel"
+    - "cellattribute"
+    - "cellattributevalue"
+  warning_items:
+    - "Should we be using `cellAttributePath` instead of `cellAttribute`?"
+    - "SOME MAY BE LISTS"
+
+nurseCharting:
+  offset_col:
+    - "nursingchartoffset"
+    - "nursingchartentryoffset"
+  pseudotime_col:
+    - "nursingChartPerformedTimestamp"
+    - "nursingChartEnteredTimestamp"
+  output_data_cols:
+    - "nursingchartid"
+    - "nursingchartcelltypecat"
+    - "nursingchartcelltypevalname"
+    - "nursingchartcelltypevallabel"
+    - "nursingchartvalue"
+  warning_items:
+    - "SOME MAY BE LISTS"
+
+pastHistory:
+  offset_col:
+    - "pasthistoryoffset"
+    - "pasthistoryenteredoffset"
+  pseudotime_col:
+    - "pastHistoryTakenTimestamp"
+    - "pastHistoryEnteredTimestamp"
+  output_data_cols:
+    - "pasthistoryid"
+    - "pasthistorynotetype"
+    - "pasthistorypath"
+    - "pasthistoryvalue"
+    - "pasthistoryvaluetext"
+  warning_items:
+    - "SOME MAY BE LISTS"
+    - "How should we use `pastHistoryPath` vs. `pastHistoryNoteType`?"
+    - "How should we use `pastHistoryValue` vs. `pastHistoryValueText`?"
+
+physicalExam:
+  offset_col: "physicalexamoffset"
+  pseudotime_col: "physicalExamEnteredTimestamp"
+  output_data_cols:
+    - "physicalexamid"
+    - "physicalexamtext"
+    - "physicalexampath"
+    - "physicalexamvalue"
+  warning_items:
+    - "How should we use `physicalExamValue` vs. `physicalExamText`?"
+    - "I believe the `physicalExamValue` is a **LIST**. This must be processed specially."
+
+respiratoryCare:
+  offset_col:
+    - "respcarestatusoffset"
+    - "ventstartoffset"
+    - "ventendoffset"
+  pseudotime_col:
+    - "respCareStatusEnteredTimestamp"
+    - "ventStartTimestamp"
+    - "ventEndTimestamp"
+  output_data_cols:
+    - "respcareid"
+    - "airwaytype"
+    - "airwaysize"
+    - "airwayposition"
+    - "cuffpressure"
+    - "lowexhmvlimit"
+    - "hiexhmvlimit"
+    - "lowexhtvlimit"
+    - "hipeakpreslimit"
+    - "lowpeakpreslimit"
+    - "hirespratelimit"
+    - "lowrespratelimit"
+    - "sighpreslimit"
+    - "lowironoxlimit"
+    - "highironoxlimit"
+    - "meanairwaypreslimit"
+    - "peeplimit"
+    - "cpaplimit"
+    - "setapneainterval"
+    - "setapneatv"
+    - "setapneaippeephigh"
+    - "setapnearr"
+    - "setapneapeakflow"
+    - "setapneainsptime"
+    - "setapneaie"
+    - "setapneafio2"
+  warning_items:
+    - "We ignore the `priorVent*` columns -- this may be a mistake!"
+    - "There is a lot of data in this table -- what should be incorporated into the event structure?"
+    - "We might be able to use `priorVent` timestamps to further refine true season of unit admission."
+
+respiratoryCharting:
+  offset_col:
+    - "respchartoffset"
+    - "respchartentryoffset"
+  pseudotime_col:
+    - "respChartPerformedTimestamp"
+    - "respChartEnteredTimestamp"
+  output_data_cols:
+    - "respchartid"
+    - "respcharttypecat"
+    - "respchartvaluelabel"
+    - "respchartvalue"
+  warning_items:
+    - "SOME MAY BE LISTS"
+
+treatment:
+  offset_col: "treatmentoffset"
+  pseudotime_col: "treatmentEnteredTimestamp"
+  output_data_cols:
+    - "treatmentid"
+    - "treatmentstring"
+  warning_items:
+    - "Absence of entries in table do not indicate absence of treatments"
+
+vitalAperiodic:
+  offset_col: "observationoffset"
+  pseudotime_col: "observationEnteredTimestamp"
+  output_data_cols:
+    - "vitalaperiodicid"
+    - "noninvasivesystolic"
+    - "noninvasivediastolic"
+    - "noninvasivemean"
+    - "paop"
+    - "cardiacoutput"
+    - "cardiacinput"
+    - "svr"
+    - "svri"
+    - "pvr"
+    - "pvri"
+
+vitalPeriodic:
+  offset_col: "observationoffset"
+  pseudotime_col: "observationEnteredTimestamp"
+  output_data_cols:
+    - "vitalperiodicid"
+    - "temperature"
+    - "sao2"
+    - "heartrate"
+    - "respiration"
+    - "cvp"
+    - "etco2"
+    - "systemicsystolic"
+    - "systemicdiastolic"
+    - "systemicmean"
+    - "pasystolic"
+    - "padiastolic"
+    - "pamean"
+    - "st1"
+    - "st2"
+    - "st3"
+    - "icp"
+  warning_items:
+    - "These are 5-minute median values. There are going to be a *lot* of events."
