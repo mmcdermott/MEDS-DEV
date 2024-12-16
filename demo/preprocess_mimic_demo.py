@@ -67,7 +67,7 @@ for file in files:
     !wget -O {MIMICIV_PRE_MEDS_DIR}/{file} {MIMICIV_RAW_DIR}/{file}
 
 # %%
-# !cp {MEDS_DEV_PROJECT_ROOT}/configs/extract_MIMIC.yaml {ROOT_DIR}MIMIC-IV_Example/configs/
+!cp {MEDS_DEV_PROJECT_ROOT}/configs/extract_MIMIC.yaml {ROOT_DIR}/MIMIC-IV_Example/configs/
 
 # %%
 # Convert to MEDS
