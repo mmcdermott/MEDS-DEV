@@ -41,6 +41,9 @@ docs = [
   "mkdocs-git-revision-date-localized-plugin==1.2.6"
 ]
 
+[project.scripts]
+meds-dev-dataset = "MEDS_DEV.datasets.__main__:main"
+
 [project.urls]
 Homepage = "https://github.com/mmcdermott/MEDS-DEV"
 Issues = "https://github.com/mmcdermott/MEDS-DEV/issues"
