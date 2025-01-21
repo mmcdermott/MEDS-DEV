@@ -3,6 +3,7 @@ build_full: >-
   raw_input_dir="{temp_dir}/raw"
   pre_MEDS_dir="{temp_dir}/pre_MEDS"
   MEDS_cohort_dir="{output_dir}"
+  log_dir="{output_dir}/.pipeline_logs"
 
 build_demo: >-
   MEDS_extract-MIMIC_IV
@@ -10,3 +11,4 @@ build_demo: >-
   raw_input_dir="{temp_dir}/raw"
   pre_MEDS_dir="{temp_dir}/pre_MEDS"
   MEDS_cohort_dir="{output_dir}"
+  log_dir="{output_dir}/.pipeline_logs"
