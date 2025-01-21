@@ -42,5 +42,5 @@ docs = [
 ]
 
 [project.urls]
-Homepage = "https://github.com/mmcdermott/PIE_MD"
-Issues = "https://github.com/mmcdermott/PIE_MD/issues"
+Homepage = "https://github.com/mmcdermott/MEDS-DEV"
+Issues = "https://github.com/mmcdermott/MEDS-DEV/issues"
