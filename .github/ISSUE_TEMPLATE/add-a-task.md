@@ -1,10 +1,9 @@
 ---
 name: Add a Task
 about: Request or track the addition of a new prediction task to be supported by MEDS-DEV
-title: "[Task] Add task NAME"
+title: '[Task] Add task NAME'
 labels: Tasks
 assignees: ''
-
 ---
 
 1. What is the task's (unique) name?

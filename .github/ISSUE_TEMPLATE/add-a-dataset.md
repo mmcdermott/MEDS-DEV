@@ -1,10 +1,9 @@
 ---
 name: Add a Dataset
 about: Request or track the addition of a new dataset to be supported by MEDS-DEV
-title: "[Dataset] Adds dataset NAME"
+title: '[Dataset] Adds dataset NAME'
 labels: Datasets
 assignees: ''
-
 ---
 
 1. What is the (unique) dataset name?

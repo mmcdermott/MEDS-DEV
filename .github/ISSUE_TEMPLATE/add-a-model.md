@@ -1,10 +1,9 @@
 ---
 name: Add a Model
 about: Request or track the addition of a new model to be supported by MEDS-DEV
-title: "[Model] Add the model NAME"
+title: '[Model] Add the model NAME'
 labels: Models
 assignees: ''
-
 ---
 
 1. What is the (unique) model's name?
