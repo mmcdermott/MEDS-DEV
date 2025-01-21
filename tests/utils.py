@@ -73,6 +73,7 @@ def run_command(
     hydra_kwargs: dict[str, str] | None = None,
     config_name: str | None = None,
     should_error: bool = False,
+    want_err_msg: str | None = None,
     do_use_config_yaml: bool = False,
 ):
     script = ["python", str(script.resolve())] if isinstance(script, Path) else [script]
@@ -125,12 +126,18 @@ def run_command(
     stdout = command_out.stdout.decode()
     err_cmd_lines.append(f"stdout:\n{stdout}")
 
-    if should_error and not command_errored:
-        if do_use_config_yaml:
-            conf_dir.cleanup()
-        raise AssertionError(
-            f"{test_name} failed as command did not error when expected!\n" + "\n".join(err_cmd_lines)
-        )
+    if should_error:
+        err_cmd_str = "\n".join(err_cmd_lines)
+        if not command_errored:
+            if do_use_config_yaml:
+                conf_dir.cleanup()
+            raise AssertionError(f"{test_name} failed as command did not error when expected!\n{err_cmd_str}")
+        if want_err_msg is not None and want_err_msg not in stderr:
+            if do_use_config_yaml:
+                conf_dir.cleanup()
+            raise AssertionError(
+                f"{test_name} failed as expected error message not found in stderr!\n{err_cmd_str}"
+            )
     elif not should_error and command_errored:
         if do_use_config_yaml:
             conf_dir.cleanup()
