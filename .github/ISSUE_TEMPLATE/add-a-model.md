@@ -12,5 +12,5 @@ assignees: ''
 3. Is there a codebase for the model? If so, is it MEDS-compliant?
 4. What dataset-specific variables would need to be specified to run this model?
 5. What dataset-specific features would need to be present in a dataset for this model to be appropriate on that dataset?
-6. Are you the primary author of this model?
+6. Who is the primary author of this model? (tag their GitHub ID and/or provide contact information)
 7. Does anything about how this model is trained/used deviate from the model runtime API (see #43)?
