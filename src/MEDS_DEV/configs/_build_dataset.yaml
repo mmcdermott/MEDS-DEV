@@ -1,0 +1,7 @@
+defaults:
+  - _self_
+
+dataset: ???
+output_dir: ???
+demo: False
+temp_dir: null # If null, will be determined automatically to a temporary directory.
