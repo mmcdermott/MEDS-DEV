@@ -1,1 +1,1 @@
-mimic-iv-meds==0.0.2
+MIMIC-IV-MEDS==0.0.2
