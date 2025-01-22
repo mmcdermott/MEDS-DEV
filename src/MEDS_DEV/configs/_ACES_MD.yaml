@@ -19,5 +19,5 @@ cohort_dir: ${output_dir}
 cohort_name: ${task_name}
 
 # Path to the task configuration file
-config_path: ${MEDS_DEV_dir}/tasks/criteria/${task_name}.yaml
+config_path: ${MEDS_DEV_dir}/tasks/${task_name}.yaml
 predicates_path: ${MEDS_DEV_dir}/datasets/${dataset_name}/predicates.yaml

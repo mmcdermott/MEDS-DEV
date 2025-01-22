@@ -43,6 +43,7 @@ docs = [
 
 [project.scripts]
 meds-dev-dataset = "MEDS_DEV.datasets.__main__:main"
+meds-dev-task = "MEDS_DEV.tasks.__main__:main"
 
 [project.urls]
 Homepage = "https://github.com/mmcdermott/MEDS-DEV"
