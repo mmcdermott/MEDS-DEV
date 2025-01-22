@@ -17,6 +17,7 @@ def test_non_task_breaks(demo_dataset):
         hydra_kwargs={
             "task": non_task,
             "dataset": dataset_name,
+            "dataset_dir": str(dataset_dir.resolve()),
             "output_dir": str(task_labels_dir.resolve()),
         },
         should_error=True,
