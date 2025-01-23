@@ -43,6 +43,19 @@ Once a task is defined, then you can, after installing `MEDS-DEV` via `pip insta
 the labels for task `TASK_NAME` over dataset `DATASET_NAME` stored in the directory `DATASET_DIR` in the
 output directory `OUTPUT_DIR`.
 
+For testing purposes, _e.g., to ensure your task is correctly defined and supported by the expected datasets_,
+you should also include the following information in a `metadata` block in your task config:
+
+```
+metadata:
+  test_datasets:
+    - MIMIC-IV
+    - ...
+```
+
+where the list of datasets in `metadata.test_datasets` will be used to test the task automatically by the test
+set-up (against the _demo_ version of that dataset only!)
+
 ## Example workflow
 
 ### (Optional) Set up the MEDS project with environment

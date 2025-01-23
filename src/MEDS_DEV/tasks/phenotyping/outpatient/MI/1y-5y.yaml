@@ -1,11 +1,10 @@
-# metadata: ...
-
-description: >-
-  This file defines a prediction task that predicts, for patients who will both (a) not have a MI within 1
-  year of their annual physical and (b) have some data available at least 5 years after their annual physical,
-  whether they will have a MI between 1 and 5 years after their annual physical. Note that these criteria
-  induce censoring impacts on the included distribution which must be accounted for before this task could be
-  deployed.
+metadata:
+  description: >-
+    This file defines a prediction task that predicts, for patients who will both (a) not have a MI within 1
+    year of their annual physical and (b) have some data available at least 5 years after their annual physical,
+    whether they will have a MI between 1 and 5 years after their annual physical. Note that these criteria
+    induce censoring impacts on the included distribution which must be accounted for before this task could be
+    deployed.
 
 predicates:
   MI: ???

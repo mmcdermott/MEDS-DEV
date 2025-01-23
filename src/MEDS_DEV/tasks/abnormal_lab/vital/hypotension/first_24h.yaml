@@ -1,3 +1,6 @@
+metadata:
+  test_datasets:
+    - MIMIC-IV
 description: >-
   This task predicts whether the patient will have low _MAP_ values (hypotension) within the next
   24 hours, given the first 24 hours of their admission to the hospital. To be included,

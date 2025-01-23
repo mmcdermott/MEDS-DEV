@@ -28,6 +28,14 @@ def demo_dataset_with_task_labels(request, demo_dataset):
     task_name = request.param
     (dataset_name, dataset_dir) = demo_dataset
 
+    task_metadata = TASKS[task_name].get("metadata", None)
+    if (
+        task_metadata is None
+        or "test_datasets" not in task_metadata
+        or dataset_name not in task_metadata["test_datasets"]
+    ):
+        pytest.skip(f"Dataset {dataset_name} not supported for testing {task_name}.")
+
     task_labels_dir = dataset_dir / "task_labels"
 
     run_command(

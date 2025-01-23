@@ -1,3 +1,6 @@
+metadata:
+  test_datasets:
+    - MIMIC-IV
 description: >-
   This task predicts whether the patient will have low _hemoglobin_ values (anemia) within the next
   24 hours, given the first 24 hours of their admission to the _hospital_. To be included,

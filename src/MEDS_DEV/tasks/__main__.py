@@ -17,7 +17,7 @@ def main(cfg: DictConfig):
     if cfg.dataset not in DATASETS:
         raise ValueError(f"Dataset {cfg.dataset} not currently configured")
 
-    task_config_path = TASKS[cfg.task]
+    task_config_path = TASKS[cfg.task]["criteria_fp"]
     dataset_predicates_path = DATASETS[cfg.dataset]["predicates"]
 
     if dataset_predicates_path is None:
