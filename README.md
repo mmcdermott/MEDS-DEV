@@ -74,16 +74,3 @@ A full description of these commands is coming soon, but for now, note that:
 See the help string for `meds-dev-model` for more information. Note the final output predictions should be
 stored as a set of parquet files in the final output directory specified by the `output_dir` variable in the
 format expected by `meds-evaluation`.
-
-### Evaluate the model
-
-You can use the `meds-evaluation` package by running `meds-evaluation-cli` and providing the path to
-predictions dataframe as well as the output directory. For example,
-
-```bash
-meds-evaluation-cli \
-  predictions_path="./$MEDS_ROOT_DIR/task_predictions/$DATASET_NAME/$TASK_NAME/$MODEL_NAME/.../*.parquet" \
-  output_dir="./$MEDS_ROOT_DIR/task_evaluation/$DATASET_NAME/$TASK_NAME/$MODEL_NAME/.../"
-```
-
-This will create a JSON file with the results in the directory provided by the `output_dir` argument.
