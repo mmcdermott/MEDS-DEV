@@ -33,6 +33,7 @@ def main(cfg: DictConfig):
             f"cohort_name={cfg.task}",
             "data=sharded",
             "data.standard=meds",
+            f"data.root={cfg.dataset_dir}/data",
             f"data.shard=$(expand_shards {cfg.dataset_dir}/data)",
             f"config_path={task_config_path}",
             f"predicates_path={dataset_predicates_path}",
