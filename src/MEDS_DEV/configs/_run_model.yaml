@@ -7,7 +7,7 @@ labels_dir: null
 dataset_name: null
 task_name: null
 
-temp_dir: null # If null, will be determined automatically to a temporary directory.
+temp_dir: ${output_dir}/.temp # This is used because the venv is built here, so persisting it is useful.
 
 demo: false
 mode: prediction
@@ -39,12 +39,10 @@ hydra:
       of the combinations of these modes, and this is by design!
 
       The assumed (global) flow is:
-        1. unsupervised, hyperparameter tuning
-        2. unsupervised, training
-        3. [optional, for zero-shot] unsupervised, prediction
-        4. supervised, hyperparameter tuning
-        5. supervised, training
-        6. supervised, prediction
+        1. unsupervised, train
+        2. [optional, for zero-shot] unsupervised, predict
+        3. supervised, train
+        4. supervised, predict
 
       In each of these steps the "model_initialization_dir" parameter is assumed to point to the directory
       specified by the "output_dir" of the prior stage, if such a prior stage is necessary and was run.
@@ -53,7 +51,7 @@ hydra:
       null. These parameters are merely used as inputs to the customized model run scripts in the model.yaml
       files. The only mandatory stage for participating in MEDS-DEV is supervised, prediction.
 
-      You can also run in mode=`full` to run all 6 applicable steps in order (with applicability determined by
+      You can also run in mode=`full` to run all 4 applicable steps in order (with applicability determined by
       what commands are present in the model), with the model_initialization_dir appropriately set in between.
       In this case, `output_dir` should be set to a global "experiment directory" for the series of runs, and
       appropriate sub-dirs will be created and used for the sequence. In this case, if prior stage completion

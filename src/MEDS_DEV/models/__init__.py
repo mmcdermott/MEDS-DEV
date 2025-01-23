@@ -8,8 +8,8 @@ CFG_YAML = files("MEDS_DEV.configs") / "_run_model.yaml"
 MODELS = {}
 
 for path in model_files.rglob("*/model.yaml"):
-    model_name = path.relative_to(model_files).with_suffix("").as_posix()
-    MODELS[model_name] = OmegaConf.load(path).to_object()
+    model_name = path.relative_to(model_files).parent.with_suffix("").as_posix()
+    MODELS[model_name] = OmegaConf.to_object(OmegaConf.load(path))
     requirements_path = path / "requirements.txt"
     MODELS[model_name]["requirements"] = requirements_path if requirements_path.exists() else None
 

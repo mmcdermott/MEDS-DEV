@@ -21,6 +21,21 @@ def test_non_model_breaks():
         )
 
 
-@pytest.mark.parametrize("model", MODELS)
-def test_model_runs(demo_dataset_with_task_labels):
-    dataset_name, dataset_dir, task_name, task_labels_dir = demo_dataset_with_task_labels
+def test_model_runs(demo_model):
+    model, final_out_dir, dataset_name, _, task_name, _ = demo_model
+    setting = f"{model} for {task_name} on {dataset_name}"
+
+    if not final_out_dir.exists():
+        error_lines = [
+            f"Output directory {final_out_dir} does not exist for {setting}.",
+            f"Model {model} for {task_name} on {dataset_name} did not run properly. Walking back...",
+        ]
+        d = final_out_dir.parent
+        while not d.exists():
+            error_lines.append(f"Directory {d} does not exist.")
+            d = d.parent
+        error_lines.append(f"Directory {d} exists. Contents:")
+        error_lines.append(str(list(d.rglob("*"))))
+        raise AssertionError("\n".join(error_lines))
+
+    assert len(list(final_out_dir.rglob("*.parquet"))) > 0, f"No predictions written for {setting}."
