@@ -1,0 +1,16 @@
+from importlib.resources import files
+
+from omegaconf import OmegaConf
+
+model_files = files("MEDS_DEV.models")
+CFG_YAML = files("MEDS_DEV.configs") / "_run_model.yaml"
+
+MODELS = {}
+
+for path in model_files.rglob("*/model.yaml"):
+    model_name = path.relative_to(model_files).with_suffix("").as_posix()
+    MODELS[model_name] = OmegaConf.load(path).to_object()
+    requirements_path = path / "requirements.txt"
+    MODELS[model_name]["requirements"] = requirements_path if requirements_path.exists() else None
+
+__all__ = ["MODELS", "CFG_YAML"]

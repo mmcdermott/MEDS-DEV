@@ -1,0 +1,7 @@
+defaults:
+  - _self_
+  - override hydra/hydra_logging: disabled
+
+labels_dir: ???
+predictions_fp: ???
+seed: 1
