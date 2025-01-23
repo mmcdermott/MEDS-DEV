@@ -22,13 +22,13 @@ authors = [
 
 description = "Task configuration and helper files for the MEDS-DEV Benchmark"
 readme = "README.md"
-requires-python = ">=3.10"
+requires-python = ">=3.11"
 classifiers = [
     "Programming Language :: Python :: 3",
     "License :: OSI Approved :: MIT License",
     "Operating System :: OS Independent",
 ]
-dependencies = ["meds==0.3.3", "es-aces==0.5.0"]
+dependencies = ["meds==0.3.3", "es-aces==0.5.0", "hydra-core"]
 
 [tool.setuptools_scm]
 
@@ -40,6 +40,9 @@ docs = [
   "mkdocs-literate-nav==0.6.1", "mkdocs-section-index==0.3.9", "mkdocs-git-authors-plugin==0.9.0",
   "mkdocs-git-revision-date-localized-plugin==1.2.6"
 ]
+
+[project.scripts]
+meds-dev-dataset = "MEDS_DEV.datasets.__main__:main"
 
 [project.urls]
 Homepage = "https://github.com/mmcdermott/MEDS-DEV"

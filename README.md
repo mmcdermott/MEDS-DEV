@@ -12,6 +12,24 @@ or commit messages for associated contributions to this repository.
 > \[!NOTE\]
 > MEDS-DEV currently only supports binary classification tasks.
 
+## To add a dataset
+
+To add a dataset, you will need to create a new directory under `src/MEDS_DEV/datasets/` with the name of the
+dataset, containing the following files:
+
+1. `README.md`: This file should contain a description of the dataset. See the templates for examples.
+2. `requirements.txt`: This file should be a valid `pip` specification for what is needed to install the ETL
+    to build the environment. _The ETL must be runnable on Python 3.11_.
+3. `commands.yaml`: This file must have two shell command strings under the keys `build_full` and
+    `build_demo` that, if run in an environment with the requirements installed, with the specified
+    placeholder variables (indicated in python syntax, include `temp_dir` for intermediate files and
+    `output_dir` for where you want the final MEDS cohort to live) will produce the desired MEDS cohort.
+4. `predicates.yaml` contains ACES syntax predicates to realize the target tasks.
+
+If all of these are defined, then you can, after installing `MEDS-DEV` via `pip install -e .`, run the command
+`meds-dev-dataset dataset=DATASET_NAME output_dir=OUTPUT_DIR` to generate the MEDS cohort for that dataset
+(with `demo=True` if you want the demo version).
+
 ## Example workflow
 
 ### (Optional) Set up the MEDS project with environment
