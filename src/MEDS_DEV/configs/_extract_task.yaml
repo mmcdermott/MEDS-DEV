@@ -1,0 +1,24 @@
+defaults:
+  - _self_
+
+dataset: ???
+dataset_dir: ???
+task: ???
+output_dir: ???
+
+hydra:
+  job:
+    name: "meds_dev_extract_{task}_for_{dataset}_${now:%Y-%m-%d_%H-%M-%S}"
+  run:
+    dir: "${output_dir}/.logs"
+  help:
+    app_name: "MEDS-DEV Task Extractor Helper"
+
+    template: |-
+      == ${hydra.help.app_name} ==
+      ${hydra.help.app_name} is a command line tool for extracting MEDS-DEV specified tasks from compliant
+      datasets.
+
+      You can specify "dataset" to give the name of the dataset you want to build and "dataset_dir" to point
+      to the extracted dataset on disk, "output_dir" to say where the final, labeled task cohort
+      should be stored on disk, and "task" to dictate which task should be extracted.

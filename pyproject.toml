@@ -28,7 +28,7 @@ classifiers = [
     "License :: OSI Approved :: MIT License",
     "Operating System :: OS Independent",
 ]
-dependencies = ["meds==0.3.3", "es-aces==0.5.0", "hydra-core"]
+dependencies = ["meds==0.3.3", "es-aces==0.6.1", "hydra-core"]
 
 [tool.setuptools_scm]
 
@@ -43,6 +43,7 @@ docs = [
 
 [project.scripts]
 meds-dev-dataset = "MEDS_DEV.datasets.__main__:main"
+meds-dev-task = "MEDS_DEV.tasks.__main__:main"
 
 [project.urls]
 Homepage = "https://github.com/mmcdermott/MEDS-DEV"

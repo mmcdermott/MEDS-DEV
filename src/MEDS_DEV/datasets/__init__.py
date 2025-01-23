@@ -12,8 +12,10 @@ for path in dataset_files.iterdir():
 
     commands = OmegaConf.load(path / "commands.yaml")
     requirements_path = path / "requirements.txt"
+    predicates_path = path / "predicates.yaml"
     DATASETS[path.name] = {
         "commands": commands,
+        "predicates": predicates_path if predicates_path.exists() else None,
         "requirements": requirements_path if requirements_path.exists() else None,
     }
 
