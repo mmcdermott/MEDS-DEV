@@ -28,13 +28,14 @@ def main(cfg: DictConfig):
     # make the ACES command
     cmd = [
         "aces-cli",
+        "--multirun",
         f"cohort_name={cfg.task}",
         "data=sharded",
         "data.standard=meds",
         f"data.shard=$(expand_shards {cfg.dataset_dir}/data)",
         f"config_path={task_config_path}",
         f"predicates_path={dataset_predicates_path}",
-        f"output_filepath={cfg.output_dir}/${{data._prefix}}.parquet",
+        f"output_filepath={cfg.output_dir}" + r"/\$\{data._prefix\}.parquet",
         f"log_dir={cfg.output_dir}/.logs",
     ]
 
