@@ -74,11 +74,11 @@ def fmt_command(
     if dataset_type not in commands:
         raise RuntimeError(f"Model does not support dataset type {dataset_type}.")
 
-    dataset_commands = commands["dataset_type"]
+    dataset_commands = commands[dataset_type]
     if run_mode not in dataset_commands:
         raise RuntimeError(f"Model does not support run mode {run_mode}.")
 
-    return commands[dataset_type.name][run_mode.name].format(**format_kwargs)
+    return commands[dataset_type][run_mode].format(**format_kwargs)
 
 
 def model_commands(cfg: DictConfig, commands: dict[str, dict[str, str]]) -> Generator[tuple[str, Path]]:
@@ -144,7 +144,7 @@ def model_commands(cfg: DictConfig, commands: dict[str, dict[str, str]]) -> Gene
 @hydra.main(version_base=None, config_path=str(CFG_YAML.parent), config_name=CFG_YAML.stem)
 def main(cfg: DictConfig):
     if cfg.model not in MODELS:
-        raise ValueError(f"Model {cfg.model} not found in available models: {MODELS.keys()}")
+        raise ValueError(f"Model {cfg.model} not currently configured")
 
     commands = MODELS[cfg.model]["commands"]
     requirements = MODELS[cfg.model]["requirements"]
@@ -174,7 +174,15 @@ def main(cfg: DictConfig):
             if command_errored:
                 raise RuntimeError(
                     f"{cfg.model} command {cmd} failed with exit code "
-                    f"{command_out.returncode}:\n{command_out.stderr.decode()}"
+                    f"{command_out.returncode}:\n"
+                    f"STDERR:\n{command_out.stderr.decode()}\n"
+                    f"STDOUT:\n{command_out.stdout.decode()}"
+                )
+            elif not out_dir.is_dir():
+                raise RuntimeError(
+                    f"{cfg.model} command {cmd} failed to create output directory {out_dir}.\n"
+                    f"STDERR:\n{command_out.stderr.decode()}\n"
+                    f"STDOUT:\n{command_out.stdout.decode()}"
                 )
             else:
                 done_file.touch()

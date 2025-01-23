@@ -23,6 +23,7 @@ CONFIG = files("MEDS_DEV") / "models" / "random_predictor" / "_config.yaml"
 def main(cfg: DictConfig) -> None:
     labels_dir = Path(cfg.labels_dir)
     predictions_fp = Path(cfg.predictions_fp)
+    predictions_fp.parent.mkdir(parents=True, exist_ok=True)
     seed = cfg.seed
 
     # Labels can live in any parquet file within the labels directory:
@@ -32,18 +33,27 @@ def main(cfg: DictConfig) -> None:
         return
 
     labels = []
-    if any(labels_dir.glob("**/*.parquet")):
-        labels.append(pl.read_parquet(labels_dir / "**/*.parquet", use_pyarrow=True))
-    if any(labels_dir.glob("*.parquet")):
-        labels.append(pl.read_parquet(labels_dir / "*.parquet", use_pyarrow=True))
-
-    labels = pl.concat(labels, how="vertical_relaxed")
+    try:
+        labels = pl.concat(
+            [pl.read_parquet(f, use_pyarrow=True) for f in labels_files], how="vertical_relaxed"
+        )
+    except Exception as e:
+        err_lines = [f"Error reading labels: {e}", "Labels dir contents:"]
+        for file in labels_dir.rglob("*.parquet"):
+            err_lines.append(f"  - {file.relative_to(labels_dir)}")
+        err_str = "\n".join(err_lines)
+        logger.error(err_str)
+        raise ValueError(err_str) from e
 
     rng = np.random.default_rng(seed)
     probabilities = rng.uniform(0, 1, len(labels))
 
-    labels[PREDICTED_BOOLEAN_PROBABILITY_COLUMN] = pl.Series(probabilities)
-    labels[PREDICTED_BOOLEAN_VALUE_COLUMN] = pl.Series(probabilities > 0.5).cast(pl.Boolean)
+    labels = labels.with_columns(
+        pl.Series(probabilities).alias(PREDICTED_BOOLEAN_PROBABILITY_COLUMN),
+    )
+    labels = labels.with_columns(
+        (pl.col(PREDICTED_BOOLEAN_PROBABILITY_COLUMN) > 0.5).alias(PREDICTED_BOOLEAN_VALUE_COLUMN),
+    )
     labels.write_parquet(predictions_fp, use_pyarrow=True)
 
 

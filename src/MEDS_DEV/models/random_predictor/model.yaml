@@ -4,6 +4,5 @@ commands:
     hyperparameter_tune: null
     train: null
     predict: >-
-      python -m MEDS_DEV.models.random_predictor.generate_random_predictions
-        labels_dir={labels_dir}
-        predictions_fp={output_dir}/predictions.parquet
+      python -m MEDS_DEV.models.random_predictor.generate_random_predictions labels_dir={labels_dir}
+      output_dir={output_dir}
