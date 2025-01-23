@@ -1,0 +1,12 @@
+defaults:
+  - _self_
+  - override hydra/hydra_logging: disabled
+
+labels_dir: ???
+output_dir: ???
+predictions_fp: ${output_dir}/predictions.parquet
+seed: 1
+
+hydra:
+  run:
+    dir: ${output_dir}

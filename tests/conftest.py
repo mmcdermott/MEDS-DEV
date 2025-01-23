@@ -3,7 +3,7 @@ from tempfile import TemporaryDirectory
 
 import pytest
 
-from MEDS_DEV import DATASETS, TASKS
+from MEDS_DEV import DATASETS, MODELS, TASKS
 from tests.utils import run_command
 
 
@@ -50,3 +50,29 @@ def demo_dataset_with_task_labels(request, demo_dataset):
     )
 
     return dataset_name, dataset_dir, task_name, task_labels_dir
+
+
+@pytest.fixture(scope="session", params=MODELS)
+def demo_model(request, demo_dataset_with_task_labels):
+    model = request.param
+    dataset_name, dataset_dir, task_name, task_labels_dir = demo_dataset_with_task_labels
+
+    with TemporaryDirectory() as root_dir:
+        run_command(
+            "meds-dev-model",
+            test_name=f"Model {model} should run on {dataset_name} and {task_name}",
+            hydra_kwargs={
+                "model": model,
+                "dataset_type": "full",
+                "mode": "full",
+                "dataset_dir": str(dataset_dir.resolve()),
+                "labels_dir": str(task_labels_dir.resolve()),
+                "dataset_name": dataset_name,
+                "task_name": task_name,
+                "output_dir": str(root_dir),
+                "demo": True,
+            },
+        )
+
+        final_out_dir = Path(root_dir) / dataset_name / task_name / "predict"
+        yield model, final_out_dir, dataset_name, dataset_dir, task_name, task_labels_dir
