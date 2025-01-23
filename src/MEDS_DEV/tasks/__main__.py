@@ -1,4 +1,5 @@
 import logging
+import subprocess
 
 import hydra
 from omegaconf import DictConfig
@@ -16,5 +17,35 @@ def main(cfg: DictConfig):
     if cfg.dataset not in DATASETS:
         raise ValueError(f"Dataset {cfg.dataset} not currently configured")
 
+    task_config_path = TASKS[cfg.task]
+    dataset_predicates_path = DATASETS[cfg.dataset]["predicates"]
+
+    if dataset_predicates_path is None:
+        raise ValueError(f"Predicates not found for dataset {cfg.dataset}")
+
     logger.info(f"Running task {cfg.task} on dataset {cfg.dataset}")
-    raise NotImplementedError("Function not yet implemented")
+
+    # make the ACES command
+    cmd = [
+        "aces-cli",
+        f"cohort_name={cfg.task}",
+        "data=sharded",
+        "data.standard=meds",
+        f"data.shard=$(expand_shards {cfg.dataset_dir}/data)",
+        f"config_path={task_config_path}",
+        f"predicates_path={dataset_predicates_path}",
+        f"output_filepath={cfg.output_dir}/${{data._prefix}}.parquet",
+        f"log_dir={cfg.output_dir}/.logs",
+    ]
+
+    logger.info(f"Running ACES: {' '.join(cmd)}")
+    aces_command_out = subprocess.run(cmd, shell=True, capture_output=True)
+
+    command_errored = aces_command_out.returncode != 0
+    if command_errored:
+        raise RuntimeError(
+            f"Extract {cfg.task} for {cfg.dataset} command {cmd} failed with exit code "
+            f"{aces_command_out.returncode}:\n"
+            f"STDERR:\n{aces_command_out.stderr.decode()}\n"
+            f"STDOUT:\n{aces_command_out.stdout.decode()}"
+        )

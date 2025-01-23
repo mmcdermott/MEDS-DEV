@@ -36,6 +36,7 @@ def demo_dataset_with_task_labels(request, demo_dataset):
         hydra_kwargs={
             "task": task_name,
             "dataset": dataset_name,
+            "dataset_dir": str(dataset_dir.resolve()),
             "output_dir": str(task_labels_dir.resolve()),
         },
     )

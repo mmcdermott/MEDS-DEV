@@ -30,6 +30,19 @@ If all of these are defined, then you can, after installing `MEDS-DEV` via `pip 
 `meds-dev-dataset dataset=DATASET_NAME output_dir=OUTPUT_DIR` to generate the MEDS cohort for that dataset
 (with `demo=True` if you want the demo version).
 
+## To add a task
+
+To add a task, simply create a new task configuration file under `src/MEDS_DEV/tasks` with the desired
+(slash-separated) task name. The task configuration file should be a valid ACES configuration file, with the
+predicates left as placeholders to-be-overwritten by dataset-specific predicates. In addition, in the same
+series of folders leading to the task configuration file, you should have `README.md` files that describe what
+those "categories" of tasks mean.
+
+Once a task is defined, then you can, after installing `MEDS-DEV` via `pip install -e .`, run the command
+`meds-dev-task task=TASK_NAME dataset=DATASET_NAME output_dir=OUTPUT_DIR dataset_dir=DATASET_DIR` to generate
+the labels for task `TASK_NAME` over dataset `DATASET_NAME` stored in the directory `DATASET_DIR` in the
+output directory `OUTPUT_DIR`.
+
 ## Example workflow
 
 ### (Optional) Set up the MEDS project with environment
@@ -107,16 +120,7 @@ file in a corresponding location.
 
 ### Run the MEDS task extraction helper
 
-From your project directory (`$MY_MEDS_PROJECT_ROOT`) where `MEDS-DEV` is located, run
-
-```bash
-./MEDS-DEV/src/MEDS_DEV/helpers/extract_task.sh $MEDS_ROOT_DIR $DATASET_NAME $TASK_NAME
-```
-
-This will use information from task and dataset-specific predicate configs to extract cohorts and labels from
-`$MEDS_ROOT_DIR/data`, and place them in `$MEDS_ROOT_DIR/task_labels/$TASK_NAME/` subdirectories, retaining
-the same
-sharded structure as the `$MEDS_ROOT_DIR/data` directory.
+TODO -- see command above.
 
 ### Train the model
 
@@ -164,27 +168,3 @@ meds-evaluation-cli \
 ```
 
 This will create a JSON file with the results in the directory provided by the `output_dir` argument.
-
-## Helpers
-
-### To extract a task
-
-First, clone the repo and install it locally with `pip install .` Then, make sure you have the desired task
-criteria and dataset predicates yaml files in their respective locations in the repo.
-
-Finally, run the following:
-
-```bash
-./src/MEDS_DEV/helpers/extract_task.sh $MEDS_ROOT_DIR $DATASET_NAME $TASK_NAME
-```
-
-E.g.,
-
-```bash
-./src/MEDS_DEV/helpers/extract_task.sh ../MEDS_TAB_COMPL_TEST/MIMIC-IV/ MIMIC-IV mortality/in_icu/first_24h
-```
-
-which will use the `datasets/MIMIC-IV/predicates.yaml` predicates file, the
-`tasks/criteria/mortality/in_icu/first_24h.yaml` task criteria, and will run over the dataset in the root
-directory at `../MEDS_TAB_COMPL_TEST/MIMIC-IV`, reading data from the `data` subdir of that root dir and
-writing labels to the `task_labels` subdir of that root dir, in a name dependent manner.
