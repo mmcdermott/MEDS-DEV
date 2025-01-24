@@ -76,3 +76,20 @@ def demo_model(request, demo_dataset_with_task_labels):
 
         final_out_dir = Path(root_dir) / dataset_name / task_name / "predict"
         yield model, final_out_dir, dataset_name, dataset_dir, task_name, task_labels_dir
+
+
+@pytest.fixture(scope="session")
+def evaluated_model(demo_model):
+    model, final_out_dir = demo_model[:2]
+
+    with TemporaryDirectory() as root_dir:
+        run_command(
+            "meds-dev-evaluation",
+            test_name=f"Evaluate {model}",
+            hydra_kwargs={
+                "output_dir": str(root_dir),
+                "predictions_dir": str(final_out_dir),
+            },
+        )
+
+        yield root_dir, demo_model
