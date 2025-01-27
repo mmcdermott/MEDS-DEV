@@ -92,4 +92,4 @@ def evaluated_model(demo_model):
             },
         )
 
-        yield root_dir, demo_model
+        yield Path(root_dir), demo_model
