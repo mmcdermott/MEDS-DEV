@@ -9,6 +9,7 @@ import polars as pl
 from meds_evaluation.schema import (
     PREDICTED_BOOLEAN_PROBABILITY_FIELD,
     PREDICTED_BOOLEAN_VALUE_FIELD,
+    validate_binary_classification_schema,
 )
 from omegaconf import DictConfig
 
@@ -63,13 +64,17 @@ def main(cfg: DictConfig) -> None:
     rng = np.random.default_rng(seed)
     probabilities = rng.uniform(0, 1, len(labels))
 
-    labels = labels.with_columns(
+    predictions = labels.with_columns(
         pl.Series(probabilities).alias(PREDICTED_BOOLEAN_PROBABILITY_FIELD),
     )
-    labels = labels.with_columns(
+    predictions = predictions.with_columns(
         (pl.col(PREDICTED_BOOLEAN_PROBABILITY_FIELD) > 0.5).alias(PREDICTED_BOOLEAN_VALUE_FIELD),
     )
-    labels.write_parquet(predictions_fp, use_pyarrow=True)
+
+    # Check the schema output:
+    validate_binary_classification_schema(predictions)
+
+    predictions.write_parquet(predictions_fp, use_pyarrow=True)
 
 
 if __name__ == "__main__":

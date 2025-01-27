@@ -1,0 +1,22 @@
+defaults:
+  - _self_
+
+predictions_dir: ???
+predictions_path: ${predictions_dir}/**/*.parquet
+output_dir: ???
+
+hydra:
+  job:
+    name: "meds_dev_evaluation_${now:%Y-%m-%d_%H-%M-%S}"
+  run:
+    dir: "${output_dir}/.logs"
+  help:
+    app_name: "MEDS-DEV Evaluation Helper"
+
+    template: |-
+      == ${hydra.help.app_name} ==
+      ${hydra.help.app_name} is a command line tool for evaluating predictions from MEDS-DEV models.
+
+      Refer to the usage of MEDS-evaluation for more details. You can either specify the predictions path
+      directly with `predictions_path` or use the `predictions_dir` to evaluate all predictions in a
+      directory, where this can point to the output dir of a model predict step.
