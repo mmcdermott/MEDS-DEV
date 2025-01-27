@@ -1,5 +1,16 @@
 # MEDS-DEV: Establishing Reproducibility and Comparability in Health AI
 
+[![PyPI - Version](https://img.shields.io/pypi/v/MEDS-DEV)](https://pypi.org/project/MEDS-DEV/)
+![python](https://img.shields.io/badge/-Python_3.11-blue?logo=python&logoColor=white)
+[![Documentation Status](https://readthedocs.org/projects/meds-transforms/badge/?version=latest)](https://meds-transforms.readthedocs.io/en/latest/?badge=latest)
+[![codecov](https://codecov.io/gh/mmcdermott/MEDS-DEV/graph/badge.svg?token=5RORKQOZF9)](https://codecov.io/gh/mmcdermott/MEDS-DEV)
+[![tests](https://github.com/mmcdermott/MEDS-DEV/actions/workflows/tests.yaml/badge.svg)](https://github.com/mmcdermott/MEDS-DEV/actions/workflows/tests.yml)
+[![code-quality](https://github.com/mmcdermott/MEDS-DEV/actions/workflows/code-quality-main.yaml/badge.svg)](https://github.com/mmcdermott/MEDS-DEV/actions/workflows/code-quality-main.yaml)
+[![hydra](https://img.shields.io/badge/Config-Hydra_1.3-89b8cd)](https://hydra.cc/)
+[![license](https://img.shields.io/badge/License-MIT-green.svg?labelColor=gray)](https://github.com/mmcdermott/MEDS-DEV#license)
+[![PRs](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](https://github.com/mmcdermott/MEDS-DEV/pulls)
+[![contributors](https://img.shields.io/github/contributors/mmcdermott/MEDS-DEV.svg)](https://github.com/mmcdermott/MEDS-DEV/graphs/contributors)
+
 The MEDS Decentralized, Extensible Validation (MEDS-DEV) system is a new kind of benchmark for Health AI that
 has three key differences from existing systems:
 
@@ -41,7 +52,7 @@ To see how to use and contribute to MEDS-DEV, see the sections below!
 ## Installation
 
 If you just want to reproduce MEDS-DEV models and tasks over public or your own, local datasets, you can
-install MEDS-DEV from [PyPI](https://pypi.org/project/meds-dev/) via `pip install meds-dev`.
+install MEDS-DEV from [PyPI](https://pypi.org/project/MEDS-DEV/) via `pip install MEDS-DEV`.
 
 If you want to _contribute new models, tasks, or datasets_ to MEDS-DEV, you need to fork this repository,
 clone your fork, and then install the repository locally in "editable" mode via `pip install -e .[dev,tests]`.
