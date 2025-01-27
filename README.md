@@ -200,6 +200,9 @@ the public record to help advance the science of Health AI!
 
 ## Contributing New Things to MEDS-DEV
 
+> \[!Note\]
+> See the [templates](templates) folder for templates for the README files for new tasks, datasets, or models!
+
 ### Adding a dataset
 
 To add a dataset, you will need to create a new directory under `src/MEDS_DEV/datasets/` with the name of the
