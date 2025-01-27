@@ -12,7 +12,7 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version: "3.10"
+          python-version: "3.11"
       - name: Install pypa/build
         run: >-
           python3 -m
@@ -36,7 +36,7 @@ jobs:
     runs-on: ubuntu-latest
     environment:
       name: pypi
-      url: https://pypi.org/p/MEDS-transforms # Replace <package-name> with your PyPI project name
+      url: https://pypi.org/p/MEDS-DEV
     permissions:
       id-token: write # IMPORTANT: mandatory for trusted publishing
 
