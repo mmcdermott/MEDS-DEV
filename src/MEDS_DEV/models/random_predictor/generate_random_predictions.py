@@ -3,28 +3,43 @@ from importlib.resources import files
 from pathlib import Path
 
 import hydra
+import meds
 import numpy as np
 import polars as pl
+from meds_evaluation.schema import (
+    PREDICTED_BOOLEAN_PROBABILITY_FIELD,
+    PREDICTED_BOOLEAN_VALUE_FIELD,
+)
 from omegaconf import DictConfig
 
 logger = logging.getLogger(__name__)
-
-SUBJECT_ID = "subject_id"
-PREDICTION_TIME = "prediction_time"
-
-BOOLEAN_VALUE_COLUMN = "boolean_value"
-PREDICTED_BOOLEAN_VALUE_COLUMN = "predicted_boolean_value"
-PREDICTED_BOOLEAN_PROBABILITY_COLUMN = "predicted_boolean_probability"
 
 CONFIG = files("MEDS_DEV") / "models" / "random_predictor" / "_config.yaml"
 
 
 @hydra.main(version_base=None, config_path=str(CONFIG.parent.resolve()), config_name=CONFIG.stem)
 def main(cfg: DictConfig) -> None:
+    dataset_dir = Path(cfg.dataset_dir)
     labels_dir = Path(cfg.labels_dir)
     predictions_fp = Path(cfg.predictions_fp)
     predictions_fp.parent.mkdir(parents=True, exist_ok=True)
     seed = cfg.seed
+
+    if cfg.split != meds.held_out_split:
+        raise ValueError(
+            f"Split {cfg.split} does not match held out split {meds.held_out_split}; this model should "
+            "only be used for predictions so this is likely an error!"
+        )
+
+    splits_file = dataset_dir / meds.subject_splits_filepath
+    if not splits_file.is_file():
+        raise FileNotFoundError(
+            f"Could not find splits file {splits_file.relative_to(dataset_dir)} for dataset "
+            f"{dataset_dir}."
+        )
+
+    splits = pl.read_parquet(splits_file, use_pyarrow=True)
+    subjects = set(splits.filter(pl.col("split") == cfg.split)[meds.subject_id_field])
 
     # Labels can live in any parquet file within the labels directory:
     labels_files = list(labels_dir.rglob("*.parquet"))
@@ -32,11 +47,11 @@ def main(cfg: DictConfig) -> None:
         logger.warning(f"No labels found in {labels_dir}. Exiting without writing.")
         return
 
-    labels = []
+    def read_split(fp: Path) -> pl.DataFrame:
+        return pl.read_parquet(fp, use_pyarrow=True).filter(pl.col(meds.subject_id_field).is_in(subjects))
+
     try:
-        labels = pl.concat(
-            [pl.read_parquet(f, use_pyarrow=True) for f in labels_files], how="vertical_relaxed"
-        )
+        labels = pl.concat([read_split(f) for f in labels_files], how="vertical_relaxed")
     except Exception as e:
         err_lines = [f"Error reading labels: {e}", "Labels dir contents:"]
         for file in labels_dir.rglob("*.parquet"):
@@ -49,10 +64,10 @@ def main(cfg: DictConfig) -> None:
     probabilities = rng.uniform(0, 1, len(labels))
 
     labels = labels.with_columns(
-        pl.Series(probabilities).alias(PREDICTED_BOOLEAN_PROBABILITY_COLUMN),
+        pl.Series(probabilities).alias(PREDICTED_BOOLEAN_PROBABILITY_FIELD),
     )
     labels = labels.with_columns(
-        (pl.col(PREDICTED_BOOLEAN_PROBABILITY_COLUMN) > 0.5).alias(PREDICTED_BOOLEAN_VALUE_COLUMN),
+        (pl.col(PREDICTED_BOOLEAN_PROBABILITY_FIELD) > 0.5).alias(PREDICTED_BOOLEAN_VALUE_FIELD),
     )
     labels.write_parquet(predictions_fp, use_pyarrow=True)
 
