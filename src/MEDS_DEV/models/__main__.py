@@ -5,6 +5,8 @@ import subprocess
 from collections.abc import Generator
 from pathlib import Path
 
+import meds
+
 logger = logging.getLogger(__name__)
 
 from enum import StrEnum, auto
@@ -98,6 +100,8 @@ def model_commands(cfg: DictConfig, commands: dict[str, dict[str, str]]) -> Gene
     run_modes = ALL_RUN_MODES if cfg.mode == RunMode.FULL else [cfg.mode]
     dataset_types = ALL_DATASET_TYPES if cfg.dataset_type == DatasetType.FULL else [cfg.dataset_type]
 
+    do_set_split = cfg.mode == RunMode.FULL
+
     output_dir = Path(cfg.output_dir)
 
     format_kwargs = {"dataset_dir": str(cfg.dataset_dir)}
@@ -105,6 +109,10 @@ def model_commands(cfg: DictConfig, commands: dict[str, dict[str, str]]) -> Gene
         format_kwargs["model_initialization_dir"] = cfg.model_initialization_dir
     if cfg.get("demo", False):
         format_kwargs["demo"] = True
+    if cfg.get("split", None):
+        if do_set_split:
+            raise ValueError(f"Cannot set split manually when mode is {cfg.mode}.")
+        format_kwargs["split"] = cfg.split
 
     if len(run_modes) == 1 and len(dataset_types) == 1:
         run_mode = run_modes[0]
@@ -134,6 +142,13 @@ def model_commands(cfg: DictConfig, commands: dict[str, dict[str, str]]) -> Gene
         run_output_dir = run_output_dir / run_mode
 
         format_kwargs["output_dir"] = str(run_output_dir)
+
+        if do_set_split:
+            if run_mode == RunMode.PREDICT:
+                format_kwargs["split"] = meds.held_out_split
+            else:
+                # We don't set the split in anything but predict mode.
+                format_kwargs.pop("split", None)
 
         yield (fmt_command(commands, dataset_type, run_mode, **format_kwargs), run_output_dir)
 
