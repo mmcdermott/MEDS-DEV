@@ -1,0 +1,41 @@
+metadata:
+  description: >-
+    This file defines a prediction task that predicts, for patients who will both (a) not have a MI within 1
+    year of their annual physical and (b) have some data available at least 5 years after their annual physical,
+    whether they will have a MI between 1 and 5 years after their annual physical. Note that these criteria
+    induce censoring impacts on the included distribution which must be accounted for before this task could be
+    deployed.
+
+predicates:
+  MI: ???
+  annual_physical: ???
+
+trigger: annual_physical
+
+windows:
+  input:
+    start: null
+    end: trigger
+    start_inclusive: True
+    end_inclusive: True
+    index_timestamp: end
+  gap:
+    start: trigger
+    end: start + 365D
+    start_inclusive: True
+    end_inclusive: True
+    has:
+      MI: (None, 0)
+  target:
+    start: trigger + 365D
+    end: start + 1825D # 5 years
+    start_inclusive: False
+    end_inclusive: True
+    label: MI
+  censoring:
+    start: target.end
+    end: null
+    start_inclusive: False
+    end_inclusive: True
+    has:
+      _ANY_EVENT: (1, None)

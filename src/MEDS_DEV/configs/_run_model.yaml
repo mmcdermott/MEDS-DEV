@@ -1,0 +1,63 @@
+defaults:
+  - _self_
+
+dataset_type: supervised
+dataset_dir: ???
+labels_dir: null
+dataset_name: null
+task_name: null
+
+temp_dir: ${output_dir}/.temp # This is used because the venv is built here, so persisting it is useful.
+
+demo: false
+mode: prediction
+model: ???
+do_overwrite: false
+
+split: null # this is only used for training.
+
+model_initialization_dir: null
+
+output_dir: ???
+
+hydra:
+  job:
+    name: "meds_dev_model_${now:%Y-%m-%d_%H-%M-%S}"
+  run:
+    dir: "${output_dir}/.logs"
+  help:
+    app_name: "MEDS-DEV Model Running Helper"
+
+    template: |-
+      == ${hydra.help.app_name} ==
+      ${hydra.help.app_name} is a command line tool for running MEDS-DEV compliant models.
+
+      This tool is primarily designed to help model developers ensure that other users can trivially train
+      their models over local health datasets and local data owners trivially train and evaluate MEDS-DEV
+      models over their data.
+
+      Models can either be run over either (a) unsupervised data or (b) supervised data, and can be run in any
+      of (1) hyperparameter tuning, (2) training, or (3) prediction modes. Various models need not define all
+      of the combinations of these modes, and this is by design!
+
+      The assumed (global) flow is:
+        1. unsupervised, train
+        2. [optional, for zero-shot] unsupervised, predict
+        3. supervised, train
+        4. supervised, predict
+
+      In each of these steps the "model_initialization_dir" parameter is assumed to point to the directory
+      specified by the "output_dir" of the prior stage, if such a prior stage is necessary and was run.
+
+      It is fully acceptable to have no prior stages having been run, and keep model_initialization_dir as
+      null. These parameters are merely used as inputs to the customized model run scripts in the model.yaml
+      files. The only mandatory stage for participating in MEDS-DEV is supervised, prediction.
+
+      You can also run in mode=`full` to run all 4 applicable steps in order (with applicability determined by
+      what commands are present in the model), with the model_initialization_dir appropriately set in between.
+      In this case, `output_dir` should be set to a global "experiment directory" for the series of runs, and
+      appropriate sub-dirs will be created and used for the sequence. In this case, if prior stage completion
+      is flagged (e.g., if you use the same dir twice), the stage will not be re-run. The directory structure
+      used for these will depend on dataset_name and task_name, so those must be set if this mode is used.
+
+      If do_overwrite is set to true, the output dir will be cleared before anything is run.

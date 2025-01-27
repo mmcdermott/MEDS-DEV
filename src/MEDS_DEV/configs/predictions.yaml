@@ -1,6 +1,0 @@
-defaults:
-  - _ACES_MD
-  - _self_
-  - override hydra/hydra_logging: disabled
-
-cohort_predictions_dir: "${oc.env:MEDS_ROOT_DIR}/task_predictions"
