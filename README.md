@@ -2,7 +2,6 @@
 
 [![PyPI - Version](https://img.shields.io/pypi/v/MEDS-DEV)](https://pypi.org/project/MEDS-DEV/)
 ![python](https://img.shields.io/badge/-Python_3.11-blue?logo=python&logoColor=white)
-[![Documentation Status](https://readthedocs.org/projects/meds-transforms/badge/?version=latest)](https://meds-transforms.readthedocs.io/en/latest/?badge=latest)
 [![codecov](https://codecov.io/gh/mmcdermott/MEDS-DEV/graph/badge.svg?token=5RORKQOZF9)](https://codecov.io/gh/mmcdermott/MEDS-DEV)
 [![tests](https://github.com/mmcdermott/MEDS-DEV/actions/workflows/tests.yaml/badge.svg)](https://github.com/mmcdermott/MEDS-DEV/actions/workflows/tests.yml)
 [![code-quality](https://github.com/mmcdermott/MEDS-DEV/actions/workflows/code-quality-main.yaml/badge.svg)](https://github.com/mmcdermott/MEDS-DEV/actions/workflows/code-quality-main.yaml)
