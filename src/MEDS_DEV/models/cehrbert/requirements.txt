@@ -1,2 +1,3 @@
 cehrbert==1.3.2
+meds_reader==0.1.9
 pyyaml
