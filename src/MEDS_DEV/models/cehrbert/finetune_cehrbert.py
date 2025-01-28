@@ -26,7 +26,6 @@ def main(cfg: DictConfig) -> None:
     # Fine-tuned model dir
     finetuned_output_dir = output_dir / task_label_name
     finetuned_output_dir.mkdir(exist_ok=True)
-
     # Open the YAML file
     finetune_yaml_file = output_dir / f"cehrbert_finetune_{task_label_name}.yaml"
     finetune_yaml = OmegaConf.load(str(finetune_yaml_template))
@@ -38,6 +37,8 @@ def main(cfg: DictConfig) -> None:
     finetune_yaml["dataset_prepared_path"] = output_dir / "dataset_prepared_path"
     finetune_yaml["dataloader_num_workers"] = cfg.num_threads
     finetune_yaml["seed"] = cfg.seed
+    finetune_yaml["do_train"] = True
+    finetune_yaml["do_predict"] = True
     finetune_yaml.to_yaml(finetune_yaml_file)
 
     run_subprocess(
