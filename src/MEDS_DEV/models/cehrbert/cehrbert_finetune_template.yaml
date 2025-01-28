@@ -1,8 +1,15 @@
 model_name_or_path:
 tokenizer_name_or_path:
 
+cohort_folder:
 data_folder:
 dataset_prepared_path:
+
+use_lora: False
+lora_rank: 64
+lora_alpha: 16
+target_modules: ["query", "value"]
+lora_dropout: 0.1
 
 validation_split_percentage: 0.1
 preprocessing_num_workers: 10
@@ -23,13 +30,12 @@ include_value_prediction: false
 meds_to_cehrbert_conversion_type: "MedsToCehrbertOMOP"
 
 do_train: true
+do_predict: true
+finetune_model_type: pooling
+
 overwrite_output_dir: false
 resume_from_checkpoint: # path to the checkpoint folder
 seed:
-
-num_hidden_layers: 8
-max_position_embeddings: 1024
-hidden_size: 768
 
 # torch dataloader configs
 dataloader_num_workers:

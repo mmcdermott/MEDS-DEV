@@ -9,6 +9,9 @@ predictions_fp: ${output_dir}/predictions.parquet
 split: "held_out"
 seed: 1
 num_threads: 4
+use_lora: False
+lora_rank: 64
+finetune_model_type: pooling # options: pooling, lstm
 
 hydra:
   run:
