@@ -25,7 +25,7 @@ def main(cfg: DictConfig) -> None:
     pretrained_model_dir = get_pretrain_model_dir(output_dir)
     # Fine-tuned model dir
     finetuned_output_dir = output_dir / task_label_name
-    finetuned_output_dir.mkdir(exist_ok=True)
+    finetuned_output_dir.mkdir(exist_ok=True, parents=True)
     # Open the YAML file
     finetune_yaml_file = output_dir / f"cehrbert_finetune_{task_label_name}.yaml"
     finetune_yaml = OmegaConf.load(str(finetune_yaml_template))

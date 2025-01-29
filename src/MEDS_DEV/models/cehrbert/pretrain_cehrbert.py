@@ -47,7 +47,7 @@ def main(cfg: DictConfig) -> None:
     output_dir = Path(cfg.output_dir)
     # Create the meds_reader database
     meds_reader_dir = output_dir / "meds_reader"
-    meds_reader_dir.mkdir(exist_ok=True)
+    meds_reader_dir.mkdir(exist_ok=True, parents=True)
     run_subprocess(
         cmd=f"meds_reader_convert {cfg.dataset_dir} {meds_reader_dir} --num_threads {cfg.num_threads}",
         temp_work_dir=str(output_dir),
@@ -55,7 +55,7 @@ def main(cfg: DictConfig) -> None:
     )
     # model output
     model_output_dir = get_pretrain_model_dir(output_dir)
-    model_output_dir.mkdir(exist_ok=True)
+    model_output_dir.mkdir(exist_ok=True, parents=True)
 
     # Open the YAML file
     pretraining_yaml_file = output_dir / "cehrbert_pretraining.yaml"
