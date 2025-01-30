@@ -41,6 +41,12 @@ systems, with standardized baselining systems that can be used on any task and d
 evaluation paradigm to provide a common currency for comparison, and a commitment to open science,
 transparency, and reproducibility to help drive the field forward.
 
+To see supported MEDS-DEV tasks, datasets, and models, see the links below:
+
+1. [Tasks](src/MEDS_DEV/tasks)
+2. [Datasets](src/MEDS_DEV/datasets)
+3. [Models](src/MEDS_DEV/models)
+
 Note that this repository is _not_ a place where functional code is stored. Rather, this repository stores
 configuration files, training recipes, results, etc. for the MEDS-DEV benchmarking effort -- runnable code
 will often come from other repositories, with operationalized instructions on how to leverage that external
