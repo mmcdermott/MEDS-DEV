@@ -15,7 +15,7 @@ def main(cfg: DictConfig):
     if cfg.dataset not in DATASETS:
         raise ValueError(f"Dataset {cfg.dataset} not currently configured!")
 
-    commands = DATASETS[cfg.dataset]["commands"]
+    commands = DATASETS[cfg.dataset]["metadata"]["commands"]
     requirements = DATASETS[cfg.dataset]["requirements"]
 
     build_cmd = commands["build_demo"] if cfg.demo else commands["build_full"]
