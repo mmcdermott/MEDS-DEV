@@ -12,5 +12,6 @@ for path in model_files.rglob("*/model.yaml"):
     MODELS[model_name] = OmegaConf.to_object(OmegaConf.load(path))
     requirements_path = path.parent / "requirements.txt"
     MODELS[model_name]["requirements"] = requirements_path if requirements_path.exists() else None
+    MODELS[model_name]["model_dir"] = path.parent
 
 __all__ = ["MODELS", "CFG_YAML"]
