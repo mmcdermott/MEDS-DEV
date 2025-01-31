@@ -113,6 +113,8 @@ def model_commands(cfg: DictConfig, commands: dict[str, dict[str, str]]) -> Gene
         if do_set_split:
             raise ValueError(f"Cannot set split manually when mode is {cfg.mode}.")
         format_kwargs["split"] = cfg.split
+    if cfg.get("model_dir", None):
+        format_kwargs["model_dir"] = cfg.model_dir
 
     if len(run_modes) == 1 and len(dataset_types) == 1:
         run_mode = run_modes[0]
