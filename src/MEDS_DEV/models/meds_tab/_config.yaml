@@ -5,7 +5,7 @@ defaults:
 dataset_dir: ???
 labels_dir: ???
 output_dir: ???
-predictions_fp: ${output_dir}/results/best_trial/{split}_predictions.parquet
+predictions_fp: ${output_dir}/predictions.parquet
 split: "held_out"
 seed: 1
 
