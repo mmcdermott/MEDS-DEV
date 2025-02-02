@@ -1,12 +1,12 @@
 commands:
   unsupervised:
     train: >-
-      python -m MEDS_DEV.models.cehrbert.pretrain_cehrbert output_dir={output_dir}
+      python {model_dir}/pretrain_cehrbert.py output_dir={output_dir}
       dataset_dir={dataset_dir}
   supervised:
     train: >-
-      python -m MEDS_DEV.models.cehrbert.finetune_cehrbert output_dir={output_dir}
+      python {model_dir}/finetune_cehrbert.py output_dir={output_dir}
       dataset_dir={dataset_dir} labels_dir={labels_dir}
     predict: >-
-      python -m MEDS_DEV.models.cehrbert.generate_cehrbert_predictions labels_dir={labels_dir}
+      python {model_dir}/generate_cehrbert_predictions.py labels_dir={labels_dir}
       output_dir={output_dir} split={split} dataset_dir={dataset_dir}
