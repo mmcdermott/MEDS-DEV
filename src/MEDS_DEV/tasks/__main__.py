@@ -1,5 +1,7 @@
 import logging
+import shutil
 import subprocess
+from pathlib import Path
 
 import hydra
 from omegaconf import DictConfig
@@ -24,6 +26,18 @@ def main(cfg: DictConfig):
         raise ValueError(f"Predicates not found for dataset {cfg.dataset}")
 
     logger.info(f"Running task {cfg.task} on dataset {cfg.dataset}")
+
+    output_dir = Path(cfg.output_dir)
+    if cfg.get("do_overwrite", False) and output_dir.exists():
+        logger.info(f"Removing existing output directory: {output_dir}")
+        shutil.rmtree(output_dir)
+
+        output_dir.mkdir(parents=True, exist_ok=False)
+
+    done_fp = output_dir / ".done"
+    if done_fp.exists():
+        logger.info(f"Output directory {output_dir} already exists and is marked as done.")
+        return
 
     # make the ACES command
     cmd = " ".join(
@@ -53,3 +67,5 @@ def main(cfg: DictConfig):
             f"STDERR:\n{aces_command_out.stderr.decode()}\n"
             f"STDOUT:\n{aces_command_out.stdout.decode()}"
         )
+    logger.info(f"Extract {cfg.task} for {cfg.dataset} command {cmd} finished successfully.")
+    done_fp.touch()
