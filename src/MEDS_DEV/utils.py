@@ -22,6 +22,8 @@ def get_venv_bin_path(venv_path: str | Path) -> Path:
 @contextlib.contextmanager
 def tempdir_ctx(cfg: DictConfig) -> Path:
     temp_dir = cfg.get("temp_dir", None)
+    if temp_dir is None and os.environ.get("MEDS_DEV_USE_TMP_DIR", None) is not None:
+        temp_dir = os.environ["MEDS_DEV_USE_TMP_DIR"]
     if temp_dir is None:
         with tempfile.TemporaryDirectory() as temp_dir:
             yield Path(temp_dir)
