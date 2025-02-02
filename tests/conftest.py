@@ -1,3 +1,4 @@
+import os
 from pathlib import Path
 from tempfile import TemporaryDirectory
 
@@ -10,15 +11,19 @@ from tests.utils import run_command
 @pytest.fixture(scope="session", params=DATASETS)
 def demo_dataset(request) -> Path:
     dataset_name = request.param
+    skip_build = False
     with TemporaryDirectory() as root_dir:
-        root_dir = Path(root_dir)
-        output_dir = root_dir / "output"
-
-        run_command(
-            "meds-dev-dataset",
-            test_name=f"Build {dataset_name}",
-            hydra_kwargs={"dataset": dataset_name, "output_dir": str(output_dir.resolve()), "demo": True},
-        )
+        output_dir = Path(root_dir) / "output"
+        if os.environ.get("MEDS_DEV_USE_TMP_DIR", None) is not None:
+            output_dir = Path(os.environ["MEDS_DEV_USE_TMP_DIR"]) / "output"
+            if (output_dir / ".logs/_all_stages.done").exists():
+                skip_build = True
+        if not skip_build:
+            run_command(
+                "meds-dev-dataset",
+                test_name=f"Build {dataset_name}",
+                hydra_kwargs={"dataset": dataset_name, "output_dir": str(output_dir.resolve()), "demo": True},
+            )
 
         yield dataset_name, output_dir
 
