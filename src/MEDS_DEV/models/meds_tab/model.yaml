@@ -26,7 +26,7 @@ commands:
           --multirun \
           worker="range(0,1)" \
           "input_dir={dataset_dir}/data" "output_dir={output_dir}/meds_tab" \
-          "output_model_dir={output_dir}/results" "task_name=meds_dev_task" do_overwrite=False \
+          "output_model_dir={output_dir}/results" "task_name=null" do_overwrite=False \
           "hydra.sweeper.n_trials=1" "hydra.sweeper.n_jobs=1" \
           "input_tabularized_cache_dir={output_dir}/meds_tab/tabularize/" \
           "input_label_cache_dir={labels_dir}" \
