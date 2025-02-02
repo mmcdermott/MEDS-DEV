@@ -56,6 +56,9 @@ def main(cfg: DictConfig) -> None:
     model_output_dir = get_pretrain_model_dir(output_dir)
     model_output_dir.mkdir(exist_ok=True, parents=True)
 
+    # dataset_prepared_path
+    (output_dir / "dataset_prepared_path").mkdir(exist_ok=True, parents=True)
+
     # Open the YAML file
     pretraining_yaml_file = output_dir / "cehrbert_pretraining.yaml"
     pretraining_yaml = OmegaConf.load(str(pretraining_yaml_template))
