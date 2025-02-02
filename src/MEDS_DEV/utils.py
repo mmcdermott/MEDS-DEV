@@ -53,7 +53,7 @@ def install_venv(venv_path: Path, requirements: str | Path) -> Path:
 def temp_env(cfg: DictConfig, requirements: str | Path | None) -> tuple[Path, dict]:
     with tempdir_ctx(cfg) as build_temp_dir:
         env = os.environ.copy()
-        if requirements is not None:
+        if requirements is not None and not os.environ.get("MEDS_DEV_USE_CURRENT_ENV", False):
             venv_path = build_temp_dir / ".venv"
             venv_bin_path = install_venv(venv_path, requirements)
             env["PATH"] = f"{str(venv_bin_path)}{os.pathsep}{env['PATH']}"
