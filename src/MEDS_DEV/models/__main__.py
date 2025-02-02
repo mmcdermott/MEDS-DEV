@@ -171,15 +171,11 @@ def main(cfg: DictConfig):
     requirements = MODELS[cfg.model]["requirements"]
 
     output_dir = Path(cfg.output_dir)
+    if cfg.get("do_overwrite", False) and output_dir.exists():  # pragma: no cover
+        logger.info(f"Removing existing output directory: {output_dir}")
+        shutil.rmtree(output_dir)
 
-    if cfg.do_overwrite:
-        if output_dir.exists():
-            logger.info(f"Removing existing output directory: {output_dir}")
-            shutil.rmtree(output_dir)
-        else:
-            logger.info(f"Output directory {output_dir} does not exist. No need to remove.")
-
-    output_dir.mkdir(exist_ok=True, parents=True)
+    output_dir.mkdir(parents=True, exist_ok=True)
 
     with temp_env(cfg, requirements) as (temp_dir, env):
         for cmd, out_dir in model_commands(cfg, commands, model_dir):
@@ -207,3 +203,4 @@ def main(cfg: DictConfig):
                 )
             else:
                 done_file.touch()
+    logger.info(f"Model {cfg.model} finished successfully.")

@@ -271,3 +271,25 @@ A full description of these commands is coming soon, but for now, note that:
 See the help string for `meds-dev-model` for more information. Note the final output predictions should be
 stored as a set of parquet files in the final output directory specified by the `output_dir` variable in the
 format expected by `meds-evaluation`.
+
+## Efficient Testing
+
+To make testing more efficient during model / task development, you can use a local, persistent cache dir to
+avoid repeating the parts of the test setup you aren't changing. To do this, use the following command line
+arguments with pytest:
+
+```bash
+pytest --doctest-modules -s --persistent_cache_dir=$TEST_CACHE --cache_dataset='all' --cache_task='all'
+```
+
+Note that
+
+1. The `--persistent_cache_dir` argument specifies the directory where the cache will be stored. It must be an
+    existing directory on disk.
+2. You can either specify `--cache_dataset`, `--cache_tasl`, and/or `--cache_model` with a list of specific
+    datasets, models, or tasks to cache by using the argument multiple times with the specific names, or you
+    can use `'all'` to cache all datasets, models, or tasks, as is shown above.
+3. The cached parts specified via the arguments will be stored in the persistent cache directory; other parts
+    will be stored in temporary directories and deleted in between runs. Persistently cached parts will not be
+    re-run, even if the associated code for that part is changed. So, you need to manually ensure that you are
+    only caching things that won't change with your code.

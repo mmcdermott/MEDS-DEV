@@ -4,6 +4,7 @@ defaults:
 predictions_dir: ???
 predictions_path: ${predictions_dir}/**/*.parquet
 output_dir: ???
+do_overwrite: False
 
 hydra:
   job:
