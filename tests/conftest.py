@@ -19,17 +19,28 @@ def pytest_addoption(parser):
         ),
     )
 
-    cache_str_template = (
-        "Cache the {opt} with the given name. Use 'all' to cache all {opt}s. Add specific {opt}s "
-        "by repeating the option, e.g., --cache_{opt}={opt}1 --cache_{opt}={opt}2."
-    )
-
     def add_cache_opt(opt: str):
+        cache_str_template = (
+            "Cache the {opt} with the given name. Use 'all' to cache all {opt}s. Add specific {opt}s "
+            "by repeating the option, e.g., --cache_{opt}={opt}1 --cache_{opt}={opt}2."
+        )
         parser.addoption(f"--cache_{opt}", action="append", type=str, help=cache_str_template.format(opt=opt))
 
     add_cache_opt("dataset")
     add_cache_opt("task")
     add_cache_opt("model")
+
+    def add_test_opt(opt: str):
+        test_str_template = (
+            "Test the {opt} with the given name. Use 'all' to select all {opt}s. Add specific {opt}s "
+            "by repeating the option, e.g., --test_{opt}={opt}1 --test_{opt}={opt}2. Default is to run all. "
+            "If any are added, then only those will be run, but if none are added, then all will be run."
+        )
+        parser.addoption(f"--test_{opt}", action="append", type=str, help=test_str_template.format(opt=opt))
+
+    add_test_opt("dataset")
+    add_test_opt("task")
+    add_test_opt("model")
 
 
 def get_and_validate_cache_settings(request) -> tuple[Path | None, tuple[set[str], set[str], set[str]]]:
@@ -145,7 +156,29 @@ def cache_dir(persistent_dir: Path | None):
             yield Path(temp_dir)
 
 
-@pytest.fixture(scope="session", params=DATASETS)
+def get_opts(config, opt: str) -> list[str]:
+    """A helper to get the options from the config object, pulling from all supported where appropriate."""
+    arg = config.getoption(f"--test_{opt}")
+    allowed = {"dataset": DATASETS, "task": TASKS, "model": MODELS}
+
+    if arg:
+        return allowed[opt] if "all" in arg else arg
+    else:
+        return allowed[opt]
+
+
+def pytest_generate_tests(metafunc):
+    if "demo_dataset" in metafunc.fixturenames:
+        metafunc.parametrize("demo_dataset", get_opts(metafunc.config, "dataset"), indirect=True)
+    if "demo_dataset_with_task_labels" in metafunc.fixturenames:
+        metafunc.parametrize(
+            "demo_dataset_with_task_labels", get_opts(metafunc.config, "task"), indirect=True
+        )
+    if "demo_model" in metafunc.fixturenames:
+        metafunc.parametrize("demo_model", get_opts(metafunc.config, "model"), indirect=True)
+
+
+@pytest.fixture(scope="session")
 def demo_dataset(request) -> Path:
     dataset_name = request.param
     persistent_cache_dir, (cache_datasets, _, _) = get_and_validate_cache_settings(request)
@@ -163,7 +196,7 @@ def demo_dataset(request) -> Path:
         yield dataset_name, output_dir
 
 
-@pytest.fixture(scope="session", params=TASKS)
+@pytest.fixture(scope="session")
 def demo_dataset_with_task_labels(request, demo_dataset):
     task_name = request.param
     (dataset_name, dataset_dir) = demo_dataset
@@ -195,7 +228,7 @@ def demo_dataset_with_task_labels(request, demo_dataset):
         yield dataset_name, dataset_dir, task_name, task_labels_dir
 
 
-@pytest.fixture(scope="session", params=MODELS)
+@pytest.fixture(scope="session")
 def demo_model(request, demo_dataset_with_task_labels):
     model = request.param
     dataset_name, dataset_dir, task_name, task_labels_dir = demo_dataset_with_task_labels

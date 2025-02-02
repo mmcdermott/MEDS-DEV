@@ -293,3 +293,8 @@ Note that
     will be stored in temporary directories and deleted in between runs. Persistently cached parts will not be
     re-run, even if the associated code for that part is changed. So, you need to manually ensure that you are
     only caching things that won't change with your code.
+
+You can also restrict the set of tasks, datasets, and models that you explore using the command line options
+`--test_task`, `--test_dataset`, and `--test_model`, respectively. These options can be used to run only the
+selected options (repeating the argument as needed, e.g., `--test_task=task1 --test_task=task2`). If they are
+omitted or if `'all'` is specified as an option, then all allowed tests will be run.
