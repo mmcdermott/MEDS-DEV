@@ -152,7 +152,7 @@ def demo_dataset(request) -> Path:
 
     with cache_dir(persistent_cache_dir if dataset_name in cache_datasets else None) as root_dir:
         root_dir = Path(root_dir)
-        output_dir = root_dir / "output"
+        output_dir = root_dir / dataset_name
 
         run_command(
             "meds-dev-dataset",
