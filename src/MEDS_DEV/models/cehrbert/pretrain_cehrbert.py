@@ -1,6 +1,5 @@
 import logging
 import subprocess
-from importlib.resources import files
 from pathlib import Path
 
 import hydra
@@ -8,8 +7,8 @@ from omegaconf import DictConfig, OmegaConf
 
 logger = logging.getLogger(__name__)
 
-CONFIG = files("MEDS_DEV") / "models" / "cehrbert" / "_config.yaml"
-pretraining_yaml_template = files("MEDS_DEV") / "models" / "cehrbert" / "cehrbert_pretrain_template.yaml"
+CONFIG = Path(__file__).parent / "_config.yaml"
+pretraining_yaml_template = Path(__file__).parent / "cehrbert_pretrain_template.yaml"
 
 
 def run_subprocess(cmd: str, temp_work_dir: str, out_dir: Path) -> None:

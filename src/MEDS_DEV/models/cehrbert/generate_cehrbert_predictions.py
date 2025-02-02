@@ -1,5 +1,4 @@
 import logging
-from importlib.resources import files
 from pathlib import Path
 
 import hydra
@@ -9,7 +8,7 @@ from omegaconf import DictConfig
 
 logger = logging.getLogger(__name__)
 
-CONFIG = files("MEDS_DEV") / "models" / "random_predictor" / "_config.yaml"
+CONFIG = Path(__file__).parent / "_config.yaml"
 
 
 @hydra.main(version_base=None, config_path=str(CONFIG.parent.resolve()), config_name=CONFIG.stem)

@@ -1,5 +1,4 @@
 import logging
-from importlib.resources import files
 from pathlib import Path
 
 import hydra
@@ -9,8 +8,8 @@ from .pretrain_cehrbert import get_pretrain_model_dir, run_subprocess
 
 logger = logging.getLogger(__name__)
 
-CONFIG = files("MEDS_DEV") / "models" / "cehrbert" / "_config.yaml"
-finetune_yaml_template = files("MEDS_DEV") / "models" / "cehrbert" / "cehrbert_finetune_template.yaml"
+CONFIG = Path(__file__).parent / "_config.yaml"
+finetune_yaml_template = Path(__file__).parent / "cehrbert_finetune_template.yaml"
 
 
 @hydra.main(version_base=None, config_path=str(CONFIG.parent.resolve()), config_name=CONFIG.stem)
