@@ -1,3 +1,4 @@
+import os
 from importlib.resources import files
 
 from omegaconf import OmegaConf
@@ -14,5 +15,9 @@ for path in task_files.glob("**/*.yaml"):
         "criteria_fp": path,
         "metadata": metadata,
     }
+
+if os.environ.get("MEDS_DEV_TASK_NAMES", None) is not None:
+    valid_tasks = set(os.environ["MEDS_DEV_TASK_NAMES"].split(","))
+    TASKS = {task: TASKS[task] for task in TASKS if task in valid_tasks}
 
 __all__ = ["TASKS", "CFG_YAML", "ACES_CFG_YAML"]
