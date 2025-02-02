@@ -171,7 +171,7 @@ def main(cfg: DictConfig):
     requirements = MODELS[cfg.model]["requirements"]
 
     output_dir = Path(cfg.output_dir)
-    if cfg.get("do_overwrite", False) and output_dir.exists():
+    if cfg.get("do_overwrite", False) and output_dir.exists():  # pragma: no cover
         logger.info(f"Removing existing output directory: {output_dir}")
         shutil.rmtree(output_dir)
 

@@ -14,14 +14,14 @@ logger = logging.getLogger(__name__)
 @hydra.main(version_base=None, config_path=str(CFG_YAML.parent), config_name=CFG_YAML.stem)
 def main(cfg: DictConfig):
     output_dir = Path(cfg.output_dir)
-    if cfg.get("do_overwrite", False) and output_dir.exists():
+    if cfg.get("do_overwrite", False) and output_dir.exists():  # pragma: no cover
         logger.info(f"Removing existing output directory: {output_dir}")
         shutil.rmtree(output_dir)
 
         output_dir.mkdir(parents=True, exist_ok=False)
 
     done_fp = output_dir / ".done"
-    if done_fp.exists():
+    if done_fp.exists():  # pragma: no cover
         logger.info(f"Output directory {output_dir} already exists and is marked as done.")
         return
 
