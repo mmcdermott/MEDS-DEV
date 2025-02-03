@@ -5,6 +5,8 @@ defaults:
 dataset_dir: ???
 labels_dir: ???
 output_dir: ???
+model_pretrained_dir: ???
+model_finetuned_dir: ???
 predictions_fp: ${output_dir}/predictions.parquet
 split: "held_out"
 demo: false

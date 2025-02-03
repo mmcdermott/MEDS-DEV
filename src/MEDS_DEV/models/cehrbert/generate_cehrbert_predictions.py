@@ -16,11 +16,11 @@ def main(cfg: DictConfig) -> None:
     predictions_fp = Path(cfg.predictions_fp)
     predictions_fp.parent.mkdir(parents=True, exist_ok=True)
     # Get the output dir
-    output_dir = Path(cfg.output_dir)
+    model_finetuned_dir = Path(cfg.model_finetuned_dir)
     # Infer the task label
     task_label_name = Path(cfg.labels_dir).name
     # Fine-tuned model dir
-    test_prediction_output_dir = output_dir / task_label_name / "test_predictions"
+    test_prediction_output_dir = model_finetuned_dir / task_label_name / "test_predictions"
     if not test_prediction_output_dir.exists():
         raise RuntimeError(
             "The previous fine-tuning step did not generate the predictions for the held-out set."

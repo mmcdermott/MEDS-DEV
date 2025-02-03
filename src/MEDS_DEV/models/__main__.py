@@ -122,7 +122,6 @@ def model_commands(
         run_mode = run_modes[0]
         dataset_type = dataset_types[0]
         format_kwargs["output_dir"] = str(output_dir)
-
         yield fmt_command(commands, dataset_type, run_mode, **format_kwargs), output_dir
         return
 
@@ -137,6 +136,9 @@ def model_commands(
             continue
 
         run_output_dir = output_dir / cfg.dataset_name
+        # TODO: This should probably be moved to configs/_run_model.yaml
+        # This is needed to infer the pre-trained model folder.
+        format_kwargs["model_pretrained_dir"] = run_output_dir / DatasetType.UNSUPERVISED / RunMode.TRAIN
         if dataset_type == DatasetType.SUPERVISED:
             run_output_dir = run_output_dir / cfg.task_name
             format_kwargs["labels_dir"] = str(cfg.labels_dir)
@@ -150,6 +152,8 @@ def model_commands(
         if do_set_split:
             if run_mode == RunMode.PREDICT:
                 format_kwargs["split"] = meds.held_out_split
+                # TODO: this is a workaround to get the finetuned model dir
+                format_kwargs["model_finetuned_dir"] = run_output_dir.parent / RunMode.TRAIN
             else:
                 # We don't set the split in anything but predict mode.
                 format_kwargs.pop("split", None)

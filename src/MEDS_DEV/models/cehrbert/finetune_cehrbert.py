@@ -22,12 +22,13 @@ finetune_yaml_template = Path(__file__).parent / "cehrbert_finetune_template.yam
 def main(cfg: DictConfig) -> None:
     # Get the output dir
     output_dir = Path(cfg.output_dir)
+    model_pretrained_dir = Path(cfg.model_pretrained_dir)
     # Infer the task label
     task_label_name = Path(cfg.labels_dir).name
     # meds_reader dir
-    meds_reader_dir = output_dir / "meds_reader"
+    meds_reader_dir = model_pretrained_dir / "meds_reader"
     # Pretrained model dir
-    pretrained_model_dir = get_pretrain_model_dir(output_dir)
+    pretrained_model_dir = get_pretrain_model_dir(model_pretrained_dir)
     # Fine-tuned model dir
     finetuned_output_dir = output_dir / task_label_name
     finetuned_output_dir.mkdir(exist_ok=True, parents=True)
