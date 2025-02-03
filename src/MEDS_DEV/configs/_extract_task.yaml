@@ -3,6 +3,7 @@ defaults:
 
 dataset: ???
 dataset_dir: ???
+dataset_predicates_path: null
 task: ???
 output_dir: ???
 do_overwrite: False
@@ -22,4 +23,6 @@ hydra:
 
       You can specify "dataset" to give the name of the dataset you want to build and "dataset_dir" to point
       to the extracted dataset on disk, "output_dir" to say where the final, labeled task cohort
-      should be stored on disk, and "task" to dictate which task should be extracted.
+      should be stored on disk, and "task" to dictate which task should be extracted. If you overwrite
+      "dataset_predicates_path", then it will look at that location for the predicates file, rather than in
+      the MEDS-DEV repository location. This is useful for local datasets.

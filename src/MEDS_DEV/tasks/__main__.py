@@ -16,11 +16,15 @@ logger = logging.getLogger(__name__)
 def main(cfg: DictConfig):
     if cfg.task not in TASKS:
         raise ValueError(f"Task {cfg.task} not currently configured")
-    if cfg.dataset not in DATASETS:
-        raise ValueError(f"Dataset {cfg.dataset} not currently configured")
 
     task_config_path = TASKS[cfg.task]["criteria_fp"]
-    dataset_predicates_path = DATASETS[cfg.dataset]["predicates"]
+    if cfg.get("dataset_predicates_path", None):
+        logger.info(f"Using provided (local) predicates path: {cfg.dataset_predicates_path}")
+        dataset_predicates_path = Path(cfg.dataset_predicates_path)
+    else:
+        if cfg.dataset not in DATASETS:
+            raise ValueError(f"Dataset {cfg.dataset} not currently configured")
+        dataset_predicates_path = DATASETS[cfg.dataset]["predicates"]
 
     if dataset_predicates_path is None:
         raise ValueError(f"Predicates not found for dataset {cfg.dataset}")
