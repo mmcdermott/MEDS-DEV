@@ -1,0 +1,39 @@
+commands:
+  unsupervised: null
+  supervised:
+    train: |-
+      meds-tab-describe \
+          "input_dir={dataset_dir}/data" "output_dir={output_dir}/meds_tab"
+
+      meds-tab-tabularize-static \
+          "input_dir={dataset_dir}/data" "output_dir={output_dir}/meds_tab" \
+          do_overwrite=False "input_label_dir={labels_dir}" \
+          "tabularization.aggs=[code/count,value/sum]" \
+          "tabularization.window_sizes=[7d,30d]" \
+          "tabularization.max_included_codes=100"
+
+      meds-tab-tabularize-time-series \
+          --multirun \
+          worker="range(0,1)" \
+          hydra/launcher=joblib \
+          "input_dir={dataset_dir}/data" "output_dir={output_dir}/meds_tab" \
+          do_overwrite=False "input_label_dir={labels_dir}" \
+          "tabularization.aggs=[code/count,value/sum]" \
+          "tabularization.window_sizes=[7d,30d]" \
+          "tabularization.max_included_codes=100"
+
+      meds-tab-xgboost \
+          --multirun \
+          "input_dir={dataset_dir}/data" "output_dir={output_dir}/meds_tab" \
+          "output_model_dir={output_dir}/results" "task_name=null" do_overwrite=False \
+          "hydra.sweeper.n_trials=10" "hydra.sweeper.n_jobs=1" \
+          "input_tabularized_cache_dir={output_dir}/meds_tab/tabularize/" \
+          "input_label_cache_dir={labels_dir}" \
+          "tabularization.aggs=[code/count,value/sum]" \
+          "tabularization.window_sizes=[7d,30d]" \
+          "tabularization.max_included_codes=100" tabularization.min_code_inclusion_count=null
+
+    predict: |-
+      mkdir -p "{output_dir}"
+      LATEST_TRAIN_DIR=$(ls -td {output_dir}/../train/results/*/ | head -n 1)
+      cp $LATEST_TRAIN_DIR/best_trial/{split}_predictions.parquet {output_dir}/predictions.parquet

@@ -83,7 +83,9 @@ def fmt_command(
     return commands[dataset_type][run_mode].format(**format_kwargs)
 
 
-def model_commands(cfg: DictConfig, commands: dict[str, dict[str, str]]) -> Generator[tuple[str, Path]]:
+def model_commands(
+    cfg: DictConfig, commands: dict[str, dict[str, str]], model_dir: Path
+) -> Generator[tuple[str, Path]]:
     """Yields the sequence of appropriate dataset, run mode pairs for the given config and commands.
 
     Args:
@@ -104,7 +106,10 @@ def model_commands(cfg: DictConfig, commands: dict[str, dict[str, str]]) -> Gene
 
     output_dir = Path(cfg.output_dir)
 
-    format_kwargs = {"dataset_dir": str(cfg.dataset_dir)}
+    format_kwargs = {
+        "dataset_dir": str(cfg.dataset_dir),
+        "model_dir": str(model_dir),
+    }
     if cfg.get("model_initialization_dir", None):
         format_kwargs["model_initialization_dir"] = cfg.model_initialization_dir
     if cfg.get("demo", False):
@@ -162,21 +167,18 @@ def main(cfg: DictConfig):
         raise ValueError(f"Model {cfg.model} not currently configured")
 
     commands = MODELS[cfg.model]["commands"]
+    model_dir = MODELS[cfg.model]["model_dir"]
     requirements = MODELS[cfg.model]["requirements"]
 
     output_dir = Path(cfg.output_dir)
+    if cfg.get("do_overwrite", False) and output_dir.exists():  # pragma: no cover
+        logger.info(f"Removing existing output directory: {output_dir}")
+        shutil.rmtree(output_dir)
 
-    if cfg.do_overwrite:
-        if output_dir.exists():
-            logger.info(f"Removing existing output directory: {output_dir}")
-            shutil.rmtree(output_dir)
-        else:
-            logger.info(f"Output directory {output_dir} does not exist. No need to remove.")
-
-    output_dir.mkdir(exist_ok=True, parents=True)
+    output_dir.mkdir(parents=True, exist_ok=True)
 
     with temp_env(cfg, requirements) as (temp_dir, env):
-        for cmd, out_dir in model_commands(cfg, commands):
+        for cmd, out_dir in model_commands(cfg, commands, model_dir):
             done_file = out_dir / ".done"
             if done_file.exists():
                 logger.info(f"Skipping {cmd} because {done_file} exists.")
@@ -201,3 +203,4 @@ def main(cfg: DictConfig):
                 )
             else:
                 done_file.touch()
+    logger.info(f"Model {cfg.model} finished successfully.")

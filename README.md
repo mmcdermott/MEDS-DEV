@@ -41,6 +41,12 @@ systems, with standardized baselining systems that can be used on any task and d
 evaluation paradigm to provide a common currency for comparison, and a commitment to open science,
 transparency, and reproducibility to help drive the field forward.
 
+To see supported MEDS-DEV tasks, datasets, and models, see the links below:
+
+1. [Tasks](src/MEDS_DEV/tasks)
+2. [Datasets](src/MEDS_DEV/datasets)
+3. [Models](src/MEDS_DEV/models)
+
 Note that this repository is _not_ a place where functional code is stored. Rather, this repository stores
 configuration files, training recipes, results, etc. for the MEDS-DEV benchmarking effort -- runnable code
 will often come from other repositories, with operationalized instructions on how to leverage that external
@@ -265,3 +271,30 @@ A full description of these commands is coming soon, but for now, note that:
 See the help string for `meds-dev-model` for more information. Note the final output predictions should be
 stored as a set of parquet files in the final output directory specified by the `output_dir` variable in the
 format expected by `meds-evaluation`.
+
+## Efficient Testing
+
+To make testing more efficient during model / task development, you can use a local, persistent cache dir to
+avoid repeating the parts of the test setup you aren't changing. To do this, use the following command line
+arguments with pytest:
+
+```bash
+pytest --doctest-modules -s --persistent_cache_dir=$TEST_CACHE --cache_dataset='all' --cache_task='all'
+```
+
+Note that
+
+1. The `--persistent_cache_dir` argument specifies the directory where the cache will be stored. It must be an
+    existing directory on disk.
+2. You can either specify `--cache_dataset`, `--cache_task`, and/or `--cache_model` with a list of specific
+    datasets, models, or tasks to cache by using the argument multiple times with the specific names, or you
+    can use `'all'` to cache all datasets, models, or tasks, as is shown above.
+3. The cached parts specified via the arguments will be stored in the persistent cache directory; other parts
+    will be stored in temporary directories and deleted in between runs. Persistently cached parts will not be
+    re-run, even if the associated code for that part is changed. So, you need to manually ensure that you are
+    only caching things that won't change with your code.
+
+You can also restrict the set of tasks, datasets, and models that you explore using the command line options
+`--test_task`, `--test_dataset`, and `--test_model`, respectively. These options can be used to run only the
+selected options (repeating the argument as needed, e.g., `--test_task=task1 --test_task=task2`). If they are
+omitted or if `'all'` is specified as an option, then all allowed tests will be run.
