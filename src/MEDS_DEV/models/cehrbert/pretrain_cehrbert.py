@@ -47,32 +47,55 @@ def main(cfg: DictConfig) -> None:
     # Create the meds_reader database
     meds_reader_dir = output_dir / "meds_reader"
     meds_reader_dir.mkdir(exist_ok=True, parents=True)
+    logger.info(f"Creating the meds reader now at {meds_reader_dir}")
     run_subprocess(
         cmd=f"meds_reader_convert {cfg.dataset_dir} {meds_reader_dir} --num_threads {cfg.num_threads}",
         temp_work_dir=str(output_dir),
         out_dir=output_dir / "meds_reader",
     )
     # model output
+    logger.info(f"Creating the model output at {meds_reader_dir}")
     model_output_dir = get_pretrain_model_dir(output_dir)
     model_output_dir.mkdir(exist_ok=True, parents=True)
 
     # dataset_prepared_path
-    (output_dir / "dataset_prepared_path").mkdir(exist_ok=True, parents=True)
+    dataset_prepared_path = output_dir / "dataset_prepared_path"
+    logger.info(f"Creating the dataset_prepared output at {dataset_prepared_path}")
+    dataset_prepared_path.mkdir(exist_ok=True, parents=True)
 
     # Open the YAML file
     pretraining_yaml_file = output_dir / "cehrbert_pretraining.yaml"
+    logger.info(f"Writing the pretraining yaml file to {pretraining_yaml_file}")
     pretraining_yaml = OmegaConf.load(str(pretraining_yaml_template))
-    pretraining_yaml["model_name_or_path"] = model_output_dir
-    pretraining_yaml["tokenizer_name_or_path"] = model_output_dir
-    pretraining_yaml["output_dir"] = model_output_dir
-    pretraining_yaml["data_folder"] = meds_reader_dir
-    pretraining_yaml["dataset_prepared_path"] = output_dir / "dataset_prepared_path"
+    pretraining_yaml["model_name_or_path"] = str(model_output_dir.resolve())
+    pretraining_yaml["tokenizer_name_or_path"] = str(model_output_dir.resolve())
+    pretraining_yaml["output_dir"] = str(model_output_dir.resolve())
+    pretraining_yaml["data_folder"] = str(meds_reader_dir.resolve())
+    pretraining_yaml["dataset_prepared_path"] = str(dataset_prepared_path.resolve())
     pretraining_yaml["dataloader_num_workers"] = cfg.num_threads
     pretraining_yaml["seed"] = cfg.seed
-    pretraining_yaml.to_yaml(pretraining_yaml_file)
 
+    if cfg.get("demo", False):
+        pretraining_yaml["max_position_embeddings"] = 512
+        pretraining_yaml["hidden_size"] = 128
+        pretraining_yaml["evaluation_strategy"] = "steps"
+        pretraining_yaml["save_strategy"] = "steps"
+        pretraining_yaml["max_steps"] = 10
+        pretraining_yaml["per_device_train_batch_size"] = 1
+
+    # Assuming 'pretraining_yaml' is a DictConfig object
+    pretraining_yaml_string = OmegaConf.to_yaml(pretraining_yaml)
+    # Now write this string to a file
+    with open(pretraining_yaml_file, "w") as file:
+        file.write(pretraining_yaml_string)
+
+    logger.info("Starting the cehrbert pretraining runner")
     run_subprocess(
         cmd=f"python -u -m cehrbert.runners.hf_cehrbert_pretrain_runner {pretraining_yaml_file}",
         temp_work_dir=str(output_dir),
         out_dir=model_output_dir,
     )
+
+
+if __name__ == "__main__":
+    main()

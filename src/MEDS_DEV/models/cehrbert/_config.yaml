@@ -7,6 +7,7 @@ labels_dir: ???
 output_dir: ???
 predictions_fp: ${output_dir}/predictions.parquet
 split: "held_out"
+demo: false
 seed: 1
 num_threads: 4
 use_lora: False

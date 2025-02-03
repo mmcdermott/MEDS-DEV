@@ -27,6 +27,12 @@ def main(cfg: DictConfig) -> None:
         )
 
     predictions = pl.read_parquet(list(test_prediction_output_dir.rglob("*.parquet")))
+    # TODO: calibrate the classifier and generate better boolean predictions
+    predictions = predictions.with_columns(
+        predictions["predicted_boolean_probability"].cast(pl.Float64).alias("predicted_boolean_probability"),
+        (predictions["predicted_boolean_probability"] > 0.5).alias("predicted_boolean_value"),
+    )
+
     # Check the schema output:
     validate_binary_classification_schema(predictions)
     predictions.write_parquet(predictions_fp, use_pyarrow=True)
