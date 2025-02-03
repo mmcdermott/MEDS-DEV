@@ -27,5 +27,8 @@ def test_datasets_configured(demo_dataset):
     assert demo_dataset_dir.exists(), f"Output directory not found for {dataset_name}"
     data_subdir = demo_dataset_dir / "data"
     metadata_subdir = demo_dataset_dir / "metadata"
-    assert data_subdir.exists(), f"Data directory not found for {dataset_name}"
-    assert metadata_subdir.exists(), f"Metadata directory not found for {dataset_name}"
+
+    files_str = f"Directory contents: {list(demo_dataset_dir.rglob('*'))}"
+
+    assert data_subdir.exists(), f"Data directory not found for {dataset_name}. {files_str}"
+    assert metadata_subdir.exists(), f"Metadata directory not found for {dataset_name}. {files_str}"
