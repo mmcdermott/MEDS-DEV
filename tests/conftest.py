@@ -179,7 +179,7 @@ def pytest_generate_tests(metafunc):
 
 
 @pytest.fixture(scope="session")
-def demo_dataset(request) -> Path:
+def demo_dataset(request) -> tuple[str, Path]:
     dataset_name = request.param
     persistent_cache_dir, (cache_datasets, _, _) = get_and_validate_cache_settings(request)
 
@@ -197,7 +197,7 @@ def demo_dataset(request) -> Path:
 
 
 @pytest.fixture(scope="session")
-def demo_dataset_with_task_labels(request, demo_dataset):
+def demo_dataset_with_task_labels(request, demo_dataset) -> tuple[str, Path, str, Path]:
     task_name = request.param
     (dataset_name, dataset_dir) = demo_dataset
 
@@ -229,7 +229,7 @@ def demo_dataset_with_task_labels(request, demo_dataset):
 
 
 @pytest.fixture(scope="session")
-def demo_model(request, demo_dataset_with_task_labels):
+def demo_model(request, demo_dataset_with_task_labels) -> tuple[str, Path, str, Path, str, Path]:
     model = request.param
     dataset_name, dataset_dir, task_name, task_labels_dir = demo_dataset_with_task_labels
 
@@ -258,7 +258,7 @@ def demo_model(request, demo_dataset_with_task_labels):
 
 
 @pytest.fixture(scope="session")
-def evaluated_model(demo_model):
+def evaluated_model(demo_model) -> tuple[Path, tuple[str, Path, str, Path, str, Path]]:
     model, final_out_dir = demo_model[:2]
 
     with TemporaryDirectory() as root_dir:
