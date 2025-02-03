@@ -1,21 +1,42 @@
 import logging
-import os
-import sys
+import subprocess
 from pathlib import Path
 
 import hydra
 from omegaconf import DictConfig, OmegaConf
 
-# Append the directory containing pretrain_cehrbert.py to the sys.path
-script_dir = os.path.dirname(__file__)  # Get the directory where the current script is located
-parent_dir = os.path.dirname(script_dir)  # Get the parent directory
-sys.path.append(parent_dir)  # Append the parent directory to sys.path
-from pretrain_cehrbert import get_pretrain_model_dir, run_subprocess
-
 logger = logging.getLogger(__name__)
 
 CONFIG = Path(__file__).parent / "_config.yaml"
 finetune_yaml_template = Path(__file__).parent / "cehrbert_finetune_template.yaml"
+
+
+# Duplicated this function from pretrain_cehrbert
+# because import could not work from the model virtual environment
+def run_subprocess(cmd: str, temp_work_dir: str, out_dir: Path) -> None:
+    done_file = out_dir / ".done"
+    if done_file.exists():
+        logger.info(f"Skipping {cmd} because {done_file} exists.")
+        return
+
+    logger.info(f"Running model command: {cmd}")
+    command_out = subprocess.run(cmd, shell=True, cwd=temp_work_dir, capture_output=True)
+    command_errored = command_out.returncode != 0
+    if command_errored:
+        raise RuntimeError(
+            f"{cmd} failed with exit code "
+            f"{command_out.returncode}:\n"
+            f"STDERR:\n{command_out.stderr.decode()}\n"
+            f"STDOUT:\n{command_out.stdout.decode()}"
+        )
+    elif not out_dir.is_dir():
+        raise RuntimeError(
+            f"{cmd} failed to create output directory {out_dir}.\n"
+            f"STDERR:\n{command_out.stderr.decode()}\n"
+            f"STDOUT:\n{command_out.stdout.decode()}"
+        )
+    else:
+        done_file.touch()
 
 
 @hydra.main(version_base=None, config_path=str(CONFIG.parent.resolve()), config_name=CONFIG.stem)
@@ -28,7 +49,7 @@ def main(cfg: DictConfig) -> None:
     # meds_reader dir
     meds_reader_dir = model_pretrained_dir / "meds_reader"
     # Pretrained model dir
-    pretrained_model_dir = get_pretrain_model_dir(model_pretrained_dir)
+    pretrained_model_dir = model_pretrained_dir / "pretrained_cehrbert"
     # Fine-tuned model dir
     finetuned_output_dir = output_dir / task_label_name
     finetuned_output_dir.mkdir(exist_ok=True, parents=True)
