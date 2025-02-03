@@ -43,7 +43,7 @@ def run_subprocess(cmd: str, temp_work_dir: str, out_dir: Path) -> None:
 def main(cfg: DictConfig) -> None:
     # Get the output dir
     output_dir = Path(cfg.output_dir)
-    model_pretrained_dir = Path(cfg.model_pretrained_dir)
+    model_pretrained_dir = Path(cfg.model_initialization_dir)
     # Infer the task label
     task_label_name = Path(cfg.labels_dir).name
     # meds_reader dir

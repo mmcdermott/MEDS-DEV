@@ -16,7 +16,7 @@ def main(cfg: DictConfig) -> None:
     predictions_fp = Path(cfg.predictions_fp)
     predictions_fp.parent.mkdir(parents=True, exist_ok=True)
     # Get the output dir
-    model_finetuned_dir = Path(cfg.model_finetuned_dir)
+    model_finetuned_dir = Path(cfg.model_initialization_dir)
     # Infer the task label
     task_label_name = Path(cfg.labels_dir).name
     # Fine-tuned model dir
