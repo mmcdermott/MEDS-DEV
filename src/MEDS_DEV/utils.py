@@ -64,7 +64,11 @@ def temp_env(cfg: DictConfig, requirements: str | Path | None) -> tuple[Path, di
 
 
 def run_in_env(
-    cmd: str, env: dict[str, str], output_dir: Path | str, do_overwrite: bool = False
+    cmd: str,
+    env: dict[str, str],
+    output_dir: Path | str,
+    do_overwrite: bool = False,
+    cwd: Path | str | None = None,
 ) -> subprocess.CompletedProcess:
     if type(output_dir) is str:
         output_dir = Path(output_dir)
@@ -105,9 +109,12 @@ def run_in_env(
     script_file.chmod(0o755)
 
     logger.info(f"Running command in {script_file}:\n{script}")
-    command_out = subprocess.run(
-        ["bash", str(script_file.resolve())], shell=True, env=env, capture_output=True
-    )
+
+    runner_kwargs = {"shell": True, "env": env, "capture_output": True}
+    if cwd is not None:
+        runner_kwargs["cwd"] = cwd
+
+    command_out = subprocess.run(["bash", str(script_file.resolve())], **runner_kwargs)
 
     command_errored = command_out.returncode != 0
     if command_errored:
