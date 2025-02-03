@@ -1,7 +1,6 @@
 import itertools
 import logging
 import shutil
-import subprocess
 from collections.abc import Generator
 from pathlib import Path
 
@@ -14,7 +13,7 @@ from enum import StrEnum, auto
 import hydra
 from omegaconf import DictConfig
 
-from ..utils import temp_env
+from ..utils import run_in_env, temp_env
 from . import CFG_YAML, MODELS
 
 
@@ -179,28 +178,10 @@ def main(cfg: DictConfig):
 
     with temp_env(cfg, requirements) as (temp_dir, env):
         for cmd, out_dir in model_commands(cfg, commands, model_dir):
-            done_file = out_dir / ".done"
-            if done_file.exists():
-                logger.info(f"Skipping {cmd} because {done_file} exists.")
-                continue
+            logger.info(f"Considering running model command: {cmd}")
+            try:
+                run_in_env(cmd, env, out_dir, cfg.get("do_overwrite", False))
+            except Exception as e:
+                raise ValueError(f"Failed to run {cfg.model} command {cmd}") from e
 
-            logger.info(f"Running model command: {cmd}")
-            command_out = subprocess.run(cmd, shell=True, env=env, cwd=temp_dir, capture_output=True)
-
-            command_errored = command_out.returncode != 0
-            if command_errored:
-                raise RuntimeError(
-                    f"{cfg.model} command {cmd} failed with exit code "
-                    f"{command_out.returncode}:\n"
-                    f"STDERR:\n{command_out.stderr.decode()}\n"
-                    f"STDOUT:\n{command_out.stdout.decode()}"
-                )
-            elif not out_dir.is_dir():
-                raise RuntimeError(
-                    f"{cfg.model} command {cmd} failed to create output directory {out_dir}.\n"
-                    f"STDERR:\n{command_out.stderr.decode()}\n"
-                    f"STDOUT:\n{command_out.stdout.decode()}"
-                )
-            else:
-                done_file.touch()
     logger.info(f"Model {cfg.model} finished successfully.")

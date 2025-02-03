@@ -1,6 +1,5 @@
 import logging
 import shutil
-import subprocess
 from pathlib import Path
 
 logger = logging.getLogger(__name__)
@@ -8,7 +7,7 @@ logger = logging.getLogger(__name__)
 import hydra
 from omegaconf import DictConfig
 
-from ..utils import temp_env
+from ..utils import run_in_env, temp_env
 from . import CFG_YAML, DATASETS
 
 
@@ -37,16 +36,6 @@ def main(cfg: DictConfig):
     with temp_env(cfg, requirements) as (build_temp_dir, env):
         build_cmd = build_cmd.format(output_dir=cfg.output_dir, temp_dir=str(build_temp_dir.resolve()))
 
-        logger.info(f"Running build command: {build_cmd}")
-        build_command_out = subprocess.run(
-            build_cmd, shell=True, env=env, cwd=build_temp_dir, capture_output=True
-        )
-
-        command_errored = build_command_out.returncode != 0
-        if command_errored:
-            raise RuntimeError(
-                f"Build {cfg.dataset} command {build_cmd} failed with exit code "
-                f"{build_command_out.returncode}:\n{build_command_out.stderr.decode()}"
-            )
+        logger.info(f"Considering running build command: {build_cmd}")
+        run_in_env(build_cmd, env, cfg.output_dir, cfg.get("do_overwrite", False))
         logger.info(f"Build {cfg.dataset} command {build_cmd} completed successfully.")
-        done_fp.touch()
