@@ -28,7 +28,16 @@ def test_datasets_configured(demo_dataset):
     data_subdir = demo_dataset_dir / "data"
     metadata_subdir = demo_dataset_dir / "metadata"
 
-    files_str = f"Directory contents: {list(demo_dataset_dir.rglob('*'))}"
+    if not data_subdir.is_dir() or not metadata_subdir.is_dir():
+        err_str = [
+            f"Either data/ or metadata/ is not a directory for {dataset_name}.",
+            f"Demo dataset directory: {demo_dataset_dir}",
+            "Directory contents:",
+        ]
+        for f in demo_dataset_dir.rglob("*"):
+            err_str.append(f"  - {f}")
+            if f.suffix == ".log":
+                err_str.append("    Log contents:")
+                err_str.append(f"    {f.read_text()}")
 
-    assert data_subdir.exists(), f"Data directory not found for {dataset_name}. {files_str}"
-    assert metadata_subdir.exists(), f"Metadata directory not found for {dataset_name}. {files_str}"
+        raise AssertionError("\n".join(err_str))

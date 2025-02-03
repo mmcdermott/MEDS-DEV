@@ -27,7 +27,7 @@ def main(cfg: DictConfig):
         output_dir.mkdir(parents=True, exist_ok=False)
 
     done_fp = output_dir / ".done"
-    if done_fp.exists():  # pragma: no cover
+    if done_fp.is_file():  # pragma: no cover
         logger.info(f"Output directory {output_dir} already exists and is marked as done.")
         return
 
