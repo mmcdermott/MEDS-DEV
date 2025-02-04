@@ -9,7 +9,7 @@ do_overwrite: False
 
 hydra:
   job:
-    name: "meds_dev_build_{dataset}_${now:%Y-%m-%d_%H-%M-%S}"
+    name: "meds_dev_build_dataset_${now:%Y-%m-%d_%H-%M-%S}"
   run:
     dir: "${output_dir}/.logs"
   help:
