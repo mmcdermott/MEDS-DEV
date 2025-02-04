@@ -122,7 +122,6 @@ def model_commands(
         run_mode = run_modes[0]
         dataset_type = dataset_types[0]
         format_kwargs["output_dir"] = str(output_dir)
-
         yield fmt_command(commands, dataset_type, run_mode, **format_kwargs), output_dir
         return
 

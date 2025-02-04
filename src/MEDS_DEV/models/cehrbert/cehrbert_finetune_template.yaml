@@ -1,0 +1,64 @@
+model_name_or_path:
+tokenizer_name_or_path:
+
+cohort_folder:
+data_folder:
+dataset_prepared_path:
+
+use_lora: False
+lora_rank: 64
+lora_alpha: 16
+target_modules: ["query", "value"]
+lora_dropout: 0.1
+
+validation_split_percentage: 0.1
+preprocessing_num_workers: 10
+preprocessing_batch_size: 1024
+
+#Tokenizer
+vocab_size: 100000
+min_frequency: 100
+min_num_tokens: 10
+
+# Below is a list of Med-to-CehrBert related arguments
+att_function_type: "cehr_bert"
+is_data_in_meds: true
+inpatient_att_function_type: "mix"
+include_auxiliary_token: true
+include_demographic_prompt: false
+include_value_prediction: false
+meds_to_cehrbert_conversion_type: "MedsToCehrbertOMOP"
+
+do_train: true
+do_predict: true
+finetune_model_type: pooling
+
+overwrite_output_dir: false
+resume_from_checkpoint: # path to the checkpoint folder
+seed:
+
+# torch dataloader configs
+dataloader_num_workers:
+dataloader_prefetch_factor: 2
+
+output_dir:
+evaluation_strategy: "epoch"
+save_strategy: "epoch"
+eval_accumulation_steps: 10
+learning_rate: 0.00005
+per_device_train_batch_size: 16
+per_device_eval_batch_size: 16
+gradient_accumulation_steps: 2
+
+num_train_epochs: 10
+warmup_steps: 500
+weight_decay: 0.01
+logging_dir: "./logs"
+logging_steps: 10
+
+save_total_limit:
+load_best_model_at_end: true
+metric_for_best_model: "eval_loss"
+greater_is_better: false
+
+report_to: "none"
