@@ -110,7 +110,7 @@ def run_in_env(
 
     logger.info(f"Running command in {script_file}:\n{script}")
 
-    runner_kwargs = {"shell": True, "env": env, "capture_output": True}
+    runner_kwargs = {"shell": False, "env": env, "capture_output": True}
     if cwd is not None:
         runner_kwargs["cwd"] = cwd
 
