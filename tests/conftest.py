@@ -2,6 +2,7 @@ import contextlib
 from pathlib import Path
 from tempfile import TemporaryDirectory
 
+import polars as pl
 import pytest
 
 from MEDS_DEV import DATASETS, MODELS, TASKS
@@ -228,10 +229,90 @@ def demo_dataset_with_task_labels(request, demo_dataset) -> tuple[str, Path, str
         yield dataset_name, dataset_dir, task_name, task_labels_dir
 
 
+def missing_labels_in_splits(labels_dir: Path, dataset_dir: Path) -> set[str]:
+    """If any splits (defined in the dataset metadata) are missing any labels, return them.
+
+    Args:
+        labels_dir (Path): The directory with the labels.
+        dataset_dir (Path): The directory with the dataset.
+
+    Returns:
+        A set of split names that are missing labels.
+
+    Examples:
+        >>> splits = pl.DataFrame({"subject_id": [1, 2, 3], "split": ["train", "tuning", "held_out"]})
+        >>> labels = pl.DataFrame({"subject_id": [1, 3]}) # This is not a true label schema
+        >>> with TemporaryDirectory() as temp_dir:
+        ...     labels_dir = Path(temp_dir) / "labels"
+        ...     labels_dir.mkdir()
+        ...     labels.write_parquet(labels_dir / "0.parquet")
+        ...     dataset_dir = Path(temp_dir) / "dataset"
+        ...     metadata_dir = dataset_dir / "metadata"
+        ...     metadata_dir.mkdir(parents=True)
+        ...     splits.write_parquet(metadata_dir / "subject_splits.parquet")
+        ...     missing_labels_in_splits(labels_dir, dataset_dir)
+        {'tuning'}
+        >>> labels = pl.DataFrame({"subject_id": [2, 3]}) # This is not a true label schema
+        >>> with TemporaryDirectory() as temp_dir:
+        ...     labels_dir = Path(temp_dir) / "labels"
+        ...     labels_dir.mkdir()
+        ...     labels.write_parquet(labels_dir / "0.parquet")
+        ...     dataset_dir = Path(temp_dir) / "dataset"
+        ...     metadata_dir = dataset_dir / "metadata"
+        ...     metadata_dir.mkdir(parents=True)
+        ...     splits.write_parquet(metadata_dir / "subject_splits.parquet")
+        ...     missing_labels_in_splits(labels_dir, dataset_dir)
+        {'train'}
+        >>> labels = pl.DataFrame({"subject_id": [2, 2]}) # This is not a true label schema
+        >>> with TemporaryDirectory() as temp_dir:
+        ...     labels_dir = Path(temp_dir) / "labels"
+        ...     labels_dir.mkdir()
+        ...     labels.write_parquet(labels_dir / "0.parquet")
+        ...     dataset_dir = Path(temp_dir) / "dataset"
+        ...     metadata_dir = dataset_dir / "metadata"
+        ...     metadata_dir.mkdir(parents=True)
+        ...     splits.write_parquet(metadata_dir / "subject_splits.parquet")
+        ...     sorted(missing_labels_in_splits(labels_dir, dataset_dir))
+        ['held_out', 'train']
+        >>> labels = pl.DataFrame({"subject_id": [1, 2, 3]}) # This is not a true label schema
+        >>> with TemporaryDirectory() as temp_dir:
+        ...     labels_dir = Path(temp_dir) / "labels"
+        ...     labels_dir.mkdir()
+        ...     labels.write_parquet(labels_dir / "0.parquet")
+        ...     dataset_dir = Path(temp_dir) / "dataset"
+        ...     metadata_dir = dataset_dir / "metadata"
+        ...     metadata_dir.mkdir(parents=True)
+        ...     splits.write_parquet(metadata_dir / "subject_splits.parquet")
+        ...     missing_labels_in_splits(labels_dir, dataset_dir)
+        set()
+    """
+
+    labels = pl.concat(
+        [pl.read_parquet(f, use_pyarrow=True, columns=["subject_id"]) for f in labels_dir.rglob("*.parquet")],
+        how="vertical_relaxed",
+    )
+    label_subjects = set(labels["subject_id"].unique())
+
+    subject_splits = pl.read_parquet(dataset_dir / "metadata" / "subject_splits.parquet", use_pyarrow=True)
+    all_splits = set(subject_splits["split"].unique())
+
+    subj_splits_with_label = subject_splits.filter(pl.col("subject_id").is_in(label_subjects))
+    splits_with_labels = set(subj_splits_with_label["split"].unique())
+
+    return all_splits - splits_with_labels
+
+
 @pytest.fixture(scope="session")
 def demo_model(request, demo_dataset_with_task_labels) -> tuple[str, Path, str, Path, str, Path]:
     model = request.param
     dataset_name, dataset_dir, task_name, task_labels_dir = demo_dataset_with_task_labels
+
+    missing_splits = missing_labels_in_splits(task_labels_dir, dataset_dir)
+    if missing_splits:
+        pytest.skip(
+            f"Labels not found for {dataset_name} and {task_name} in split(s): {', '.join(missing_splits)}. "
+            f"Skipping {model} test."
+        )
 
     persistent_cache_dir, (_, _, cache_models) = get_and_validate_cache_settings(request)
 
