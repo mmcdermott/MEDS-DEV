@@ -108,11 +108,10 @@ def model_commands(
     format_kwargs = {
         "dataset_dir": str(cfg.dataset_dir),
         "model_dir": str(model_dir),
+        "demo": cfg.get("demo", False),
     }
     if cfg.get("model_initialization_dir", None):
         format_kwargs["model_initialization_dir"] = cfg.model_initialization_dir
-    if cfg.get("demo", False):
-        format_kwargs["demo"] = True
     if cfg.get("split", None):
         if do_set_split:
             raise ValueError(f"Cannot set split manually when mode is {cfg.mode}.")
