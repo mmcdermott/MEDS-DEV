@@ -125,13 +125,6 @@ def run_in_env(
             f"STDERR:\n{command_out.stderr.decode()}\n"
             f"STDOUT:\n{command_out.stdout.decode()}"
         )
-    elif not output_dir.is_dir():
-        raise RuntimeError(
-            f"Command failed to create output directory {output_dir}.\n"
-            f"SCRIPT:\n{script}\n"
-            f"STDERR:\n{command_out.stderr.decode()}\n"
-            f"STDOUT:\n{command_out.stdout.decode()}"
-        )
     else:
         done_file.touch()
 
