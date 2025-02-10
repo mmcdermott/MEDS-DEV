@@ -106,7 +106,7 @@ def main(cfg: DictConfig) -> None:
         ...
     ValueError: Error reading labels: ...
 
-    >>> pl.Config.set_tbl_width_chars(120)
+    >>> _ = pl.Config.set_tbl_width_chars(130)
     >>> from datetime import datetime
     >>> labels = pl.DataFrame({
     ...     "subject_id": [1, 2, 3],
