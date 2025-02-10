@@ -65,7 +65,7 @@ def temp_env(cfg: DictConfig, requirements: str | Path | None) -> tuple[Path, di
 
 def run_in_env(
     cmd: str,
-    env: dict[str, str],
+    env: dict[str, str] | None,
     output_dir: Path | str,
     do_overwrite: bool = False,
     cwd: Path | str | None = None,
@@ -87,6 +87,8 @@ def run_in_env(
     script_file = output_dir / "cmd.sh"
     script_lines = ["#!/bin/bash"]
 
+    if env is None:
+        env = os.environ.copy()
     if env.get("VIRTUAL_ENV", None) is not None:
         script_lines.append(f"source {env['VIRTUAL_ENV']}/bin/activate")
 
