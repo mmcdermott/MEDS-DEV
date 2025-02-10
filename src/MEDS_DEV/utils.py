@@ -85,7 +85,7 @@ def run_in_env(
         return
 
     script_file = output_dir / "cmd.sh"
-    script_lines = ["#!/bin/bash"]
+    script_lines = ["#!/bin/bash", "set -e"]
 
     if env.get("VIRTUAL_ENV", None) is not None:
         script_lines.append(f"source {env['VIRTUAL_ENV']}/bin/activate")
