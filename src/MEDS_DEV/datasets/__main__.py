@@ -14,7 +14,9 @@ from . import CFG_YAML, DATASETS
 @hydra.main(version_base=None, config_path=str(CFG_YAML.parent), config_name=CFG_YAML.stem)
 def main(cfg: DictConfig):
     if cfg.dataset not in DATASETS:
-        raise ValueError(f"Dataset {cfg.dataset} not currently configured! Available datasets: {DATASETS.keys()}")
+        raise ValueError(
+            f"Dataset {cfg.dataset} not currently configured! Available datasets: {DATASETS.keys()}"
+        )
 
     commands = DATASETS[cfg.dataset]["metadata"]["commands"]
     requirements = DATASETS[cfg.dataset]["requirements"]

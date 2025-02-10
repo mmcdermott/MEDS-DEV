@@ -23,7 +23,9 @@ def main(cfg: DictConfig):
         dataset_predicates_path = Path(cfg.dataset_predicates_path)
     else:
         if cfg.dataset not in DATASETS:
-            raise ValueError(f"Dataset {cfg.dataset} not currently configured! Available datasets: {DATASETS.keys()}")        
+            raise ValueError(
+                f"Dataset {cfg.dataset} not currently configured! Available datasets: {DATASETS.keys()}"
+            )
         dataset_predicates_path = DATASETS[cfg.dataset]["predicates"]
 
     if dataset_predicates_path is None:
