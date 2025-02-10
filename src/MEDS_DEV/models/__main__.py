@@ -180,7 +180,7 @@ def main(cfg: DictConfig):
         for cmd, out_dir in model_commands(cfg, commands, model_dir):
             logger.info(f"Considering running model command: {cmd}")
             try:
-                run_in_env(cmd, env, out_dir, cfg.get("do_overwrite", False))
+                run_in_env(cmd, out_dir, env=env, do_overwrite=cfg.do_overwrite)
             except Exception as e:
                 raise ValueError(f"Failed to run {cfg.model} command {cmd}") from e
 

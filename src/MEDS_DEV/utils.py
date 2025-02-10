@@ -65,10 +65,11 @@ def temp_env(cfg: DictConfig, requirements: str | Path | None) -> tuple[Path, di
 
 def run_in_env(
     cmd: str,
-    env: dict[str, str] | None,
     output_dir: Path | str,
+    env: dict[str, str] | None = None,
     do_overwrite: bool = False,
     cwd: Path | str | None = None,
+    run_as_script: bool = True,
 ) -> subprocess.CompletedProcess:
     if type(output_dir) is str:
         output_dir = Path(output_dir)
@@ -84,39 +85,48 @@ def run_in_env(
         logger.info(f"Skipping {cmd} because {done_file} exists.")
         return
 
-    script_file = output_dir / "cmd.sh"
-    script_lines = ["#!/bin/bash", "set -e"]
-
     if env is None:
         env = os.environ.copy()
-    if env.get("VIRTUAL_ENV", None) is not None:
-        script_lines.append(f"source {env['VIRTUAL_ENV']}/bin/activate")
 
-    script_lines.append(cmd)
-    script = "\n".join(script_lines)
+    runner_kwargs = {"env": env, "capture_output": True}
 
-    if script_file.is_file():
-        if script_file.read_text() != script:
-            raise RuntimeError(
-                f"Script file {script_file} already exists and is different from the current script. "
-                f"Existing file:\n{script_file.read_text()}\n"
-                f"New script:\n{script}"
-                "Consider running with do_overwrite=True."
-            )
+    if run_as_script:
+        script_file = output_dir / "cmd.sh"
+        script_lines = ["#!/bin/bash", "set -e"]
+
+        script_lines.append(cmd)
+        script = "\n".join(script_lines)
+
+        if env.get("VIRTUAL_ENV", None) is not None:
+            script_lines.append(f"source {env['VIRTUAL_ENV']}/bin/activate")
+
+        if script_file.is_file():
+            if script_file.read_text() != script:
+                raise RuntimeError(
+                    f"Script file {script_file} already exists and is different from the current script. "
+                    f"Existing file:\n{script_file.read_text()}\n"
+                    f"New script:\n{script}"
+                    "Consider running with do_overwrite=True."
+                )
+            else:
+                logger.info(f"(Matching) script file already exists: {script_file}")
         else:
-            logger.info(f"(Matching) script file already exists: {script_file}")
+            script_file.write_text(script)
+
+        script_file.chmod(0o755)
+
+        logger.info(f"Running command in {script_file}:\n{script}")
+
+        cmd = ["bash", str(script_file.resolve())]
+        runner_kwargs["shell"] = False
     else:
-        script_file.write_text(script)
+        logger.info(f"Running command:\n{cmd}")
+        runner_kwargs["shell"] = True
 
-    script_file.chmod(0o755)
-
-    logger.info(f"Running command in {script_file}:\n{script}")
-
-    runner_kwargs = {"shell": False, "env": env, "capture_output": True}
     if cwd is not None:
         runner_kwargs["cwd"] = cwd
 
-    command_out = subprocess.run(["bash", str(script_file.resolve())], **runner_kwargs)
+    command_out = subprocess.run(cmd, **runner_kwargs)
 
     command_errored = command_out.returncode != 0
     if command_errored:
