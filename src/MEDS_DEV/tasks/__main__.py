@@ -15,7 +15,7 @@ logger = logging.getLogger(__name__)
 @hydra.main(version_base=None, config_path=str(CFG_YAML.parent), config_name=CFG_YAML.stem)
 def main(cfg: DictConfig):
     if cfg.task not in TASKS:
-        raise ValueError(f"Task {cfg.task} not currently configured")
+        raise ValueError(f"Task {cfg.task} not currently configured. Configured tasks: {TASKS.keys()}")
 
     task_config_path = TASKS[cfg.task]["criteria_fp"]
     if cfg.get("dataset_predicates_path", None):
@@ -23,7 +23,9 @@ def main(cfg: DictConfig):
         dataset_predicates_path = Path(cfg.dataset_predicates_path)
     else:
         if cfg.dataset not in DATASETS:
-            raise ValueError(f"Dataset {cfg.dataset} not currently configured")
+            raise ValueError(
+                f"Dataset {cfg.dataset} not currently configured! Available datasets: {DATASETS.keys()}"
+            )
         dataset_predicates_path = DATASETS[cfg.dataset]["predicates"]
 
     if dataset_predicates_path is None:
