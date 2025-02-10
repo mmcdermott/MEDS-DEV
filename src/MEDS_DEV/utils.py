@@ -85,7 +85,7 @@ def run_in_env(
         return
 
     script_file = output_dir / "cmd.sh"
-    script_lines = ["#!/bin/bash"]
+    script_lines = ["#!/bin/bash", "set -e"]
 
     if env is None:
         env = os.environ.copy()
