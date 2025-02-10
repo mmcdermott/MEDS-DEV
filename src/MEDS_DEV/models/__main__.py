@@ -161,7 +161,7 @@ def model_commands(
 @hydra.main(version_base=None, config_path=str(CFG_YAML.parent), config_name=CFG_YAML.stem)
 def main(cfg: DictConfig):
     if cfg.model not in MODELS:
-        raise ValueError(f"Model {cfg.model} not currently configured")
+        raise ValueError(f"Model {cfg.model} not currently configured. Available models: {MODELS.keys()}")
 
     commands = MODELS[cfg.model]["commands"]
     model_dir = MODELS[cfg.model]["model_dir"]
