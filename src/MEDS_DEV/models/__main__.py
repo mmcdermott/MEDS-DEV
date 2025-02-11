@@ -64,12 +64,46 @@ def fmt_command(
             dictionary.
         dataset_type: The dataset type to use.
         run_mode: The run mode to use.
+        format_kwargs: The remaining template variables to format the command.
 
     Returns:
         The command to run the model.
 
+    Raises:
+        RuntimeError: If the model does not support the given dataset type or run mode.
+
     Examples:
-        >>> TODO
+        >>> commands = {
+        ...     "unsupervised": {"train": "train {dataset_dir} {output_dir}"}
+        ...     "supervised": {
+        ...         "train": "FT data={dataset_dir} labels={labels_dir} output={output_dir}",
+        ...         "predict": "predict model_initialization_dir={model_dir} labels={labels_dir}",
+        ...     }
+        ... }
+        >>> fmt_command(commands, "unsupervised", "train", dataset_dir="data", output_dir="output")
+        "train data output"
+        >>> fmt_command(commands, "supervised", "predict", model_dir="model", labels="labels")
+        "predict model_initialization_dir=model labels=labels"
+
+    You can also use the constants in the enumeration objects:
+        >>> fmt_command(
+        ...     commands, DATASET_TYPE.UNSUPERVISED, RunMode.TRAIN, dataset_dir="data2", output_dir="output2"
+        ... )
+        "train data2 output2"
+
+    Extra format variables are ignored:
+        >>> fmt_command(commands, "supervised", "predict", model_dir="model", labels="labels", out="foo")
+        "predict model_initialization_dir=model labels=labels"
+
+    Unsupported commands cause errors:
+        >>> fmt_command(commands, "semi-supervised", "predict")
+        Traceback (most recent call last):
+            ...
+        RuntimeError: Model does not support dataset type semi-supervised.
+        >>> fmt_command(commands, "supervised", "hyperparameter_tune")
+        Traceback (most recent call last):
+            ...
+        RuntimeError: Model does not support run mode hyperparameter_tune.
     """
 
     if dataset_type not in commands:
