@@ -100,10 +100,10 @@ def fmt_command(
         Traceback (most recent call last):
             ...
         RuntimeError: Model does not support dataset type semi-supervised.
-        >>> fmt_command(commands, "supervised", "hyperparameter_tune")
+        >>> fmt_command(commands, "supervised", "full")
         Traceback (most recent call last):
             ...
-        RuntimeError: Model does not support run mode hyperparameter_tune.
+        RuntimeError: Model does not support run mode full.
     """
 
     if dataset_type not in commands:
@@ -121,12 +121,38 @@ def model_commands(
 ) -> Generator[tuple[str, Path]]:
     """Yields the sequence of appropriate dataset, run mode pairs for the given config and commands.
 
+    For a given model run, the configuration may specify to either run a single command or a sequence of
+    commands that span multiple (supported) dataset types and run modes. This function yields the appropriate
+    sequence of commands to use for the given configuration and model. This sequence may be a single command
+    or multiple, and is returned as a generator of tuples of the individual commands and command-specific
+    output directories. If the configuration dictates a single run, the output directory will be the specified
+    model directory (passed as input via `model_dir`), but if the configuration specifies multiple runs, the
+    command-specific output directories will be subdirectories of `model_dir` based on which command is being
+    run. In particular, if a command reflects running over dataset type `DATASET_TYPE` and run mode
+    `RUN_MODE`, the output directory will be `f"model_dir/{DATASET_TYPE}/{RUN_MODE}"`.
+
+    The configuration indicates that a sequence of commands should be run if either or both of the `cfg.mode`
+    and `cfg.dataset_type` are set to `RunMode.FULL` (`"full"`) and `DatasetType.FULL` (`"full"`),
+    respectively. Otherwise, only the single specified combination of run mode and dataset type will be run.
+    If dataset type is set to `DatasetType.FULL`, the model will be run over both the unsupervised and
+    supervised dataset types, in that order (or whichever of those are supported by the model), for the
+    specified run mode (or sequence therein). If the run mode is set to full, the model will be run over both
+    the "train" and "predict" run modes, in that order (or whichever of those are supported by the model),
+    within all specified dataset types.
+
     Args:
-        cfg: TODO
-        commands: TODO
+        cfg: The configuration for the model run.
+        commands: The dictionary of commands for the model. These are stored in the model folder in the
+            `model.yaml` in the `commands` key and are loaded for the correct model from the MODELS variable.
+        model_dir: The run-directory of the given model.
 
     Yields:
         The sequence of base commands (un-formatted) to run for the given model run.
+
+    Raises:
+        ValueError: If the configuration specifies a split while the run mode is `RunMode.FULL`. This
+        constitutes and error because the split must be set dynamically in run model `RunMode.FULL` as it
+        varies across the individual commands.
 
     Examples:
         >>> TODO
