@@ -181,7 +181,7 @@ def main(cfg: DictConfig):
             logger.info(f"Considering running model command: {cmd}")
             try:
                 run_in_env(cmd, out_dir, env=env, do_overwrite=cfg.do_overwrite)
-            except Exception as e:
+            except Exception as e:  # pragma: no cover
                 raise ValueError(f"Failed to run {cfg.model} command {cmd}") from e
 
     logger.info(f"Model {cfg.model} finished successfully.")

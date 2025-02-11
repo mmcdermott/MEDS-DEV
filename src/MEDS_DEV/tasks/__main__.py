@@ -27,9 +27,6 @@ def main(cfg: DictConfig):
             )
         dataset_predicates_path = DATASETS[cfg.dataset]["predicates"]
 
-    if dataset_predicates_path is None:
-        raise ValueError(f"Predicates not found for dataset {cfg.dataset}")
-
     logger.info(f"Running task {cfg.task} on dataset {cfg.dataset}")
 
     cmd = " ".join(
