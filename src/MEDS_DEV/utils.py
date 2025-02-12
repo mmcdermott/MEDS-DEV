@@ -13,15 +13,59 @@ logger = logging.getLogger(__name__)
 
 
 def get_venv_bin_path(venv_path: str | Path) -> Path:
-    """Get the bin/Scripts directory of the virtual environment."""
-    if os.name == "nt":  # Windows
+    """Get the bin/Scripts directory of the virtual environment.
+
+    Args:
+        venv_path: Path to the virtual environment's root directory.
+
+    Returns:
+        Path to the bin/Scripts directory of the virtual environment, depending on the operating system.
+
+    Examples:
+        >>> get_venv_bin_path("path/to/venv")
+        PosixPath('path/to/venv/bin')
+    """
+    # Windows uses "Scripts" instead of "bin"
+    # TODO(mmd): Test this properly across operating systems
+    if os.name == "nt":  # pragma: no cover
         return Path(venv_path) / "Scripts"
-    else:  # Unix-like systems
+    else:
         return Path(venv_path) / "bin"
 
 
 @contextlib.contextmanager
 def tempdir_ctx(cfg: DictConfig) -> Path:
+    """Provides a context manager that either yields a temporary directory or a specified directory.
+
+    If a temporary directory is used, it is removed after the context manager exits. Pre-specified directories
+    are not removed. The utility of this function is largely to normalize the interface through which
+    directory contexts are used when running commands.
+
+    Args:
+        cfg: Configuration dictionary that may contain a "temp_dir" key. If the key is present, the specified
+             directory is used as the temporary directory. If the key is not present or has a `None` value, a
+             temporary directory is created.
+
+    Yields:
+        Path to the temporary directory. The returned directory is guaranteed to exist.
+
+    Examples:
+        >>> with tempdir_ctx({"temp_dir": None}) as temp_dir:
+        ...     print(temp_dir)
+        /tmp/...
+
+    We can also specify a directory to use as the temporary directory (in this test, that directory is
+    likewise specified within a temporary directory, just to ensure the test cleans up after itself; the
+    specified directory can be anything):
+        >>> with tempfile.TemporaryDirectory() as root:
+        ...     temp_dir = Path(root) / "temp_dir"
+        ...     assert not temp_dir.exists()
+        ...     with tempdir_ctx({"temp_dir": str(temp_dir)}) as temp_dir:
+        ...         print(str(temp_dir.relative_to(Path(root))))
+        ...         assert temp_dir.exists()
+        ...     assert temp_dir.exists()
+        temp_dir
+    """
     temp_dir = cfg.get("temp_dir", None)
     if temp_dir is None:
         with tempfile.TemporaryDirectory() as temp_dir:
