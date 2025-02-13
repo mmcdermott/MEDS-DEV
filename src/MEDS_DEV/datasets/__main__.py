@@ -14,7 +14,9 @@ from . import CFG_YAML, DATASETS
 @hydra.main(version_base=None, config_path=str(CFG_YAML.parent), config_name=CFG_YAML.stem)
 def main(cfg: DictConfig):
     if cfg.dataset not in DATASETS:
-        raise ValueError(f"Dataset {cfg.dataset} not currently configured!")
+        raise ValueError(
+            f"Dataset {cfg.dataset} not currently configured! Available datasets: {DATASETS.keys()}"
+        )
 
     commands = DATASETS[cfg.dataset]["metadata"]["commands"]
     requirements = DATASETS[cfg.dataset]["requirements"]
@@ -37,5 +39,5 @@ def main(cfg: DictConfig):
         build_cmd = build_cmd.format(output_dir=cfg.output_dir, temp_dir=str(build_temp_dir.resolve()))
 
         logger.info(f"Considering running build command: {build_cmd}")
-        run_in_env(build_cmd, env, cfg.output_dir, cfg.get("do_overwrite", False), cwd=build_temp_dir)
+        run_in_env(build_cmd, cfg.output_dir, env=env, do_overwrite=cfg.do_overwrite, cwd=build_temp_dir)
         logger.info(f"Build {cfg.dataset} command {build_cmd} completed successfully.")
