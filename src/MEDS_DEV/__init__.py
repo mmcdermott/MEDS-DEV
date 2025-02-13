@@ -9,5 +9,5 @@ __all__ = ["DATASETS", "TASKS", "MODELS"]
 __package_name__ = "MEDS_DEV"
 try:
     __version__ = version(__package_name__)
-except PackageNotFoundError:
+except PackageNotFoundError:  # pragma: no cover
     __version__ = "unknown"

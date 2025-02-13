@@ -13,15 +13,59 @@ logger = logging.getLogger(__name__)
 
 
 def get_venv_bin_path(venv_path: str | Path) -> Path:
-    """Get the bin/Scripts directory of the virtual environment."""
-    if os.name == "nt":  # Windows
+    """Get the bin/Scripts directory of the virtual environment.
+
+    Args:
+        venv_path: Path to the virtual environment's root directory.
+
+    Returns:
+        Path to the bin/Scripts directory of the virtual environment, depending on the operating system.
+
+    Examples:
+        >>> get_venv_bin_path("path/to/venv")
+        PosixPath('path/to/venv/bin')
+    """
+    # Windows uses "Scripts" instead of "bin"
+    # TODO(mmd): Test this properly across operating systems
+    if os.name == "nt":  # pragma: no cover
         return Path(venv_path) / "Scripts"
-    else:  # Unix-like systems
+    else:
         return Path(venv_path) / "bin"
 
 
 @contextlib.contextmanager
 def tempdir_ctx(cfg: DictConfig) -> Path:
+    """Provides a context manager that either yields a temporary directory or a specified directory.
+
+    If a temporary directory is used, it is removed after the context manager exits. Pre-specified directories
+    are not removed. The utility of this function is largely to normalize the interface through which
+    directory contexts are used when running commands.
+
+    Args:
+        cfg: Configuration dictionary that may contain a "temp_dir" key. If the key is present, the specified
+             directory is used as the temporary directory. If the key is not present or has a `None` value, a
+             temporary directory is created.
+
+    Yields:
+        Path to the temporary directory. The returned directory is guaranteed to exist.
+
+    Examples:
+        >>> with tempdir_ctx({"temp_dir": None}) as temp_dir:
+        ...     print(temp_dir)
+        /tmp/...
+
+    We can also specify a directory to use as the temporary directory (in this test, that directory is
+    likewise specified within a temporary directory, just to ensure the test cleans up after itself; the
+    specified directory can be anything):
+        >>> with tempfile.TemporaryDirectory() as root:
+        ...     temp_dir = Path(root) / "temp_dir"
+        ...     assert not temp_dir.exists()
+        ...     with tempdir_ctx({"temp_dir": str(temp_dir)}) as temp_dir:
+        ...         print(str(temp_dir.relative_to(Path(root))))
+        ...         assert temp_dir.exists()
+        ...     assert temp_dir.exists()
+        temp_dir
+    """
     temp_dir = cfg.get("temp_dir", None)
     if temp_dir is None:
         with tempfile.TemporaryDirectory() as temp_dir:
@@ -65,10 +109,11 @@ def temp_env(cfg: DictConfig, requirements: str | Path | None) -> tuple[Path, di
 
 def run_in_env(
     cmd: str,
-    env: dict[str, str],
     output_dir: Path | str,
+    env: dict[str, str] | None = None,
     do_overwrite: bool = False,
     cwd: Path | str | None = None,
+    run_as_script: bool = True,
 ) -> subprocess.CompletedProcess:
     if type(output_dir) is str:
         output_dir = Path(output_dir)
@@ -84,37 +129,48 @@ def run_in_env(
         logger.info(f"Skipping {cmd} because {done_file} exists.")
         return
 
-    script_file = output_dir / "cmd.sh"
-    script_lines = ["#!/bin/bash", "set -e"]
+    if env is None:
+        env = os.environ.copy()
 
-    if env.get("VIRTUAL_ENV", None) is not None:
-        script_lines.append(f"source {env['VIRTUAL_ENV']}/bin/activate")
+    runner_kwargs = {"env": env, "capture_output": True}
 
-    script_lines.append(cmd)
-    script = "\n".join(script_lines)
+    if run_as_script:
+        script_file = output_dir / "cmd.sh"
+        script_lines = ["#!/bin/bash", "set -e"]
 
-    if script_file.is_file():
-        if script_file.read_text() != script:
-            raise RuntimeError(
-                f"Script file {script_file} already exists and is different from the current script. "
-                f"Existing file:\n{script_file.read_text()}\n"
-                f"New script:\n{script}"
-                "Consider running with do_overwrite=True."
-            )
+        script_lines.append(cmd)
+        script = "\n".join(script_lines)
+
+        if env.get("VIRTUAL_ENV", None) is not None:
+            script_lines.append(f"source {env['VIRTUAL_ENV']}/bin/activate")
+
+        if script_file.is_file():
+            if script_file.read_text() != script:
+                raise RuntimeError(
+                    f"Script file {script_file} already exists and is different from the current script. "
+                    f"Existing file:\n{script_file.read_text()}\n"
+                    f"New script:\n{script}"
+                    "Consider running with do_overwrite=True."
+                )
+            else:
+                logger.info(f"(Matching) script file already exists: {script_file}")
         else:
-            logger.info(f"(Matching) script file already exists: {script_file}")
+            script_file.write_text(script)
+
+        script_file.chmod(0o755)
+
+        logger.info(f"Running command in {script_file}:\n{script}")
+
+        cmd = ["bash", str(script_file.resolve())]
+        runner_kwargs["shell"] = False
     else:
-        script_file.write_text(script)
+        logger.info(f"Running command:\n{cmd}")
+        runner_kwargs["shell"] = True
 
-    script_file.chmod(0o755)
-
-    logger.info(f"Running command in {script_file}:\n{script}")
-
-    runner_kwargs = {"shell": False, "env": env, "capture_output": True}
     if cwd is not None:
         runner_kwargs["cwd"] = cwd
 
-    command_out = subprocess.run(["bash", str(script_file.resolve())], **runner_kwargs)
+    command_out = subprocess.run(cmd, **runner_kwargs)
 
     command_errored = command_out.returncode != 0
     if command_errored:

@@ -1,12 +1,11 @@
 import logging
-import shutil
-import subprocess
 from pathlib import Path
 
 import hydra
 from omegaconf import DictConfig
 
 from .. import DATASETS
+from ..utils import run_in_env
 from . import CFG_YAML, TASKS
 
 logger = logging.getLogger(__name__)
@@ -28,24 +27,8 @@ def main(cfg: DictConfig):
             )
         dataset_predicates_path = DATASETS[cfg.dataset]["predicates"]
 
-    if dataset_predicates_path is None:
-        raise ValueError(f"Predicates not found for dataset {cfg.dataset}")
-
     logger.info(f"Running task {cfg.task} on dataset {cfg.dataset}")
 
-    output_dir = Path(cfg.output_dir)
-    if cfg.get("do_overwrite", False) and output_dir.exists():  # pragma: no cover
-        logger.info(f"Removing existing output directory: {output_dir}")
-        shutil.rmtree(output_dir)
-
-        output_dir.mkdir(parents=True, exist_ok=False)
-
-    done_fp = output_dir / ".done"
-    if done_fp.exists():  # pragma: no cover
-        logger.info(f"Output directory {output_dir} already exists and is marked as done.")
-        return
-
-    # make the ACES command
     cmd = " ".join(
         [
             "aces-cli",
@@ -63,15 +46,5 @@ def main(cfg: DictConfig):
     )
 
     logger.info(f"Running ACES: {cmd}")
-    aces_command_out = subprocess.run(cmd, shell=True, capture_output=True)
-
-    command_errored = aces_command_out.returncode != 0
-    if command_errored:
-        raise RuntimeError(
-            f"Extract {cfg.task} for {cfg.dataset} command {cmd} failed with exit code "
-            f"{aces_command_out.returncode}:\n"
-            f"STDERR:\n{aces_command_out.stderr.decode()}\n"
-            f"STDOUT:\n{aces_command_out.stdout.decode()}"
-        )
+    run_in_env(cmd=cmd, output_dir=cfg.output_dir, do_overwrite=cfg.do_overwrite, run_as_script=False)
     logger.info(f"Extract {cfg.task} for {cfg.dataset} command {cmd} finished successfully.")
-    done_fp.touch()
