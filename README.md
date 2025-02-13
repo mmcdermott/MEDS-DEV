@@ -192,7 +192,7 @@ parameter, and likewise for the fine-tuned model weights to the prediction stage
 To evaluate the predictions of a model on a task, you can use the `meds-evaluation` helper:
 
 ```bash
-meds-evaluation predictions_dir=$PREDICTIONS_DIR labels_dir=$LABELS_DIR output_dir=$EVALUATION_DIR
+meds-dev-evaluation predictions_dir=$PREDICTIONS_DIR output_dir=$EVALUATION_DIR
 ```
 
 The output JSON file from MEDS-Evaluation will contain the results of the evaluation, including the AUROC,
