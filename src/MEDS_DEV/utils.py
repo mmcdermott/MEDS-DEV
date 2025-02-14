@@ -162,9 +162,11 @@ def run_in_env(
         logger.info(f"Running command in {script_file}:\n{script}")
 
         cmd = ["bash", str(script_file.resolve())]
+        cmd_contents_error = script
         runner_kwargs["shell"] = False
     else:
         logger.info(f"Running command:\n{cmd}")
+        cmd_contents_error = cmd
         runner_kwargs["shell"] = True
 
     if cwd is not None:
@@ -177,7 +179,7 @@ def run_in_env(
         raise RuntimeError(
             f"Command failed with exit code "
             f"{command_out.returncode}:\n"
-            f"SCRIPT:\n{script}\n"
+            f"SCRIPT:\n{cmd_contents_error}\n"
             f"STDERR:\n{command_out.stderr.decode()}\n"
             f"STDOUT:\n{command_out.stdout.decode()}"
         )
