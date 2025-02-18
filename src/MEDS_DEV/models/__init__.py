@@ -177,6 +177,19 @@ def model_commands(
         >>> list(model_commands(cfg, commands, model_dir))
         [('FT data=data labels=labels output=output', PosixPath('output'))]
 
+    Other configuration arguments get passed through, like `model_initialization_dir`, though they only appear
+    in the final command if their format args exist.
+        >>> cfg.model_initialization_dir = "foobar"
+        >>> list(model_commands(cfg, commands, model_dir))
+        [('FT data=data labels=labels output=output', PosixPath('output'))]
+
+    The system errors if a split is set but it is in full mode.
+        >>> cfg.split = "tuning"
+        >>> cfg.mode = "full"
+        >>> list(model_commands(cfg, commands, model_dir))
+        Traceback (most recent call last):
+            ...
+        ValueError: Cannot set split manually when mode is full.
     """
 
     run_modes = ALL_RUN_MODES if cfg.mode == RunMode.FULL else [cfg.mode]
