@@ -4,4 +4,3 @@ meds-evaluation==0.0.2
 pyyaml
 hydra-core
 polars
-transformers

@@ -4,13 +4,14 @@ from pathlib import Path
 
 import hydra
 from omegaconf import DictConfig, OmegaConf
-from transformers import IntervalStrategy
 
 logger = logging.getLogger(__name__)
 
 CONFIG = Path(__file__).parent / "_config.yaml"
 pretraining_yaml_template = Path(__file__).parent / "cehrbert_pretrain_template.yaml"
-demo_default_steps = 10
+DEMO_DEFAULT_STEPS = 10
+STEPS_STRATEGY = "steps"
+EPOCH_STRATEGY = "epoch"
 
 
 def run_subprocess(cmd: str, temp_work_dir: str, out_dir: Path) -> None:
@@ -80,19 +81,11 @@ def main(cfg: DictConfig) -> None:
     # Logic for handling streaming
     demo = cfg.get("demo", False)
     streaming = cfg.get("streaming", False)
-    max_steps = cfg.get("max_steps", None) if not demo else demo_default_steps
-    save_steps = cfg.get("save_steps", None) if not demo else demo_default_steps
-    eval_steps = cfg.get("eval_steps", None) if not demo else demo_default_steps
-    save_strategy = (
-        cfg.get("evaluation_strategy", IntervalStrategy.EPOCH.value)
-        if not demo
-        else IntervalStrategy.STEPS.value
-    )
-    evaluation_strategy = (
-        cfg.get("evaluation_strategy", IntervalStrategy.EPOCH.value)
-        if not demo
-        else IntervalStrategy.STEPS.value
-    )
+    max_steps = cfg.get("max_steps", None) if not demo else DEMO_DEFAULT_STEPS
+    save_steps = cfg.get("save_steps", None) if not demo else DEMO_DEFAULT_STEPS
+    eval_steps = cfg.get("eval_steps", None) if not demo else DEMO_DEFAULT_STEPS
+    save_strategy = cfg.get("evaluation_strategy", EPOCH_STRATEGY) if not demo else STEPS_STRATEGY
+    evaluation_strategy = cfg.get("evaluation_strategy", EPOCH_STRATEGY) if not demo else STEPS_STRATEGY
     # The logging_steps is retrieved from the current yaml file template
     logging_steps = pretraining_yaml.get("logging_steps", None)
 
@@ -116,8 +109,8 @@ def main(cfg: DictConfig) -> None:
                 save_steps,
             )
             eval_steps = save_steps
-        evaluation_strategy = IntervalStrategy.STEPS.value
-        save_strategy = IntervalStrategy.STEPS.value
+        evaluation_strategy = STEPS_STRATEGY
+        save_strategy = STEPS_STRATEGY
 
     pretraining_yaml["streaming"] = streaming
     pretraining_yaml["max_steps"] = max_steps
