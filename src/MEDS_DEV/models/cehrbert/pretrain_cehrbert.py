@@ -89,12 +89,11 @@ def main(cfg: DictConfig) -> None:
     logging_steps = cfg.get("logging_steps", DEMO_DEFAULT_STEPS if demo else None)
     load_best_model_at_end = cfg.get("load_best_model_at_end", False)
 
-    if streaming:
-        if max_steps is None:
-            raise RuntimeError(
-                f"When streaming is set to True, max_steps must be a non-negative integer. "
-                f"Current max_steps: {max_steps}"
-            )
+    if streaming and max_steps is None:
+        raise RuntimeError(
+            f"When streaming is set to True, max_steps must be a non-negative integer. "
+            f"Current max_steps: {max_steps}"
+        )
     if save_strategy == STEPS_STRATEGY and save_steps is None:
         raise RuntimeError(
             f"When streaming is set to True, save_steps must be a non-negative integer. "
