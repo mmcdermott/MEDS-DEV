@@ -4,11 +4,13 @@ from pathlib import Path
 
 import hydra
 from omegaconf import DictConfig, OmegaConf
+from transformers import IntervalStrategy
 
 logger = logging.getLogger(__name__)
 
 CONFIG = Path(__file__).parent / "_config.yaml"
 finetune_yaml_template = Path(__file__).parent / "cehrbert_finetune_template.yaml"
+demo_default_steps = 10
 
 
 # Duplicated this function from pretrain_cehrbert
@@ -71,12 +73,57 @@ def main(cfg: DictConfig) -> None:
     finetune_yaml["seed"] = cfg.seed
     finetune_yaml["do_train"] = True
     finetune_yaml["do_predict"] = True
-    finetune_yaml["streaming"] = cfg.get("streaming", False)
-    if cfg.get("demo", False):
-        finetune_yaml["evaluation_strategy"] = "steps"
-        finetune_yaml["save_strategy"] = "steps"
-        finetune_yaml["max_steps"] = 10
-        finetune_yaml["eval_steps"] = 10
+
+    # Logic for handling streaming
+    demo = cfg.get("demo", False)
+    streaming = cfg.get("streaming", False)
+    max_steps = cfg.get("max_steps", None) if not demo else demo_default_steps
+    save_steps = cfg.get("save_steps", None) if not demo else demo_default_steps
+    eval_steps = cfg.get("eval_steps", None) if not demo else demo_default_steps
+    save_strategy = (
+        cfg.get("evaluation_strategy", IntervalStrategy.EPOCH.value)
+        if not demo
+        else IntervalStrategy.STEPS.value
+    )
+    evaluation_strategy = (
+        cfg.get("evaluation_strategy", IntervalStrategy.EPOCH.value)
+        if not demo
+        else IntervalStrategy.STEPS.value
+    )
+    # The logging_steps is retrieved from the current yaml file template
+    logging_steps = finetune_yaml.get("logging_steps", None)
+
+    if streaming:
+        if max_steps is None:
+            raise RuntimeError(
+                f"When streaming is set to True, max_steps must be a non-negative integer. "
+                f"Current max_steps: {max_steps}"
+            )
+        if save_steps is None:
+            raise RuntimeError(
+                f"When streaming is set to True, save_steps must be a non-negative integer. "
+                f"Current max_steps: {save_steps}"
+            )
+        # eval_steps defaults to logging_steps if not provided, we should set it to the same as save_steps
+        if eval_steps is None:
+            logging.warning(
+                "The current eval_steps is None and will default to logging_steps: %s."
+                "This will result in frequent evaluation, we set eval_steps to save_steps: %s",
+                logging_steps,
+                save_steps,
+            )
+            eval_steps = save_steps
+        evaluation_strategy = IntervalStrategy.STEPS.value
+        save_strategy = IntervalStrategy.STEPS.value
+
+    finetune_yaml["streaming"] = streaming
+    finetune_yaml["max_steps"] = max_steps
+    finetune_yaml["save_steps"] = save_steps
+    finetune_yaml["eval_steps"] = eval_steps
+    finetune_yaml["evaluation_strategy"] = evaluation_strategy
+    finetune_yaml["save_strategy"] = save_strategy
+
+    if demo:
         finetune_yaml["per_device_train_batch_size"] = 1
         finetune_yaml["preprocessing_num_workers"] = 1
 

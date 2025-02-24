@@ -84,10 +84,14 @@ def main(cfg: DictConfig) -> None:
     save_steps = cfg.get("save_steps", None) if not demo else demo_default_steps
     eval_steps = cfg.get("eval_steps", None) if not demo else demo_default_steps
     save_strategy = (
-        cfg.get("evaluation_strategy", IntervalStrategy.EPOCH) if not demo else IntervalStrategy.STEPS
+        cfg.get("evaluation_strategy", IntervalStrategy.EPOCH.value)
+        if not demo
+        else IntervalStrategy.STEPS.value
     )
     evaluation_strategy = (
-        cfg.get("evaluation_strategy", IntervalStrategy.EPOCH) if not demo else IntervalStrategy.STEPS
+        cfg.get("evaluation_strategy", IntervalStrategy.EPOCH.value)
+        if not demo
+        else IntervalStrategy.STEPS.value
     )
     # The logging_steps is retrieved from the current yaml file template
     logging_steps = pretraining_yaml.get("logging_steps", None)
@@ -112,8 +116,8 @@ def main(cfg: DictConfig) -> None:
                 save_steps,
             )
             eval_steps = save_steps
-        evaluation_strategy = IntervalStrategy.STEPS
-        save_strategy = IntervalStrategy.STEPS
+        evaluation_strategy = IntervalStrategy.STEPS.value
+        save_strategy = IntervalStrategy.STEPS.value
 
     pretraining_yaml["streaming"] = streaming
     pretraining_yaml["max_steps"] = max_steps
