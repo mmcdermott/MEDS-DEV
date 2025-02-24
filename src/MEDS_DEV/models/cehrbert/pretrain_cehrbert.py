@@ -9,6 +9,9 @@ logger = logging.getLogger(__name__)
 
 CONFIG = Path(__file__).parent / "_config.yaml"
 pretraining_yaml_template = Path(__file__).parent / "cehrbert_pretrain_template.yaml"
+DEMO_DEFAULT_STEPS = 10
+STEPS_STRATEGY = "steps"
+EPOCH_STRATEGY = "epoch"
 
 
 def run_subprocess(cmd: str, temp_work_dir: str, out_dir: Path) -> None:
@@ -75,12 +78,49 @@ def main(cfg: DictConfig) -> None:
     pretraining_yaml["dataloader_num_workers"] = cfg.num_threads
     pretraining_yaml["seed"] = cfg.seed
 
-    if cfg.get("demo", False):
-        pretraining_yaml["max_position_embeddings"] = 512
-        pretraining_yaml["hidden_size"] = 128
-        pretraining_yaml["evaluation_strategy"] = "steps"
-        pretraining_yaml["save_strategy"] = "steps"
-        pretraining_yaml["max_steps"] = 10
+    # Logic for handling streaming
+    demo = cfg.get("demo", False)
+    streaming = cfg.get("streaming", demo)
+    max_steps = cfg.get("max_steps", None) if not demo else DEMO_DEFAULT_STEPS
+    save_steps = cfg.get("save_steps", None) if not demo else DEMO_DEFAULT_STEPS
+    eval_steps = cfg.get("eval_steps", None)
+    save_strategy = cfg.get("save_strategy", STEPS_STRATEGY)
+    evaluation_strategy = cfg.get("evaluation_strategy", STEPS_STRATEGY)
+    logging_steps = cfg.get("logging_steps", DEMO_DEFAULT_STEPS if demo else None)
+    load_best_model_at_end = cfg.get("load_best_model_at_end", False)
+
+    if streaming and max_steps is None:
+        raise RuntimeError(
+            f"When streaming is set to True, max_steps must be a non-negative integer. "
+            f"Current max_steps: {max_steps}"
+        )
+    if save_strategy == STEPS_STRATEGY and save_steps is None:
+        raise RuntimeError(
+            f"When streaming is set to True, save_steps must be a non-negative integer. "
+            f"Current max_steps: {save_steps}"
+        )
+    # eval_steps defaults to logging_steps if not provided, we should set it to the same as save_steps
+    if evaluation_strategy == STEPS_STRATEGY and eval_steps is None:
+        logging.warning(
+            "The current eval_steps is None and will default to logging_steps: %s. "
+            "This will result in frequent evaluation, we set eval_steps to save_steps: %s",
+            logging_steps,
+            save_steps,
+        )
+        eval_steps = save_steps
+
+    pretraining_yaml["streaming"] = streaming
+    pretraining_yaml["max_steps"] = max_steps
+    pretraining_yaml["save_steps"] = save_steps
+    pretraining_yaml["eval_steps"] = eval_steps
+    pretraining_yaml["evaluation_strategy"] = evaluation_strategy
+    pretraining_yaml["save_strategy"] = save_strategy
+    pretraining_yaml["load_best_model_at_end"] = load_best_model_at_end
+
+    # Demo specific setting to speed up the test
+    if demo:
+        pretraining_yaml["hidden_size"] = 64
+        pretraining_yaml["max_position_embeddings"] = 128
         pretraining_yaml["per_device_train_batch_size"] = 1
 
     # Assuming 'pretraining_yaml' is a DictConfig object
