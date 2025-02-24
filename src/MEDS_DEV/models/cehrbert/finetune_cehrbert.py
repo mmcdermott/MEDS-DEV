@@ -77,14 +77,14 @@ def main(cfg: DictConfig) -> None:
 
     # Logic for handling streaming
     demo = cfg.get("demo", False)
-    streaming = cfg.get("streaming", False)
+    streaming = cfg.get("streaming", demo)
     max_steps = cfg.get("max_steps", None) if not demo else DEMO_DEFAULT_STEPS
     save_steps = cfg.get("save_steps", None) if not demo else DEMO_DEFAULT_STEPS
-    eval_steps = cfg.get("eval_steps", None) if not demo else DEMO_DEFAULT_STEPS
-    save_strategy = cfg.get("evaluation_strategy", EPOCH_STRATEGY) if not demo else STEPS_STRATEGY
-    evaluation_strategy = cfg.get("evaluation_strategy", EPOCH_STRATEGY) if not demo else STEPS_STRATEGY
-    # The logging_steps is retrieved from the current yaml file template
-    logging_steps = finetune_yaml.get("logging_steps", None)
+    eval_steps = cfg.get("eval_steps", None)
+    save_strategy = cfg.get("save_strategy", STEPS_STRATEGY)
+    evaluation_strategy = cfg.get("evaluation_strategy", STEPS_STRATEGY)
+    logging_steps = cfg.get("logging_steps", DEMO_DEFAULT_STEPS if demo else None)
+    load_best_model_at_end = cfg.get("load_best_model_at_end", False)
 
     if streaming:
         if max_steps is None:
@@ -92,22 +92,20 @@ def main(cfg: DictConfig) -> None:
                 f"When streaming is set to True, max_steps must be a non-negative integer. "
                 f"Current max_steps: {max_steps}"
             )
-        if save_steps is None:
-            raise RuntimeError(
-                f"When streaming is set to True, save_steps must be a non-negative integer. "
-                f"Current max_steps: {save_steps}"
-            )
-        # eval_steps defaults to logging_steps if not provided, we should set it to the same as save_steps
-        if eval_steps is None:
-            logging.warning(
-                "The current eval_steps is None and will default to logging_steps: %s."
-                "This will result in frequent evaluation, we set eval_steps to save_steps: %s",
-                logging_steps,
-                save_steps,
-            )
-            eval_steps = save_steps
-        evaluation_strategy = STEPS_STRATEGY
-        save_strategy = STEPS_STRATEGY
+    if save_strategy == STEPS_STRATEGY and save_steps is None:
+        raise RuntimeError(
+            f"When streaming is set to True, save_steps must be a non-negative integer. "
+            f"Current max_steps: {save_steps}"
+        )
+    # eval_steps defaults to logging_steps if not provided, we should set it to the same as save_steps
+    if evaluation_strategy == STEPS_STRATEGY and eval_steps is None:
+        logging.warning(
+            "The current eval_steps is None and will default to logging_steps: %s. "
+            "This will result in frequent evaluation, we set eval_steps to save_steps: %s",
+            logging_steps,
+            save_steps,
+        )
+        eval_steps = save_steps
 
     finetune_yaml["streaming"] = streaming
     finetune_yaml["max_steps"] = max_steps
@@ -115,6 +113,7 @@ def main(cfg: DictConfig) -> None:
     finetune_yaml["eval_steps"] = eval_steps
     finetune_yaml["evaluation_strategy"] = evaluation_strategy
     finetune_yaml["save_strategy"] = save_strategy
+    finetune_yaml["load_best_model_at_end"] = load_best_model_at_end
 
     if demo:
         finetune_yaml["per_device_train_batch_size"] = 1

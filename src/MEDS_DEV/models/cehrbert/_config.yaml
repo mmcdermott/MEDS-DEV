@@ -9,10 +9,17 @@ model_initialization_dir: ???
 predictions_fp: ${output_dir}/predictions.parquet
 split: "held_out"
 demo: false
-streaming: true
+streaming: ???
 max_steps: ???
 eval_steps: ???
-save_steps: 500 # this is the same as the default value in the HuggingFace transformer trainer
+# this is the different from the default value in the HuggingFace transformer trainer (no)
+evaluation_strategy: "steps"
+save_strategy: "steps" # this is the same as the default value in the HuggingFace transformer trainer
+save_steps:
+  500 # this is the same as the default value in the HuggingFace transformer trainer
+  # this is the different from the default value in the HuggingFace transformer trainer (false)
+load_best_model_at_end: true
+logging_steps: 500 # this is the same as the default value in the HuggingFace transformer trainer
 seed: 1
 num_threads: 4
 use_lora: False
