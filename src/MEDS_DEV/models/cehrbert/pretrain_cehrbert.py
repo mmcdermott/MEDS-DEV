@@ -74,6 +74,7 @@ def main(cfg: DictConfig) -> None:
     pretraining_yaml["dataset_prepared_path"] = str(dataset_prepared_path.resolve())
     pretraining_yaml["dataloader_num_workers"] = cfg.num_threads
     pretraining_yaml["seed"] = cfg.seed
+    pretraining_yaml["streaming"] = cfg.get("streaming", False)
 
     if cfg.get("demo", False):
         pretraining_yaml["max_position_embeddings"] = 512

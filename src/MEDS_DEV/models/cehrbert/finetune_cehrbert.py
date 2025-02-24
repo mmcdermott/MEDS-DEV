@@ -71,6 +71,7 @@ def main(cfg: DictConfig) -> None:
     finetune_yaml["seed"] = cfg.seed
     finetune_yaml["do_train"] = True
     finetune_yaml["do_predict"] = True
+    finetune_yaml["streaming"] = cfg.get("streaming", False)
     if cfg.get("demo", False):
         finetune_yaml["evaluation_strategy"] = "steps"
         finetune_yaml["save_strategy"] = "steps"
