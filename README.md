@@ -298,3 +298,12 @@ You can also restrict the set of tasks, datasets, and models that you explore us
 `--test_task`, `--test_dataset`, and `--test_model`, respectively. These options can be used to run only the
 selected options (repeating the argument as needed, e.g., `--test_task=task1 --test_task=task2`). If they are
 omitted or if `'all'` is specified as an option, then all allowed tests will be run.
+
+Note that _caching does not imply that test code will not be re-run_ -- instead, it just ensures that output
+files are stored on disk in the specified directory. For some aspects of MEDS-DEV, this means that test-code
+will be re-run and files replaced; for others, it will be re-used. This is a feature, not a bug, as it allows
+you to inspect output files while reliably re-testing code. However, if you want to fully re-use a component
+of a test, you can also specify the additional arguments: `--reuse_cached_dataset`, `--reuse_cached_task`, or
+`--reuse_cached_model` with the same syntax of the `--cache_*` and `--test_*` arguments. Then, the test code
+will explicitly mark the specified components within the persistent cache directory as "re-useable" and will
+not re-run the associated MEDS-DEV code pipelines in between test runs, but simply re-use the outputs.
