@@ -32,6 +32,9 @@ dependencies = ["meds==0.3.3", "es-aces==0.6.1", "hydra-core", "meds-evaluation=
 
 [tool.setuptools_scm]
 
+[tool.coverage.report]
+omit = ["*/models/cehrbert/*"]
+
 [tool.pytest.ini_options]
 addopts = [
   "--color=yes",
