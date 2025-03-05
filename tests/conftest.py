@@ -61,15 +61,17 @@ def pytest_addoption(parser):
     add_reuse_opt("model")
 
 
-def get_and_validate_cache_settings(request) -> tuple[set[str], set[str], set[str]]:
+def get_and_validate_cache_settings(request) -> tuple[Path, tuple[set[str], set[str], set[str]]]:
     """A helper to get the cache settings from the pytest parser options and return the appropriate options.
 
     Args:
         request: The pytest request object.
 
     Returns:
-        A tuple of the sets for datasets, tasks, and models that should be reused across tests. If any of the
-        sets contain 'all', they will be set to all valid options.
+        A tuple with the persistent cache directory and a tuple with the sets for datasets, tasks, and models.
+        If the persistent cache directory is None, the sets will be empty. If the persistent cache directory
+        is not None and exists, the sets will be filled with the respective names. If any of the sets contain
+        'all', they will be set to all valid options.
 
     Examples:
         >>> class MockRequest:
@@ -144,17 +146,15 @@ def get_and_validate_cache_settings(request) -> tuple[set[str], set[str], set[st
     return persistent_cache_dir, (datasets_set, tasks_set, models_set)
 
 
-def get_and_validate_reuse_settings(request) -> tuple[Path | None, tuple[set[str], set[str], set[str]]]:
+def get_and_validate_reuse_settings(request) -> tuple[set[str], set[str], set[str]]:
     """A helper to check the pytest parser options for reuse and return the appropriate options.
 
     Args:
         request: The pytest request object.
 
     Returns:
-        A tuple with the persistent cache directory and a tuple with the sets for datasets, tasks, and models.
-        If the persistent cache directory is None, the sets will be empty. If the persistent cache directory
-        is not None and exists, the sets will be filled with the respective names. If any of the sets contain
-        'all', they will be set to all valid options.
+        A tuple of the sets for datasets, tasks, and models that should be reused across tests. If any of the
+        sets contain 'all', they will be set to all valid options.
 
     Examples:
         >>> class MockRequest:
