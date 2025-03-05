@@ -460,6 +460,13 @@ def supervised_model(
     dataset_name, dataset_dir = demo_dataset
     task_name, task_labels_dir = task_labels
 
+    missing_splits = missing_labels_in_splits(task_labels_dir, dataset_dir)
+    if missing_splits:
+        pytest.skip(
+            f"Labels not found for {dataset_name} and {task_name} in split(s): {', '.join(missing_splits)}. "
+            f"Skipping {model} test."
+        )
+
     _, _, reuse_models = get_and_validate_reuse_settings(request)
 
     do_overwrite = not (model in reuse_models)
