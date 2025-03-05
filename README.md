@@ -307,3 +307,10 @@ of a test, you can also specify the additional arguments: `--reuse_cached_datase
 `--reuse_cached_model` with the same syntax of the `--cache_*` and `--test_*` arguments. Then, the test code
 will explicitly mark the specified components within the persistent cache directory as "re-useable" and will
 not re-run the associated MEDS-DEV code pipelines in between test runs, but simply re-use the outputs.
+
+## Notes
+
+1. Some models in this repo use Hugging Face Datasets objects. These cache data to disk in a directory you
+    can control via the environment variable `HF_DATASETS_CACHE`. If you have disk space or security concerns
+    about storage in the ordinary cache directory, you should set this variable manually to a desired
+    directory in your terminal before running MEDS-DEV commands. See #144 for more details.
