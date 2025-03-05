@@ -1,8 +1,10 @@
 from pathlib import Path
 from tempfile import TemporaryDirectory
 
+from meds_testing_helpers.dataset import MEDSDataset
+
 from MEDS_DEV import DATASETS
-from tests.utils import run_command
+from tests.utils import NAME_AND_DIR, run_command
 
 
 def test_non_dataset_breaks():
@@ -21,23 +23,11 @@ def test_non_dataset_breaks():
         )
 
 
-def test_datasets_configured(demo_dataset):
+def test_datasets_configured(demo_dataset: NAME_AND_DIR):
     dataset_name, demo_dataset_dir = demo_dataset
 
-    assert demo_dataset_dir.exists(), f"Output directory not found for {dataset_name}"
-    data_subdir = demo_dataset_dir / "data"
-    metadata_subdir = demo_dataset_dir / "metadata"
-
-    if not data_subdir.is_dir() or not metadata_subdir.is_dir():
-        err_str = [
-            f"Either data/ or metadata/ is not a directory for {dataset_name}.",
-            f"Demo dataset directory: {demo_dataset_dir}",
-            "Directory contents:",
-        ]
-        for f in demo_dataset_dir.rglob("*"):
-            err_str.append(f"  - {f}")
-            if f.suffix == ".log":
-                err_str.append("    Log contents:")
-                err_str.append(f"    {f.read_text()}")
-
-        raise AssertionError("\n".join(err_str))
+    # Check validity
+    try:
+        MEDSDataset(root_dir=demo_dataset_dir)
+    except Exception as e:
+        raise AssertionError(f"Failed to validate dataset {dataset_name} from {demo_dataset_dir}") from e

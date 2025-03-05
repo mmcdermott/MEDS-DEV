@@ -7,7 +7,7 @@ import polars as pl
 import pytest
 
 from MEDS_DEV import DATASETS, MODELS, TASKS
-from tests.utils import run_command
+from tests.utils import NAME_AND_DIR, run_command
 
 logger = logging.getLogger(__name__)
 
@@ -232,16 +232,14 @@ def get_opts(config, opt: str) -> list[str]:
 def pytest_generate_tests(metafunc):
     if "demo_dataset" in metafunc.fixturenames:
         metafunc.parametrize("demo_dataset", get_opts(metafunc.config, "dataset"), indirect=True)
-    if "demo_dataset_with_task_labels" in metafunc.fixturenames:
-        metafunc.parametrize(
-            "demo_dataset_with_task_labels", get_opts(metafunc.config, "task"), indirect=True
-        )
+    if "task_labels" in metafunc.fixturenames:
+        metafunc.parametrize("task_labels", get_opts(metafunc.config, "task"), indirect=True)
     if "demo_model" in metafunc.fixturenames:
         metafunc.parametrize("demo_model", get_opts(metafunc.config, "model"), indirect=True)
 
 
 @pytest.fixture(scope="session")
-def demo_dataset(request) -> tuple[str, Path]:
+def demo_dataset(request) -> NAME_AND_DIR:
     dataset_name = request.param
     persistent_cache_dir, (cache_datasets, _, _) = get_and_validate_cache_settings(request)
     reuse_datasets, _, _ = get_and_validate_reuse_settings(request)
@@ -271,9 +269,9 @@ def demo_dataset(request) -> tuple[str, Path]:
 
 
 @pytest.fixture(scope="session")
-def demo_dataset_with_task_labels(request, demo_dataset) -> tuple[str, Path, str, Path]:
+def task_labels(request, demo_dataset: NAME_AND_DIR) -> NAME_AND_DIR:
     task_name = request.param
-    (dataset_name, dataset_dir) = demo_dataset
+    dataset_name, dataset_dir = demo_dataset
 
     _, reuse_tasks, _ = get_and_validate_reuse_settings(request)
 
@@ -311,7 +309,7 @@ def demo_dataset_with_task_labels(request, demo_dataset) -> tuple[str, Path, str
             check_fp.parent.mkdir(parents=True, exist_ok=True)
             check_fp.touch()
 
-        yield dataset_name, dataset_dir, task_name, task_labels_dir
+        yield task_name, task_labels_dir
 
 
 def missing_labels_in_splits(labels_dir: Path, dataset_dir: Path) -> set[str]:
@@ -388,9 +386,10 @@ def missing_labels_in_splits(labels_dir: Path, dataset_dir: Path) -> set[str]:
 
 
 @pytest.fixture(scope="session")
-def demo_model(request, demo_dataset_with_task_labels) -> tuple[str, Path, str, Path, str, Path]:
+def demo_model(request, demo_dataset: NAME_AND_DIR, task_labels: NAME_AND_DIR) -> NAME_AND_DIR:
     model = request.param
-    dataset_name, dataset_dir, task_name, task_labels_dir = demo_dataset_with_task_labels
+    dataset_name, dataset_dir = demo_dataset
+    task_name, task_labels_dir = task_labels
 
     _, _, reuse_models = get_and_validate_reuse_settings(request)
 
@@ -431,12 +430,12 @@ def demo_model(request, demo_dataset_with_task_labels) -> tuple[str, Path, str, 
             check_fp.touch()
 
         final_out_dir = model_dir / dataset_name / task_name / "predict"
-        yield model, final_out_dir, dataset_name, dataset_dir, task_name, task_labels_dir
+        yield model, final_out_dir
 
 
 @pytest.fixture(scope="session")
-def evaluated_model(demo_model) -> tuple[Path, tuple[str, Path, str, Path, str, Path]]:
-    model, final_out_dir = demo_model[:2]
+def evaluated_model(demo_model: NAME_AND_DIR) -> Path:
+    model, final_out_dir = demo_model
 
     with TemporaryDirectory() as root_dir:
         run_command(
@@ -448,4 +447,4 @@ def evaluated_model(demo_model) -> tuple[Path, tuple[str, Path, str, Path, str, 
             },
         )
 
-        yield Path(root_dir), demo_model
+        yield Path(root_dir)

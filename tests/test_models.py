@@ -2,7 +2,7 @@ from pathlib import Path
 from tempfile import TemporaryDirectory
 
 from MEDS_DEV import MODELS
-from tests.utils import run_command
+from tests.utils import NAME_AND_DIR, run_command
 
 
 def test_non_model_breaks():
@@ -21,8 +21,10 @@ def test_non_model_breaks():
         )
 
 
-def test_model_runs(demo_model):
-    model, final_out_dir, dataset_name, _, task_name, _ = demo_model
+def test_model_runs(demo_model: NAME_AND_DIR, demo_dataset: NAME_AND_DIR, task_labels: NAME_AND_DIR):
+    model, final_out_dir = demo_model
+    dataset_name, _ = demo_dataset
+    task_name, _ = task_labels
     setting = f"{model} for {task_name} on {dataset_name}"
 
     if not final_out_dir.exists():
