@@ -5,6 +5,7 @@ dataset: ???
 output_dir: ???
 demo: False
 temp_dir: null # If null, will be determined automatically to a temporary directory.
+venv_dir: null
 do_overwrite: False
 
 hydra:

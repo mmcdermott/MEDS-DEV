@@ -257,10 +257,17 @@ def demo_dataset(request) -> NAME_AND_DIR:
 
         already_tested = check_fp.exists() and data_exists and metadata_exists
         if do_overwrite or not already_tested:
+            venv_dir = root_dir / "venvs" / "datasets" / dataset_name
+
             run_command(
                 "meds-dev-dataset",
                 test_name=f"Build {dataset_name}",
-                hydra_kwargs={"dataset": dataset_name, "output_dir": str(output_dir.resolve()), "demo": True},
+                hydra_kwargs={
+                    "dataset": dataset_name,
+                    "output_dir": str(output_dir.resolve()),
+                    "demo": True,
+                    "venv_dir": str(venv_dir.resolve()),
+                },
             )
             check_fp.parent.mkdir(parents=True, exist_ok=True)
             check_fp.touch()
@@ -412,6 +419,8 @@ def unsupervised_model(request, demo_dataset: NAME_AND_DIR) -> NAME_AND_DIR:
         already_tested = check_fp.exists() and model_dir.is_dir()
 
         if do_overwrite or not already_tested:
+            venv_dir = root_dir / "venvs" / "models" / model
+
             run_command(
                 "meds-dev-model",
                 test_name=f"Model {model} should train in unsupervised mode on {dataset_name}",
@@ -423,6 +432,7 @@ def unsupervised_model(request, demo_dataset: NAME_AND_DIR) -> NAME_AND_DIR:
                     "dataset_name": dataset_name,
                     "output_dir": str(model_dir.resolve()),
                     "demo": True,
+                    "venv_dir": str(venv_dir.resolve()),
                 },
             )
             check_fp.parent.mkdir(parents=True, exist_ok=True)
@@ -433,7 +443,10 @@ def unsupervised_model(request, demo_dataset: NAME_AND_DIR) -> NAME_AND_DIR:
 
 @pytest.fixture(scope="session")
 def supervised_model(
-    request, unsupervised_model: NAME_AND_DIR, demo_dataset: NAME_AND_DIR, task_labels: NAME_AND_DIR
+    request,
+    unsupervised_model: NAME_AND_DIR,
+    demo_dataset: NAME_AND_DIR,
+    task_labels: NAME_AND_DIR,
 ) -> NAME_AND_DIR:
     model, unsupervised_train_dir = unsupervised_model
 
@@ -466,10 +479,16 @@ def supervised_model(
         already_tested = check_fp.exists() and model_dir.is_dir()
 
         if do_overwrite or not already_tested:
+            venv_dir = root_dir / "venvs" / "models" / model
+
             run_command(
                 "meds-dev-model",
                 test_name=f"Model {model} should run on {dataset_name} and {task_name}",
-                hydra_kwargs={**shared_kwargs, "output_dir": str(model_dir.resolve())},
+                hydra_kwargs={
+                    **shared_kwargs,
+                    "output_dir": str(model_dir.resolve()),
+                    "venv_dir": str(venv_dir.resolve()),
+                },
             )
             check_fp.parent.mkdir(parents=True, exist_ok=True)
             check_fp.touch()
