@@ -1,4 +1,5 @@
 import contextlib
+import logging
 from pathlib import Path
 from tempfile import TemporaryDirectory
 
@@ -6,7 +7,9 @@ import polars as pl
 import pytest
 
 from MEDS_DEV import DATASETS, MODELS, TASKS
-from tests.utils import run_command
+from tests.utils import NAME_AND_DIR, run_command
+
+logger = logging.getLogger(__name__)
 
 
 def pytest_addoption(parser):
@@ -43,9 +46,23 @@ def pytest_addoption(parser):
     add_test_opt("task")
     add_test_opt("model")
 
+    def add_reuse_opt(opt: str):
+        reuse_str_template = (
+            "If cached and tested, ensure that the following {opt} can be re-used across tests. Use 'all' to "
+            "reuse all {opt}s. Add specific {opt}s by repeating the arg, e.g., --reuse_cached_{opt}={opt}1 "
+            "--reuse_cached_{opt}={opt}2. Arguments for {opt}s that are not tested & cached will be ignored."
+        )
+        parser.addoption(
+            f"--reuse_cached_{opt}", action="append", type=str, help=reuse_str_template.format(opt=opt)
+        )
 
-def get_and_validate_cache_settings(request) -> tuple[Path | None, tuple[set[str], set[str], set[str]]]:
-    """A helper to check the pytest parser options for caching and return the appropriate options.
+    add_reuse_opt("dataset")
+    add_reuse_opt("task")
+    add_reuse_opt("model")
+
+
+def get_and_validate_cache_settings(request) -> tuple[Path, tuple[set[str], set[str], set[str]]]:
+    """A helper to get the cache settings from the pytest parser options and return the appropriate options.
 
     Args:
         request: The pytest request object.
@@ -55,10 +72,6 @@ def get_and_validate_cache_settings(request) -> tuple[Path | None, tuple[set[str
         If the persistent cache directory is None, the sets will be empty. If the persistent cache directory
         is not None and exists, the sets will be filled with the respective names. If any of the sets contain
         'all', they will be set to all valid options.
-
-    Raises:
-        pytest.UsageError: If the persistent cache directory is not set but any of the cache options are set.
-        pytest.UsageError: If the persistent cache directory is set but not a valid, existing directory.
 
     Examples:
         >>> class MockRequest:
@@ -133,6 +146,54 @@ def get_and_validate_cache_settings(request) -> tuple[Path | None, tuple[set[str
     return persistent_cache_dir, (datasets_set, tasks_set, models_set)
 
 
+def get_and_validate_reuse_settings(request) -> tuple[set[str], set[str], set[str]]:
+    """A helper to check the pytest parser options for reuse and return the appropriate options.
+
+    Args:
+        request: The pytest request object.
+
+    Returns:
+        A tuple of the sets for datasets, tasks, and models that should be reused across tests. If any of the
+        sets contain 'all', they will be set to all valid options.
+
+    Examples:
+        >>> class MockRequest:
+        ...     def __init__(self, reuse_cached_datasets, reuse_cached_tasks, reuse_cached_models):
+        ...         self.opts = {
+        ...             '--reuse_cached_dataset': reuse_cached_datasets,
+        ...             '--reuse_cached_task': reuse_cached_tasks,
+        ...             '--reuse_cached_model': reuse_cached_models,
+        ...         }
+        ...         self.config = self
+        ...     def getoption(self, opt):
+        ...         return self.opts[opt]
+        >>> get_and_validate_reuse_settings(MockRequest(None, None, None))
+        (set(), set(), set())
+        >>> out = get_and_validate_reuse_settings(MockRequest(["d1", "d2"], ["t1"], ["m1"]))
+        >>> print(tuple(sorted(list(x)) for x in out))
+        (['d1', 'd2'], ['t1'], ['m1'])
+        >>> D, T, M = get_and_validate_reuse_settings(MockRequest(["d1", "d2", "all"], ["all"], ["all"]))
+        >>> assert D == set(DATASETS), f"Expected {set(DATASETS)}, got {D}"
+        >>> assert T == set(TASKS), f"Expected {set(TASKS)}, got {T}"
+        >>> assert M == set(MODELS), f"Expected {set(MODELS)}, got {M}"
+    """
+    reuse_cached_datasets = request.config.getoption("--reuse_cached_dataset")
+    reuse_cached_tasks = request.config.getoption("--reuse_cached_task")
+    reuse_cached_models = request.config.getoption("--reuse_cached_model")
+
+    datasets_set = set(reuse_cached_datasets) if reuse_cached_datasets else set()
+    if "all" in datasets_set:
+        datasets_set = set(DATASETS)
+    tasks_set = set(reuse_cached_tasks) if reuse_cached_tasks else set()
+    if "all" in tasks_set:
+        tasks_set = set(TASKS)
+    models_set = set(reuse_cached_models) if reuse_cached_models else set()
+    if "all" in models_set:
+        models_set = set(MODELS)
+
+    return datasets_set, tasks_set, models_set
+
+
 @contextlib.contextmanager
 def cache_dir(persistent_dir: Path | None):
     """A simple helper to yield either the persistent dir or a temporary directory.
@@ -151,7 +212,7 @@ def cache_dir(persistent_dir: Path | None):
         /tmp/...
     """
     if persistent_dir:
-        yield persistent_dir
+        yield Path(persistent_dir)
     else:
         with TemporaryDirectory() as temp_dir:
             yield Path(temp_dir)
@@ -171,36 +232,63 @@ def get_opts(config, opt: str) -> list[str]:
 def pytest_generate_tests(metafunc):
     if "demo_dataset" in metafunc.fixturenames:
         metafunc.parametrize("demo_dataset", get_opts(metafunc.config, "dataset"), indirect=True)
-    if "demo_dataset_with_task_labels" in metafunc.fixturenames:
-        metafunc.parametrize(
-            "demo_dataset_with_task_labels", get_opts(metafunc.config, "task"), indirect=True
-        )
-    if "demo_model" in metafunc.fixturenames:
-        metafunc.parametrize("demo_model", get_opts(metafunc.config, "model"), indirect=True)
+    if "task_labels" in metafunc.fixturenames:
+        metafunc.parametrize("task_labels", get_opts(metafunc.config, "task"), indirect=True)
+    if "unsupervised_model" in metafunc.fixturenames:
+        metafunc.parametrize("unsupervised_model", get_opts(metafunc.config, "model"), indirect=True)
 
 
 @pytest.fixture(scope="session")
-def demo_dataset(request) -> tuple[str, Path]:
+def venv_cache(request) -> Path | None:
+    with cache_dir(request.config.getoption("--persistent_cache_dir")) as cache:
+        yield cache / "venvs"
+
+
+@pytest.fixture(scope="session")
+def demo_dataset(request, venv_cache: Path) -> NAME_AND_DIR:
     dataset_name = request.param
     persistent_cache_dir, (cache_datasets, _, _) = get_and_validate_cache_settings(request)
+    reuse_datasets, _, _ = get_and_validate_reuse_settings(request)
+
+    do_overwrite = not (dataset_name in reuse_datasets)
 
     with cache_dir(persistent_cache_dir if dataset_name in cache_datasets else None) as root_dir:
         root_dir = Path(root_dir)
+
+        check_fp = root_dir / f".{dataset_name}.check"
         output_dir = root_dir / dataset_name
 
-        run_command(
-            "meds-dev-dataset",
-            test_name=f"Build {dataset_name}",
-            hydra_kwargs={"dataset": dataset_name, "output_dir": str(output_dir.resolve()), "demo": True},
-        )
+        data_exists = (output_dir / "data").is_dir()
+        metadata_exists = (output_dir / "metadata").is_dir()
+
+        already_tested = check_fp.exists() and data_exists and metadata_exists
+        if do_overwrite or not already_tested:
+            venv_dir = venv_cache / "datasets" / dataset_name
+
+            run_command(
+                "meds-dev-dataset",
+                test_name=f"Build {dataset_name}",
+                hydra_kwargs={
+                    "dataset": dataset_name,
+                    "output_dir": str(output_dir.resolve()),
+                    "demo": True,
+                    "venv_dir": str(venv_dir.resolve()),
+                },
+            )
+            check_fp.parent.mkdir(parents=True, exist_ok=True)
+            check_fp.touch()
 
         yield dataset_name, output_dir
 
 
 @pytest.fixture(scope="session")
-def demo_dataset_with_task_labels(request, demo_dataset) -> tuple[str, Path, str, Path]:
+def task_labels(request, demo_dataset: NAME_AND_DIR) -> NAME_AND_DIR:
     task_name = request.param
-    (dataset_name, dataset_dir) = demo_dataset
+    dataset_name, dataset_dir = demo_dataset
+
+    _, reuse_tasks, _ = get_and_validate_reuse_settings(request)
+
+    do_overwrite = not (task_name in reuse_tasks)
 
     task_metadata = TASKS[task_name].get("metadata", None)
     if (
@@ -215,18 +303,26 @@ def demo_dataset_with_task_labels(request, demo_dataset) -> tuple[str, Path, str
         root_dir = Path(root_dir)
         task_labels_dir = root_dir / dataset_name / "task_labels" / task_name
 
-        run_command(
-            "meds-dev-task",
-            test_name=f"Extract {task_name}",
-            hydra_kwargs={
-                "task": task_name,
-                "dataset": dataset_name,
-                "dataset_dir": str(dataset_dir.resolve()),
-                "output_dir": str(task_labels_dir.resolve()),
-            },
-        )
+        check_fp = root_dir / f".{dataset_name}.{task_name}.check"
+        labels_exist = task_labels_dir.is_dir() and any(task_labels_dir.rglob("*.parquet"))
 
-        yield dataset_name, dataset_dir, task_name, task_labels_dir
+        already_tested = check_fp.exists() and labels_exist
+
+        if do_overwrite or not already_tested:
+            run_command(
+                "meds-dev-task",
+                test_name=f"Extract {task_name}",
+                hydra_kwargs={
+                    "task": task_name,
+                    "dataset": dataset_name,
+                    "dataset_dir": str(dataset_dir.resolve()),
+                    "output_dir": str(task_labels_dir.resolve()),
+                },
+            )
+            check_fp.parent.mkdir(parents=True, exist_ok=True)
+            check_fp.touch()
+
+        yield task_name, task_labels_dir
 
 
 def missing_labels_in_splits(labels_dir: Path, dataset_dir: Path) -> set[str]:
@@ -303,9 +399,66 @@ def missing_labels_in_splits(labels_dir: Path, dataset_dir: Path) -> set[str]:
 
 
 @pytest.fixture(scope="session")
-def demo_model(request, demo_dataset_with_task_labels) -> tuple[str, Path, str, Path, str, Path]:
+def unsupervised_model(request, demo_dataset: NAME_AND_DIR, venv_cache: Path) -> NAME_AND_DIR:
     model = request.param
-    dataset_name, dataset_dir, task_name, task_labels_dir = demo_dataset_with_task_labels
+
+    unsupervised_commands = MODELS[model]["commands"].get("unsupervised", None)
+    if not unsupervised_commands:
+        yield model, None
+        return
+    if not unsupervised_commands.get("train", None):
+        yield model, None
+        return
+
+    dataset_name, dataset_dir = demo_dataset
+
+    _, _, reuse_models = get_and_validate_reuse_settings(request)
+
+    do_overwrite = not (model in reuse_models)
+
+    persistent_cache_dir, (_, _, cache_models) = get_and_validate_cache_settings(request)
+
+    with cache_dir(persistent_cache_dir if model in cache_models else None) as root_dir:
+        check_fp = root_dir / f".{model}._unsupervised..{dataset_name}.check"
+        model_dir = root_dir / model
+
+        already_tested = check_fp.exists() and model_dir.is_dir()
+
+        if do_overwrite or not already_tested:
+            venv_dir = venv_cache / "models" / model
+
+            run_command(
+                "meds-dev-model",
+                test_name=f"Model {model} should train in unsupervised mode on {dataset_name}",
+                hydra_kwargs={
+                    "model": model,
+                    "dataset_type": "unsupervised",
+                    "mode": "train",
+                    "dataset_dir": str(dataset_dir.resolve()),
+                    "dataset_name": dataset_name,
+                    "output_dir": str(model_dir.resolve()),
+                    "demo": True,
+                    "venv_dir": str(venv_dir.resolve()),
+                },
+            )
+            check_fp.parent.mkdir(parents=True, exist_ok=True)
+            check_fp.touch()
+
+        yield model, model_dir
+
+
+@pytest.fixture(scope="session")
+def supervised_model(
+    request,
+    unsupervised_model: NAME_AND_DIR,
+    demo_dataset: NAME_AND_DIR,
+    task_labels: NAME_AND_DIR,
+    venv_cache: Path,
+) -> NAME_AND_DIR:
+    model, unsupervised_train_dir = unsupervised_model
+
+    dataset_name, dataset_dir = demo_dataset
+    task_name, task_labels_dir = task_labels
 
     missing_splits = missing_labels_in_splits(task_labels_dir, dataset_dir)
     if missing_splits:
@@ -314,33 +467,53 @@ def demo_model(request, demo_dataset_with_task_labels) -> tuple[str, Path, str, 
             f"Skipping {model} test."
         )
 
+    _, _, reuse_models = get_and_validate_reuse_settings(request)
+
+    do_overwrite = not (model in reuse_models)
+
     persistent_cache_dir, (_, _, cache_models) = get_and_validate_cache_settings(request)
 
+    shared_kwargs = {
+        "model": model,
+        "dataset_type": "supervised",
+        "mode": "full",
+        "dataset_dir": str(dataset_dir.resolve()),
+        "labels_dir": str(task_labels_dir.resolve()),
+        "dataset_name": dataset_name,
+        "task_name": task_name,
+        "demo": True,
+    }
+    if unsupervised_train_dir is not None:
+        shared_kwargs["model_initialization_dir"] = str(unsupervised_train_dir.resolve())
+
     with cache_dir(persistent_cache_dir if model in cache_models else None) as root_dir:
+        check_fp = root_dir / f".{model}.{dataset_name}.{task_name}.check"
         model_dir = root_dir / model
-        run_command(
-            "meds-dev-model",
-            test_name=f"Model {model} should run on {dataset_name} and {task_name}",
-            hydra_kwargs={
-                "model": model,
-                "dataset_type": "full",
-                "mode": "full",
-                "dataset_dir": str(dataset_dir.resolve()),
-                "labels_dir": str(task_labels_dir.resolve()),
-                "dataset_name": dataset_name,
-                "task_name": task_name,
-                "output_dir": str(model_dir.resolve()),
-                "demo": True,
-            },
-        )
+
+        already_tested = check_fp.exists() and model_dir.is_dir()
+
+        if do_overwrite or not already_tested:
+            venv_dir = venv_cache / "models" / model
+
+            run_command(
+                "meds-dev-model",
+                test_name=f"Model {model} should run on {dataset_name} and {task_name}",
+                hydra_kwargs={
+                    **shared_kwargs,
+                    "output_dir": str(model_dir.resolve()),
+                    "venv_dir": str(venv_dir.resolve()),
+                },
+            )
+            check_fp.parent.mkdir(parents=True, exist_ok=True)
+            check_fp.touch()
 
         final_out_dir = model_dir / dataset_name / task_name / "predict"
-        yield model, final_out_dir, dataset_name, dataset_dir, task_name, task_labels_dir
+        yield model, final_out_dir
 
 
 @pytest.fixture(scope="session")
-def evaluated_model(demo_model) -> tuple[Path, tuple[str, Path, str, Path, str, Path]]:
-    model, final_out_dir = demo_model[:2]
+def evaluated_model(supervised_model: NAME_AND_DIR) -> Path:
+    model, final_out_dir = supervised_model
 
     with TemporaryDirectory() as root_dir:
         run_command(
@@ -352,4 +525,4 @@ def evaluated_model(demo_model) -> tuple[Path, tuple[str, Path, str, Path, str, 
             },
         )
 
-        yield Path(root_dir), demo_model
+        yield Path(root_dir)

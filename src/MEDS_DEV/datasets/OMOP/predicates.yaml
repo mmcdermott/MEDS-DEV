@@ -48,5 +48,3 @@ predicates:
         - "SNOMED/34596002"
         - "PCORNet/Generic-OT"
         - "CMS Place of Service/09"
-  death:
-    code: MEDS_DEATH

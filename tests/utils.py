@@ -4,6 +4,8 @@ from pathlib import Path
 
 from omegaconf import OmegaConf
 
+NAME_AND_DIR = tuple[str, Path]
+
 
 def dict_to_hydra_kwargs(d: dict[str, str]) -> str:
     """Converts a dictionary to a hydra kwargs string for testing purposes.

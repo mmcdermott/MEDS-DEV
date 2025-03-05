@@ -1,5 +1,8 @@
-def test_evaluates(evaluated_model):
-    evaluation_dir, test_model_info = evaluated_model
+from pathlib import Path
+
+
+def test_evaluates(evaluated_model: Path):
+    evaluation_dir = evaluated_model
 
     try:
         assert evaluation_dir.exists()

@@ -15,7 +15,8 @@ metadata:
 predicates:
   icu_admission: ???
   icu_discharge: ???
-  death: ???
+  death:
+    code: { regex: "MEDS_DEATH.*" }
   discharge_or_death:
     expr: or(icu_discharge, death)
 

@@ -11,8 +11,10 @@ description: >-
 predicates:
   hospital_admission: ???
   hospital_discharge: ???
-  birth: ???
-  death: ???
+  birth:
+    code: { regex: "MEDS_BIRTH.*" }
+  death:
+    code: { regex: "MEDS_DEATH.*" }
   discharge_or_death:
     expr: or(death, hospital_discharge)
 
