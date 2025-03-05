@@ -9,10 +9,13 @@ description: >-
   values previously, and 3) their length of stay in the hospital must be at least 48 hours.
 
 predicates:
+  birth:
+    code: { regex: "MEDS_BIRTH.*" }
+  death:
+    code: { regex: "MEDS_DEATH.*" }
   icu_admission: ???
   icu_discharge: ???
   hospital_discharge: ???
-  death: ???
   discharge_or_death:
     expr: or(icu_discharge, death, hospital_discharge)
 

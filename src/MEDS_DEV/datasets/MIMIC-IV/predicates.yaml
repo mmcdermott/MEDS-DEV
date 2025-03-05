@@ -14,11 +14,6 @@ predicates:
   icu_discharge:
     code: { regex: "^ICU_DISCHARGE//.*" }
 
-  birth:
-    code: MEDS_BIRTH
-  death:
-    code: MEDS_DEATH
-
   creatinine_1:
     code: LAB//50912//mg/dL
   creatinine_2:

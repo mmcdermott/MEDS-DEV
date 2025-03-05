@@ -3,6 +3,3 @@ predicates:
     code: { regex: "^ICU_ADMISSION//.*" }
   icu_discharge:
     code: { regex: "^ICU_DISCHARGE//.*" }
-
-  death:
-    code: MEDS_DEATH
