@@ -43,7 +43,7 @@ addopts = [
 
 [project.optional-dependencies]
 dev = ["pre-commit<4"]
-tests = ["pytest", "pytest-cov", "rootutils", "meds_testing_helpers"]
+tests = ["pytest", "pytest-cov", "meds_testing_helpers"]
 
 [project.scripts]
 meds-dev-dataset = "MEDS_DEV.datasets.__main__:main"
