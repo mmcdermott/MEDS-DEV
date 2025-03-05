@@ -1,8 +1,10 @@
 from pathlib import Path
 from tempfile import TemporaryDirectory
 
+import pytest
+
 from MEDS_DEV import MODELS
-from tests.utils import run_command
+from tests.utils import NAME_AND_DIR, run_command
 
 
 def test_non_model_breaks():
@@ -21,14 +23,20 @@ def test_non_model_breaks():
         )
 
 
-def test_model_runs(demo_model):
-    model, final_out_dir, dataset_name, _, task_name, _ = demo_model
-    setting = f"{model} for {task_name} on {dataset_name}"
+def test_unsupervised(unsupervised_model: NAME_AND_DIR, demo_dataset: NAME_AND_DIR):
+    model, final_out_dir = unsupervised_model
+
+    if final_out_dir is None:
+        pytest.skip(f"{model} does not support unsupervised training.")
+        return
+
+    dataset_name, _ = demo_dataset
+    setting = f"Unsupervised {model} on {dataset_name}"
 
     if not final_out_dir.exists():
         error_lines = [
             f"Output directory {final_out_dir} does not exist for {setting}.",
-            f"Model {model} for {task_name} on {dataset_name} did not run properly. Walking back...",
+            f"Model {model} on {dataset_name} did not run properly. Walking back...",
         ]
         d = final_out_dir.parent
         while not d.exists():
@@ -37,5 +45,3 @@ def test_model_runs(demo_model):
         error_lines.append(f"Directory {d} exists. Contents:")
         error_lines.append(str(list(d.rglob("*"))))
         raise AssertionError("\n".join(error_lines))
-
-    assert len(list(final_out_dir.rglob("*.parquet"))) > 0, f"No predictions written for {setting}."

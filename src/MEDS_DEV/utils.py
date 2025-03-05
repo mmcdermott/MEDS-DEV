@@ -1,4 +1,5 @@
 import contextlib
+import hashlib
 import logging
 import os
 import shutil
@@ -12,11 +13,11 @@ from omegaconf import DictConfig
 logger = logging.getLogger(__name__)
 
 
-def get_venv_bin_path(venv_path: str | Path) -> Path:
+def get_venv_bin_path(venv_dir: str | Path) -> Path:
     """Get the bin/Scripts directory of the virtual environment.
 
     Args:
-        venv_path: Path to the virtual environment's root directory.
+        venv_dir: Path to the virtual environment's root directory.
 
     Returns:
         Path to the bin/Scripts directory of the virtual environment, depending on the operating system.
@@ -28,9 +29,9 @@ def get_venv_bin_path(venv_path: str | Path) -> Path:
     # Windows uses "Scripts" instead of "bin"
     # TODO(mmd): Test this properly across operating systems
     if os.name == "nt":  # pragma: no cover
-        return Path(venv_path) / "Scripts"
+        return Path(venv_dir) / "Scripts"
     else:
-        return Path(venv_path) / "bin"
+        return Path(venv_dir) / "bin"
 
 
 @contextlib.contextmanager
@@ -76,11 +77,11 @@ def tempdir_ctx(cfg: DictConfig) -> Path:
         yield temp_dir
 
 
-def install_venv(venv_path: Path, requirements: str | Path) -> Path:
+def install_venv(venv_dir: Path, requirements: str | Path) -> Path:
     logger.info(f"Installing requirements from {requirements} into virtual environment.")
-    subprocess.run([sys.executable, "-m", "venv", str(venv_path)], check=True)
+    subprocess.run([sys.executable, "-m", "venv", str(venv_dir)], check=True)
 
-    venv_bin_path = get_venv_bin_path(venv_path)
+    venv_bin_path = get_venv_bin_path(venv_dir)
     venv_python = venv_bin_path / "python"
     if not venv_python.exists():
         raise RuntimeError(f"Virtual environment python {venv_python} does not exist!")
@@ -94,14 +95,45 @@ def install_venv(venv_path: Path, requirements: str | Path) -> Path:
     return venv_bin_path
 
 
+def file_hash(filepath, algorithm="sha256", chunk_size=4096):
+    hash_func = hashlib.new(algorithm)
+    with open(filepath, "rb") as file:
+        for chunk in iter(lambda: file.read(chunk_size), b""):
+            hash_func.update(chunk)
+    return hash_func.hexdigest()
+
+
 @contextlib.contextmanager
 def temp_env(cfg: DictConfig, requirements: str | Path | None) -> tuple[Path, dict]:
     with tempdir_ctx(cfg) as build_temp_dir:
         env = os.environ.copy()
         if requirements is not None:
-            venv_path = build_temp_dir / ".venv"
-            venv_bin_path = install_venv(venv_path, requirements)
-            env["VIRTUAL_ENV"] = str(venv_path.resolve())
+            if cfg.get("venv_dir", None) is not None:
+                venv_dir = Path(cfg.venv_dir)
+            else:
+                venv_dir = build_temp_dir / ".venv"
+
+            check_fp = venv_dir / f".installed.{file_hash(requirements)}.txt"
+            venv_bin_path = get_venv_bin_path(venv_dir)
+
+            if check_fp.exists():
+                logger.info(f"Requirements already installed in {venv_dir}.")
+            elif venv_bin_path.exists():
+                any_check_fp = any(venv_dir.glob(".installed.*.txt"))
+                if any_check_fp:
+                    logger.warning(
+                        f"Virtual environment {venv_dir} exists, but requirements check files differ! "
+                        "Overwriting."
+                    )
+                else:
+                    logger.warning(f"{venv_dir} exists but no requirements check files found. Overwriting.")
+                shutil.rmtree(venv_dir)
+
+            if not check_fp.exists():
+                install_venv(venv_dir, requirements)
+                check_fp.touch()
+
+            env["VIRTUAL_ENV"] = str(venv_dir.resolve())
             env["PATH"] = f"{str(venv_bin_path.resolve())}{os.pathsep}{env['PATH']}"
 
         yield build_temp_dir, env

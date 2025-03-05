@@ -4,11 +4,11 @@ from pathlib import Path
 import pytest
 
 from MEDS_DEV import DATASETS, TASKS
-from tests.utils import run_command
+from tests.utils import NAME_AND_DIR, run_command
 
 
 @pytest.mark.parametrize("task", TASKS)
-def test_non_task_non_dataset_breaks(task):
+def test_non_task_non_dataset_breaks(task: str):
     non_dataset = "_not_supported"
     while non_dataset in DATASETS:
         non_dataset = f"_{non_dataset}"
@@ -29,7 +29,7 @@ def test_non_task_non_dataset_breaks(task):
         )
 
 
-def test_non_task_breaks(demo_dataset):
+def test_non_task_breaks(demo_dataset: NAME_AND_DIR):
     (dataset_name, dataset_dir) = demo_dataset
 
     non_task = "_not_supported"
@@ -52,15 +52,17 @@ def test_non_task_breaks(demo_dataset):
     )
 
 
-def test_tasks_configured(demo_dataset_with_task_labels):
-    dataset_name, dataset_dir, task_name, task_labels_dir = demo_dataset_with_task_labels
+def test_tasks_configured(demo_dataset: NAME_AND_DIR, task_labels: NAME_AND_DIR):
+    dataset_name, dataset_dir = demo_dataset
+    task_name, task_labels_dir = task_labels
 
     files = list(task_labels_dir.glob("**/*.parquet"))
     assert files, f"No files found for task {task_name} in dataset {dataset_name}"
 
 
-def test_task_consistent_when_using_manual_predicates(demo_dataset_with_task_labels):
-    dataset_name, dataset_dir, task_name, task_labels_dir = demo_dataset_with_task_labels
+def test_task_consistent_when_using_manual_predicates(demo_dataset: NAME_AND_DIR, task_labels: NAME_AND_DIR):
+    dataset_name, dataset_dir = demo_dataset
+    task_name, task_labels_dir = task_labels
 
     dataset_predicates_path = DATASETS[dataset_name]["predicates"]
 

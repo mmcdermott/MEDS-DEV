@@ -7,7 +7,7 @@ import polars as pl
 import pytest
 
 from MEDS_DEV import DATASETS, MODELS, TASKS
-from tests.utils import run_command
+from tests.utils import NAME_AND_DIR, run_command
 
 logger = logging.getLogger(__name__)
 
@@ -212,7 +212,7 @@ def cache_dir(persistent_dir: Path | None):
         /tmp/...
     """
     if persistent_dir:
-        yield persistent_dir
+        yield Path(persistent_dir)
     else:
         with TemporaryDirectory() as temp_dir:
             yield Path(temp_dir)
@@ -232,16 +232,20 @@ def get_opts(config, opt: str) -> list[str]:
 def pytest_generate_tests(metafunc):
     if "demo_dataset" in metafunc.fixturenames:
         metafunc.parametrize("demo_dataset", get_opts(metafunc.config, "dataset"), indirect=True)
-    if "demo_dataset_with_task_labels" in metafunc.fixturenames:
-        metafunc.parametrize(
-            "demo_dataset_with_task_labels", get_opts(metafunc.config, "task"), indirect=True
-        )
-    if "demo_model" in metafunc.fixturenames:
-        metafunc.parametrize("demo_model", get_opts(metafunc.config, "model"), indirect=True)
+    if "task_labels" in metafunc.fixturenames:
+        metafunc.parametrize("task_labels", get_opts(metafunc.config, "task"), indirect=True)
+    if "unsupervised_model" in metafunc.fixturenames:
+        metafunc.parametrize("unsupervised_model", get_opts(metafunc.config, "model"), indirect=True)
 
 
 @pytest.fixture(scope="session")
-def demo_dataset(request) -> tuple[str, Path]:
+def venv_cache(request) -> Path | None:
+    with cache_dir(request.config.getoption("--persistent_cache_dir")) as cache:
+        yield cache / "venvs"
+
+
+@pytest.fixture(scope="session")
+def demo_dataset(request, venv_cache: Path) -> NAME_AND_DIR:
     dataset_name = request.param
     persistent_cache_dir, (cache_datasets, _, _) = get_and_validate_cache_settings(request)
     reuse_datasets, _, _ = get_and_validate_reuse_settings(request)
@@ -259,10 +263,17 @@ def demo_dataset(request) -> tuple[str, Path]:
 
         already_tested = check_fp.exists() and data_exists and metadata_exists
         if do_overwrite or not already_tested:
+            venv_dir = venv_cache / "datasets" / dataset_name
+
             run_command(
                 "meds-dev-dataset",
                 test_name=f"Build {dataset_name}",
-                hydra_kwargs={"dataset": dataset_name, "output_dir": str(output_dir.resolve()), "demo": True},
+                hydra_kwargs={
+                    "dataset": dataset_name,
+                    "output_dir": str(output_dir.resolve()),
+                    "demo": True,
+                    "venv_dir": str(venv_dir.resolve()),
+                },
             )
             check_fp.parent.mkdir(parents=True, exist_ok=True)
             check_fp.touch()
@@ -271,9 +282,9 @@ def demo_dataset(request) -> tuple[str, Path]:
 
 
 @pytest.fixture(scope="session")
-def demo_dataset_with_task_labels(request, demo_dataset) -> tuple[str, Path, str, Path]:
+def task_labels(request, demo_dataset: NAME_AND_DIR) -> NAME_AND_DIR:
     task_name = request.param
-    (dataset_name, dataset_dir) = demo_dataset
+    dataset_name, dataset_dir = demo_dataset
 
     _, reuse_tasks, _ = get_and_validate_reuse_settings(request)
 
@@ -311,7 +322,7 @@ def demo_dataset_with_task_labels(request, demo_dataset) -> tuple[str, Path, str
             check_fp.parent.mkdir(parents=True, exist_ok=True)
             check_fp.touch()
 
-        yield dataset_name, dataset_dir, task_name, task_labels_dir
+        yield task_name, task_labels_dir
 
 
 def missing_labels_in_splits(labels_dir: Path, dataset_dir: Path) -> set[str]:
@@ -388,13 +399,66 @@ def missing_labels_in_splits(labels_dir: Path, dataset_dir: Path) -> set[str]:
 
 
 @pytest.fixture(scope="session")
-def demo_model(request, demo_dataset_with_task_labels) -> tuple[str, Path, str, Path, str, Path]:
+def unsupervised_model(request, demo_dataset: NAME_AND_DIR, venv_cache: Path) -> NAME_AND_DIR:
     model = request.param
-    dataset_name, dataset_dir, task_name, task_labels_dir = demo_dataset_with_task_labels
+
+    unsupervised_commands = MODELS[model]["commands"].get("unsupervised", None)
+    if not unsupervised_commands:
+        yield model, None
+        return
+    if not unsupervised_commands.get("train", None):
+        yield model, None
+        return
+
+    dataset_name, dataset_dir = demo_dataset
 
     _, _, reuse_models = get_and_validate_reuse_settings(request)
 
     do_overwrite = not (model in reuse_models)
+
+    persistent_cache_dir, (_, _, cache_models) = get_and_validate_cache_settings(request)
+
+    with cache_dir(persistent_cache_dir if model in cache_models else None) as root_dir:
+        check_fp = root_dir / f".{model}._unsupervised..{dataset_name}.check"
+        model_dir = root_dir / model
+
+        already_tested = check_fp.exists() and model_dir.is_dir()
+
+        if do_overwrite or not already_tested:
+            venv_dir = venv_cache / "models" / model
+
+            run_command(
+                "meds-dev-model",
+                test_name=f"Model {model} should train in unsupervised mode on {dataset_name}",
+                hydra_kwargs={
+                    "model": model,
+                    "dataset_type": "unsupervised",
+                    "mode": "train",
+                    "dataset_dir": str(dataset_dir.resolve()),
+                    "dataset_name": dataset_name,
+                    "output_dir": str(model_dir.resolve()),
+                    "demo": True,
+                    "venv_dir": str(venv_dir.resolve()),
+                },
+            )
+            check_fp.parent.mkdir(parents=True, exist_ok=True)
+            check_fp.touch()
+
+        yield model, model_dir
+
+
+@pytest.fixture(scope="session")
+def supervised_model(
+    request,
+    unsupervised_model: NAME_AND_DIR,
+    demo_dataset: NAME_AND_DIR,
+    task_labels: NAME_AND_DIR,
+    venv_cache: Path,
+) -> NAME_AND_DIR:
+    model, unsupervised_train_dir = unsupervised_model
+
+    dataset_name, dataset_dir = demo_dataset
+    task_name, task_labels_dir = task_labels
 
     missing_splits = missing_labels_in_splits(task_labels_dir, dataset_dir)
     if missing_splits:
@@ -403,7 +467,24 @@ def demo_model(request, demo_dataset_with_task_labels) -> tuple[str, Path, str, 
             f"Skipping {model} test."
         )
 
+    _, _, reuse_models = get_and_validate_reuse_settings(request)
+
+    do_overwrite = not (model in reuse_models)
+
     persistent_cache_dir, (_, _, cache_models) = get_and_validate_cache_settings(request)
+
+    shared_kwargs = {
+        "model": model,
+        "dataset_type": "supervised",
+        "mode": "full",
+        "dataset_dir": str(dataset_dir.resolve()),
+        "labels_dir": str(task_labels_dir.resolve()),
+        "dataset_name": dataset_name,
+        "task_name": task_name,
+        "demo": True,
+    }
+    if unsupervised_train_dir is not None:
+        shared_kwargs["model_initialization_dir"] = str(unsupervised_train_dir.resolve())
 
     with cache_dir(persistent_cache_dir if model in cache_models else None) as root_dir:
         check_fp = root_dir / f".{model}.{dataset_name}.{task_name}.check"
@@ -412,31 +493,27 @@ def demo_model(request, demo_dataset_with_task_labels) -> tuple[str, Path, str, 
         already_tested = check_fp.exists() and model_dir.is_dir()
 
         if do_overwrite or not already_tested:
+            venv_dir = venv_cache / "models" / model
+
             run_command(
                 "meds-dev-model",
                 test_name=f"Model {model} should run on {dataset_name} and {task_name}",
                 hydra_kwargs={
-                    "model": model,
-                    "dataset_type": "full",
-                    "mode": "full",
-                    "dataset_dir": str(dataset_dir.resolve()),
-                    "labels_dir": str(task_labels_dir.resolve()),
-                    "dataset_name": dataset_name,
-                    "task_name": task_name,
+                    **shared_kwargs,
                     "output_dir": str(model_dir.resolve()),
-                    "demo": True,
+                    "venv_dir": str(venv_dir.resolve()),
                 },
             )
             check_fp.parent.mkdir(parents=True, exist_ok=True)
             check_fp.touch()
 
         final_out_dir = model_dir / dataset_name / task_name / "predict"
-        yield model, final_out_dir, dataset_name, dataset_dir, task_name, task_labels_dir
+        yield model, final_out_dir
 
 
 @pytest.fixture(scope="session")
-def evaluated_model(demo_model) -> tuple[Path, tuple[str, Path, str, Path, str, Path]]:
-    model, final_out_dir = demo_model[:2]
+def evaluated_model(supervised_model: NAME_AND_DIR) -> Path:
+    model, final_out_dir = supervised_model
 
     with TemporaryDirectory() as root_dir:
         run_command(
@@ -448,4 +525,4 @@ def evaluated_model(demo_model) -> tuple[Path, tuple[str, Path, str, Path, str, 
             },
         )
 
-        yield Path(root_dir), demo_model
+        yield Path(root_dir)

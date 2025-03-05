@@ -7,7 +7,8 @@ labels_dir: null
 dataset_name: null
 task_name: null
 
-temp_dir: ${output_dir}/.temp # This is used because the venv is built here, so persisting it is useful.
+venv_dir: ${output_dir}/.venv
+temp_dir: null
 
 demo: false
 mode: prediction
