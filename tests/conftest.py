@@ -291,11 +291,7 @@ def task_labels(request, demo_dataset: NAME_AND_DIR) -> NAME_AND_DIR:
     do_overwrite = not (task_name in reuse_tasks)
 
     task_metadata = TASKS[task_name].get("metadata", None)
-    if (
-        task_metadata is None
-        or "supported_datasets" not in task_metadata
-        or dataset_name not in task_metadata["supported_datasets"]
-    ):
+    if task_metadata is None or dataset_name not in task_metadata.supported_datasets:
         pytest.skip(f"Dataset {dataset_name} not supported for testing {task_name}.")
 
     persistent_cache_dir, (_, cache_tasks, _) = get_and_validate_cache_settings(request)
