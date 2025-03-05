@@ -437,9 +437,6 @@ def supervised_model(
 ) -> NAME_AND_DIR:
     model, unsupervised_train_dir = unsupervised_model
 
-    if unsupervised_train_dir is not None:
-        unsupervised_train_dir = str(unsupervised_train_dir.resolve())
-
     dataset_name, dataset_dir = demo_dataset
     task_name, task_labels_dir = task_labels
 
@@ -448,6 +445,19 @@ def supervised_model(
     do_overwrite = not (model in reuse_models)
 
     persistent_cache_dir, (_, _, cache_models) = get_and_validate_cache_settings(request)
+
+    shared_kwargs = {
+        "model": model,
+        "dataset_type": "supervised",
+        "mode": "full",
+        "dataset_dir": str(dataset_dir.resolve()),
+        "labels_dir": str(task_labels_dir.resolve()),
+        "dataset_name": dataset_name,
+        "task_name": task_name,
+        "demo": True,
+    }
+    if unsupervised_train_dir is not None:
+        shared_kwargs["model_initialization_dir"] = str(unsupervised_train_dir.resolve())
 
     with cache_dir(persistent_cache_dir if model in cache_models else None) as root_dir:
         check_fp = root_dir / f".{model}.{dataset_name}.{task_name}.check"
@@ -459,18 +469,7 @@ def supervised_model(
             run_command(
                 "meds-dev-model",
                 test_name=f"Model {model} should run on {dataset_name} and {task_name}",
-                hydra_kwargs={
-                    "model": model,
-                    "dataset_type": "supervised",
-                    "mode": "full",
-                    "dataset_dir": str(dataset_dir.resolve()),
-                    "labels_dir": str(task_labels_dir.resolve()),
-                    "dataset_name": dataset_name,
-                    "task_name": task_name,
-                    "output_dir": str(model_dir.resolve()),
-                    "model_initialization_dir": unsupervised_train_dir,
-                    "demo": True,
-                },
+                hydra_kwargs={**shared_kwargs, "output_dir": str(model_dir.resolve())},
             )
             check_fp.parent.mkdir(parents=True, exist_ok=True)
             check_fp.touch()
