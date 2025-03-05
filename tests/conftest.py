@@ -293,8 +293,8 @@ def task_labels(request, demo_dataset: NAME_AND_DIR) -> NAME_AND_DIR:
     task_metadata = TASKS[task_name].get("metadata", None)
     if (
         task_metadata is None
-        or "test_datasets" not in task_metadata
-        or dataset_name not in task_metadata["test_datasets"]
+        or "supported_datasets" not in task_metadata
+        or dataset_name not in task_metadata["supported_datasets"]
     ):
         pytest.skip(f"Dataset {dataset_name} not supported for testing {task_name}.")
 
