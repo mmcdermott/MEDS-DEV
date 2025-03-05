@@ -212,7 +212,7 @@ def cache_dir(persistent_dir: Path | None):
         /tmp/...
     """
     if persistent_dir:
-        yield persistent_dir
+        yield Path(persistent_dir)
     else:
         with TemporaryDirectory() as temp_dir:
             yield Path(temp_dir)
@@ -239,7 +239,13 @@ def pytest_generate_tests(metafunc):
 
 
 @pytest.fixture(scope="session")
-def demo_dataset(request) -> NAME_AND_DIR:
+def venv_cache(request) -> Path | None:
+    with cache_dir(request.config.getoption("--persistent_cache_dir")) as cache:
+        yield cache / "venvs"
+
+
+@pytest.fixture(scope="session")
+def demo_dataset(request, venv_cache: Path) -> NAME_AND_DIR:
     dataset_name = request.param
     persistent_cache_dir, (cache_datasets, _, _) = get_and_validate_cache_settings(request)
     reuse_datasets, _, _ = get_and_validate_reuse_settings(request)
@@ -257,7 +263,7 @@ def demo_dataset(request) -> NAME_AND_DIR:
 
         already_tested = check_fp.exists() and data_exists and metadata_exists
         if do_overwrite or not already_tested:
-            venv_dir = root_dir / "venvs" / "datasets" / dataset_name
+            venv_dir = venv_cache / "datasets" / dataset_name
 
             run_command(
                 "meds-dev-dataset",
@@ -393,7 +399,7 @@ def missing_labels_in_splits(labels_dir: Path, dataset_dir: Path) -> set[str]:
 
 
 @pytest.fixture(scope="session")
-def unsupervised_model(request, demo_dataset: NAME_AND_DIR) -> NAME_AND_DIR:
+def unsupervised_model(request, demo_dataset: NAME_AND_DIR, venv_cache: Path) -> NAME_AND_DIR:
     model = request.param
 
     unsupervised_commands = MODELS[model]["commands"].get("unsupervised", None)
@@ -419,7 +425,7 @@ def unsupervised_model(request, demo_dataset: NAME_AND_DIR) -> NAME_AND_DIR:
         already_tested = check_fp.exists() and model_dir.is_dir()
 
         if do_overwrite or not already_tested:
-            venv_dir = root_dir / "venvs" / "models" / model
+            venv_dir = venv_cache / "models" / model
 
             run_command(
                 "meds-dev-model",
@@ -447,6 +453,7 @@ def supervised_model(
     unsupervised_model: NAME_AND_DIR,
     demo_dataset: NAME_AND_DIR,
     task_labels: NAME_AND_DIR,
+    venv_cache: Path,
 ) -> NAME_AND_DIR:
     model, unsupervised_train_dir = unsupervised_model
 
@@ -479,7 +486,7 @@ def supervised_model(
         already_tested = check_fp.exists() and model_dir.is_dir()
 
         if do_overwrite or not already_tested:
-            venv_dir = root_dir / "venvs" / "models" / model
+            venv_dir = venv_cache / "models" / model
 
             run_command(
                 "meds-dev-model",
