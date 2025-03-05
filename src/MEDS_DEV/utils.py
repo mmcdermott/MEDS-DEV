@@ -1,4 +1,5 @@
 import contextlib
+import hashlib
 import logging
 import os
 import shutil
@@ -94,13 +95,41 @@ def install_venv(venv_path: Path, requirements: str | Path) -> Path:
     return venv_bin_path
 
 
+def file_hash(filepath, algorithm="sha256", chunk_size=4096):
+    hash_func = hashlib.new(algorithm)
+    with open(filepath, "rb") as file:
+        for chunk in iter(lambda: file.read(chunk_size), b""):
+            hash_func.update(chunk)
+    return hash_func.hexdigest()
+
+
 @contextlib.contextmanager
 def temp_env(cfg: DictConfig, requirements: str | Path | None) -> tuple[Path, dict]:
     with tempdir_ctx(cfg) as build_temp_dir:
         env = os.environ.copy()
         if requirements is not None:
             venv_path = build_temp_dir / ".venv"
-            venv_bin_path = install_venv(venv_path, requirements)
+
+            check_fp = venv_path / f".installed.{file_hash(requirements)}.txt"
+            venv_bin_path = get_venv_bin_path(venv_path)
+
+            if check_fp.exists():
+                logger.info(f"Requirements already installed in {venv_path}.")
+            elif venv_bin_path.exists():
+                any_check_fp = any(venv_path.glob(".installed.*.txt"))
+                if any_check_fp:
+                    logger.warning(
+                        f"Virtual environment {venv_path} exists, but requirements check files differ! "
+                        "Overwriting."
+                    )
+                else:
+                    logger.warning(f"{venv_path} exists but no requirements check files found. Overwriting.")
+                shutil.rmtree(venv_path)
+
+            if not check_fp.exists():
+                install_venv(venv_path, requirements)
+                check_fp.touch()
+
             env["VIRTUAL_ENV"] = str(venv_path.resolve())
             env["PATH"] = f"{str(venv_bin_path.resolve())}{os.pathsep}{env['PATH']}"
 
