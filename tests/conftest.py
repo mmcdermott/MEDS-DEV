@@ -234,8 +234,8 @@ def pytest_generate_tests(metafunc):
         metafunc.parametrize("demo_dataset", get_opts(metafunc.config, "dataset"), indirect=True)
     if "task_labels" in metafunc.fixturenames:
         metafunc.parametrize("task_labels", get_opts(metafunc.config, "task"), indirect=True)
-    if "demo_model" in metafunc.fixturenames:
-        metafunc.parametrize("demo_model", get_opts(metafunc.config, "model"), indirect=True)
+    if "unsupervised_model" in metafunc.fixturenames:
+        metafunc.parametrize("unsupervised_model", get_opts(metafunc.config, "model"), indirect=True)
 
 
 @pytest.fixture(scope="session")
@@ -386,21 +386,66 @@ def missing_labels_in_splits(labels_dir: Path, dataset_dir: Path) -> set[str]:
 
 
 @pytest.fixture(scope="session")
-def demo_model(request, demo_dataset: NAME_AND_DIR, task_labels: NAME_AND_DIR) -> NAME_AND_DIR:
+def unsupervised_model(request, demo_dataset: NAME_AND_DIR) -> NAME_AND_DIR:
     model = request.param
+
+    unsupervised_commands = MODELS[model]["commands"].get("unsupervised", None)
+    if not unsupervised_commands:
+        yield model, None
+        return
+    if not unsupervised_commands.get("train", None):
+        yield model, None
+        return
+
+    dataset_name, dataset_dir = demo_dataset
+
+    _, _, reuse_models = get_and_validate_reuse_settings(request)
+
+    do_overwrite = not (model in reuse_models)
+
+    persistent_cache_dir, (_, _, cache_models) = get_and_validate_cache_settings(request)
+
+    with cache_dir(persistent_cache_dir if model in cache_models else None) as root_dir:
+        check_fp = root_dir / f".{model}._unsupervised..{dataset_name}.check"
+        model_dir = root_dir / model
+
+        already_tested = check_fp.exists() and model_dir.is_dir()
+
+        if do_overwrite or not already_tested:
+            run_command(
+                "meds-dev-model",
+                test_name=f"Model {model} should train in unsupervised mode on {dataset_name}",
+                hydra_kwargs={
+                    "model": model,
+                    "dataset_type": "unsupervised",
+                    "mode": "train",
+                    "dataset_dir": str(dataset_dir.resolve()),
+                    "dataset_name": dataset_name,
+                    "output_dir": str(model_dir.resolve()),
+                    "demo": True,
+                },
+            )
+            check_fp.parent.mkdir(parents=True, exist_ok=True)
+            check_fp.touch()
+
+        yield model, model_dir
+
+
+@pytest.fixture(scope="session")
+def supervised_model(
+    request, unsupervised_model: NAME_AND_DIR, demo_dataset: NAME_AND_DIR, task_labels: NAME_AND_DIR
+) -> NAME_AND_DIR:
+    model, unsupervised_train_dir = unsupervised_model
+
+    if unsupervised_train_dir is not None:
+        unsupervised_train_dir = str(unsupervised_train_dir.resolve())
+
     dataset_name, dataset_dir = demo_dataset
     task_name, task_labels_dir = task_labels
 
     _, _, reuse_models = get_and_validate_reuse_settings(request)
 
     do_overwrite = not (model in reuse_models)
-
-    missing_splits = missing_labels_in_splits(task_labels_dir, dataset_dir)
-    if missing_splits:
-        pytest.skip(
-            f"Labels not found for {dataset_name} and {task_name} in split(s): {', '.join(missing_splits)}. "
-            f"Skipping {model} test."
-        )
 
     persistent_cache_dir, (_, _, cache_models) = get_and_validate_cache_settings(request)
 
@@ -416,13 +461,14 @@ def demo_model(request, demo_dataset: NAME_AND_DIR, task_labels: NAME_AND_DIR) -
                 test_name=f"Model {model} should run on {dataset_name} and {task_name}",
                 hydra_kwargs={
                     "model": model,
-                    "dataset_type": "full",
+                    "dataset_type": "supervised",
                     "mode": "full",
                     "dataset_dir": str(dataset_dir.resolve()),
                     "labels_dir": str(task_labels_dir.resolve()),
                     "dataset_name": dataset_name,
                     "task_name": task_name,
                     "output_dir": str(model_dir.resolve()),
+                    "model_initialization_dir": unsupervised_train_dir,
                     "demo": True,
                 },
             )
@@ -434,8 +480,8 @@ def demo_model(request, demo_dataset: NAME_AND_DIR, task_labels: NAME_AND_DIR) -
 
 
 @pytest.fixture(scope="session")
-def evaluated_model(demo_model: NAME_AND_DIR) -> Path:
-    model, final_out_dir = demo_model
+def evaluated_model(supervised_model: NAME_AND_DIR) -> Path:
+    model, final_out_dir = supervised_model
 
     with TemporaryDirectory() as root_dir:
         run_command(
