@@ -223,7 +223,17 @@ dataset, containing the following files:
     files and `output_dir` for where you want the final MEDS cohort to live) will produce the desired MEDS
     cohort. The `metadata` key should contain information about the dataset. See the `MIMIC-IV` dataset for an
     example of the allowed syntax here. Mandatory keys include `description`, `access_policy`, and the key
-    `contacts` with at least one entry.
+    `contacts` with at least one entry. Note that the values for `access_policy` are restricted to the values
+    of the `AccessPolicy` `StrEnum` in the `MEDS_DEV.datasets` codebase, namely:
+    - `"public_with_approval"`: Data that can be used (in principle) by anyone, but requires approval to access.
+    - `"public_unrestricted"`: Data that can be used by anyone with no restrictions or gating.
+    - `"institutional"`: Data that is only available within a specific institution or department, but is in
+        principle accessible to all researchers within that group. This should not be used for data that has
+        only been approved for a single group or a single research process.
+    - `"private_single_use"`: Data that is only available to a single research group or project, and is not
+        available nor likely to ever become available outside of that limited context.
+    - `"other"`: Any other access mode that does not fit into the above categories. If you use this, you must
+        describe the access policy in more details in the `access_details` optional field in the metadata.
 4. `predicates.yaml` contains ACES syntax predicates to realize the target tasks.
 5. Optionally, you should add a `refs.bib` file with a BibTex entry users should cite when they use the
     dataset.
