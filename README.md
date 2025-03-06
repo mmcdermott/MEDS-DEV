@@ -223,7 +223,7 @@ dataset, containing the following files:
     files and `output_dir` for where you want the final MEDS cohort to live) will produce the desired MEDS
     cohort. The `metadata` key should contain information about the dataset. See the `MIMIC-IV` dataset for an
     example of the allowed syntax here. Mandatory keys include `description`, `access_policy`, and the key
-    `"contacts"` with at least one entry.
+    `contacts` with at least one entry.
 4. `predicates.yaml` contains ACES syntax predicates to realize the target tasks.
 5. Optionally, you should add a `refs.bib` file with a BibTex entry users should cite when they use the
     dataset.
