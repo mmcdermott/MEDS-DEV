@@ -214,7 +214,7 @@ the public record to help advance the science of Health AI!
 To add a dataset, you will need to create a new directory under `src/MEDS_DEV/datasets/` with the name of the
 dataset, containing the following files:
 
-1. `README.md`: This file should contain a description of the dataset. See the templates for examples.
+1. `README.md`: This file should contain a description of the dataset. See the [templates](templates) for examples.
 2. `requirements.txt`: This file should be a valid `pip` specification for what is needed to install the ETL
     to build the environment. _The ETL must be runnable on Python 3.11_.
 3. `dataset.yaml`: This file needs to have two keys: `metadata` and `commands`. Under `commands`, you must
