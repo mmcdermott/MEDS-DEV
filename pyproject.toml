@@ -52,5 +52,5 @@ meds-dev-model = "MEDS_DEV.models.__main__:main"
 meds-dev-evaluation = "MEDS_DEV.evaluation.__main__:main"
 
 [project.urls]
-Homepage = "https://github.com/mmcdermott/MEDS-DEV"
-Issues = "https://github.com/mmcdermott/MEDS-DEV/issues"
+Homepage = "https://github.com/Medical-Event-Data-Standard/MEDS-DEV"
+Issues = "https://github.com/Medical-Event-Data-Standard/MEDS-DEV/issues"

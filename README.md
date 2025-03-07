@@ -2,13 +2,13 @@
 
 [![PyPI - Version](https://img.shields.io/pypi/v/MEDS-DEV)](https://pypi.org/project/MEDS-DEV/)
 ![python](https://img.shields.io/badge/-Python_3.11-blue?logo=python&logoColor=white)
-[![codecov](https://codecov.io/gh/mmcdermott/MEDS-DEV/graph/badge.svg?token=5RORKQOZF9)](https://codecov.io/gh/mmcdermott/MEDS-DEV)
-[![tests](https://github.com/mmcdermott/MEDS-DEV/actions/workflows/tests.yaml/badge.svg)](https://github.com/mmcdermott/MEDS-DEV/actions/workflows/tests.yml)
-[![code-quality](https://github.com/mmcdermott/MEDS-DEV/actions/workflows/code-quality-main.yaml/badge.svg)](https://github.com/mmcdermott/MEDS-DEV/actions/workflows/code-quality-main.yaml)
+[![codecov](https://codecov.io/gh/Medical-Event-Data-Standard/MEDS-DEV/graph/badge.svg?token=5RORKQOZF9)](https://codecov.io/gh/Medical-Event-Data-Standard/MEDS-DEV)
+[![tests](https://github.com/Medical-Event-Data-Standard/MEDS-DEV/actions/workflows/tests.yaml/badge.svg)](https://github.com/Medical-Event-Data-Standard/MEDS-DEV/actions/workflows/tests.yml)
+[![code-quality](https://github.com/Medical-Event-Data-Standard/MEDS-DEV/actions/workflows/code-quality-main.yaml/badge.svg)](https://github.com/Medical-Event-Data-Standard/MEDS-DEV/actions/workflows/code-quality-main.yaml)
 [![hydra](https://img.shields.io/badge/Config-Hydra_1.3-89b8cd)](https://hydra.cc/)
-[![license](https://img.shields.io/badge/License-MIT-green.svg?labelColor=gray)](https://github.com/mmcdermott/MEDS-DEV#license)
-[![PRs](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](https://github.com/mmcdermott/MEDS-DEV/pulls)
-[![contributors](https://img.shields.io/github/contributors/mmcdermott/MEDS-DEV.svg)](https://github.com/mmcdermott/MEDS-DEV/graphs/contributors)
+[![license](https://img.shields.io/badge/License-MIT-green.svg?labelColor=gray)](https://github.com/Medical-Event-Data-Standard/MEDS-DEV#license)
+[![PRs](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](https://github.com/Medical-Event-Data-Standard/MEDS-DEV/pulls)
+[![contributors](https://img.shields.io/github/contributors/Medical-Event-Data-Standard/MEDS-DEV.svg)](https://github.com/Medical-Event-Data-Standard/MEDS-DEV/graphs/contributors)
 
 The MEDS Decentralized, Extensible Validation (MEDS-DEV) system is a new kind of benchmark for Health AI that
 has three key differences from existing systems:
@@ -144,7 +144,7 @@ you want to store the extracted task labels. The output will be a set of parquet
 > datasets._ Some tasks are only suited for certain clinical populations, which may not exist on all datasets.
 > We're still figuring out the best way to operationalize this formally, but for now, please be cognizant of
 > whether or not a task should be used on your dataset, and if you have ideas on this, don't hesitate to weigh
-> in on [the GitHub Issue](https://github.com/mmcdermott/MEDS-DEV/issues/60) about this!
+> in on [the GitHub Issue](https://github.com/Medical-Event-Data-Standard/MEDS-DEV/issues/60) about this!
 
 ### Using a model
 
