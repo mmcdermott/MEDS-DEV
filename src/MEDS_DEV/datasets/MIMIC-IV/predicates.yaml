@@ -172,7 +172,7 @@ predicates:
     expr: and(map_mmhg_1, abnormally_low_map_mmhg_1_range)
   map_mmhg_2:
     code: LAB//220181//mmHg
-  abnormally_low_map_2_range:
+  abnormally_low_map_mmhg_2_range:
     code: null
     value_min: null
     value_max: 65 # mmHg
