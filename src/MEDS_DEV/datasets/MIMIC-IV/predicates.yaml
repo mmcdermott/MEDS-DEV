@@ -44,7 +44,7 @@ predicates:
     value_min: null
     value_max: 135 # mEq/L
     value_max_inclusive: False
-  abnormally_low_sodum_meql_1:
+  abnormally_low_sodium_meql_1:
     expr: and(sodium_meql_1, abnormally_low_sodium_meql_1_range)
   sodium_meql_2:
     code: LAB//50983//mEq/L
