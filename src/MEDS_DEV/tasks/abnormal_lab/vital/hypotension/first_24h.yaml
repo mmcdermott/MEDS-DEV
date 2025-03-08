@@ -19,13 +19,19 @@ predicates:
     expr: or(death, hospital_discharge)
 
   # Plain predicates
-  map:
+  map_mmhg:
     code: ???
-  abnormally_low_map:
-    code: ???
+  abnormally_low_map_mmhg_range:
+    code: null
     value_min: null
     value_max: 65 # mmHg
     value_max_inclusive: False
+  abnormally_low_map_mmhg:
+    expr: and(map_mmhg, abnormally_low_map_mmhg_range)
+  map:
+    expr: map_mmhg # or(map_mmhg, ..., [other units])
+  abnormally_low_map:
+    expr: abnormally_low_map_mmhg # or(abnormally_low_map_mmhg, ..., [other units])
 
 trigger: hospital_admission
 

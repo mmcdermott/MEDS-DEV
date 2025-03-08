@@ -19,13 +19,19 @@ predicates:
     expr: or(death, hospital_discharge)
 
   # Plain predicates
-  hemoglobin:
+  hemoglobin_gdl:
     code: ???
-  abnormally_low_hemoglobin:
-    code: ???
+  abnormally_low_hemoglobin_gdl_range:
+    code: null
     value_min: null
     value_max: 13 # g/dL
     value_max_inclusive: False
+  abnormally_low_hemoglobin_gdl:
+    expr: and(hemoglobin_gdl, abnormally_low_hemoglobin_gdl_range)
+  hemoglobin:
+    expr: hemoglobin_gdl # or(hemoglobin_gdl, ..., [other units])
+  abnormally_low_hemoglobin:
+    expr: abnormally_low_hemoglobin_gdl # or(abnormally_low_hemoglobin_gdl, ..., [other units])
 
 trigger: hospital_admission
 

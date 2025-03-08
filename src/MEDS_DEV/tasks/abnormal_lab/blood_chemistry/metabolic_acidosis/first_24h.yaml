@@ -20,13 +20,19 @@ predicates:
     expr: or(icu_discharge, death, hospital_discharge)
 
   # Plain predicates
-  bicarbonate:
+  bicarbonate_meql:
     code: ???
-  abnormally_low_bicarbonate:
-    code: ???
+  abnormally_low_bicarbonate_meql_range:
+    code: null
     value_min: null
     value_max: 22 # mEq/L
     value_max_inclusive: False
+  abnormally_low_bicarbonate_meql:
+    expr: and(bicarbonate_meql, abnormally_low_bicarbonate_meql_range)
+  bicarbonate:
+    expr: bicarbonate_meql # or(bicarbonate_meql, ..., [other units])
+  abnormally_low_bicarbonate:
+    expr: abnormally_low_bicarbonate_meql # or(abnormally_low_bicarbonate_meql, ..., [other units])
 
 trigger: hospital_admission
 

@@ -14,149 +14,181 @@ predicates:
   icu_discharge:
     code: { regex: "^ICU_DISCHARGE//.*" }
 
-  creatinine_1:
+  creatinine_mgdl_1:
     code: LAB//50912//mg/dL
-  creatinine_2:
-    code: LAB//52546//mg/dL
-  abnormally_high_creatinine_1:
-    code: LAB//50912//mg/dL
+  abnormally_high_creatinine_mgdl_1_range:
+    code: null
     value_min: 1.3 # mg/dL
     value_min_inclusive: False
     value_max: null
-  abnormally_high_creatinine_2:
+  abnormally_high_creatinine_mgdl_1:
+    expr: and(creatinine_mgdl_1, abnormally_high_creatinine_mgdl_1_range)
+  creatinine_mgdl_2:
     code: LAB//52546//mg/dL
+  abnormally_high_creatinine_mgdl_2_range:
+    code: null
     value_min: 1.3 # mg/dL
     value_min_inclusive: False
     value_max: null
+  abnormally_high_creatinine_mgdl_2:
+    expr: and(creatinine_mgdl_2, abnormally_high_creatinine_mgdl_2_range)
   creatinine:
-    expr: or(creatinine_1, creatinine_2)
+    expr: or(creatinine_mgdl_1, creatinine_mgdl_2)
   abnormally_high_creatinine:
-    expr: or(abnormally_high_creatinine_1, abnormally_high_creatinine_2)
+    expr: or(abnormally_high_creatinine_mgdl_1, abnormally_high_creatinine_mgdl_2)
 
-  sodium_1:
+  sodium_meql_1:
     code: LAB//220645//mEq/L
-  sodium_2:
+  abnormally_low_sodium_meql_1_range:
+    code: null
+    value_min: null
+    value_max: 135 # mEq/L
+    value_max_inclusive: False
+  abnormally_low_sodum_meql_1:
+    expr: and(sodium_meql_1, abnormally_low_sodium_meql_1_range)
+  sodium_meql_2:
     code: LAB//50983//mEq/L
-  sodium_3:
+  abnormally_low_sodium_meql_2_range:
+    code: null
+    value_min: null
+    value_max: 135 # mEq/L
+    value_max_inclusive: False
+  abnormally_low_sodium_meql_2:
+    expr: and(sodium_meql_2, abnormally_low_sodium_meql_2_range)
+  sodium_meql_3:
     code: LAB//52623//mEq/L
-  abnormally_low_sodium_1:
-    code: LAB//220645//mEq/L
+  abnormally_low_sodium_meql_3_range:
+    code: null
     value_min: null
     value_max: 135 # mEq/L
     value_max_inclusive: False
-  abnormally_low_sodium_2:
-    code: LAB//50983//mEq/L
-    value_min: null
-    value_max: 135 # mEq/L
-    value_max_inclusive: False
-  abnormally_low_sodium_3:
-    code: LAB//52623//mEq/L
-    value_min: null
-    value_max: 135 # mEq/L
-    value_max_inclusive: False
+  abnormally_low_sodium_meql_3:
+    expr: and(sodium_meql_3, abnormally_low_sodium_meql_3_range)
   sodium:
-    expr: or(sodium_1, sodium_2, sodium_3)
+    expr: or(sodium_meql_1, sodium_meql_2, sodium_meql_3)
   abnormally_low_sodium:
-    expr: or(abnormally_low_sodium_1, abnormally_low_sodium_2, abnormally_low_sodium_3)
+    expr: or(abnormally_low_sodium_meql_1, abnormally_low_sodium_meql_2, abnormally_low_sodium_meql_3)
 
-  bicarbonate_1:
+  bicarbonate_meql_1:
     code: LAB//227443//mEq/L
-  bicarbonate_2:
-    code: LAB//50882//mEq/L
-  abnormally_low_bicarbonate_1:
-    code: LAB//227443//mEq/L
+  abnormally_low_bicarbonate_meql_1_range:
+    code: null
     value_min: null
     value_max: 22 # mEq/L
     value_max_inclusive: False
-  abnormally_low_bicarbonate_2:
+  abnormally_low_bicarbonate_meql_1:
+    expr: and(bicarbonate_meql_1, abnormally_low_bicarbonate_meql_1_range)
+  bicarbonate_meql_2:
     code: LAB//50882//mEq/L
+  abnormally_low_bicarbonate_meql_2_range:
+    code: null
     value_min: null
     value_max: 22 # mEq/L
     value_max_inclusive: False
+  abnormally_low_bicarbonate_meql_2:
+    expr: and(bicarbonate_meql_2, abnormally_low_bicarbonate_meql_2_range)
   bicarbonate:
-    expr: or(bicarbonate_1, bicarbonate_2)
+    expr: or(bicarbonate_meql_1, bicarbonate_meql_2)
   abnormally_low_bicarbonate:
-    expr: or(abnormally_low_bicarbonate_1, abnormally_low_bicarbonate_2)
+    expr: or(abnormally_low_bicarbonate_meql_1, abnormally_low_bicarbonate_meql_2)
 
-  hemoglobin_1:
+  hemoglobin_gdl_1:
     code: LAB//220228//g/dl
-  hemoglobin_2:
-    code: LAB//50811//g/dL
-  abnormally_low_hemoglobin_1:
-    code: LAB//220228//g/dl
+  abnormally_low_hemoglobin_gdl_1_range:
+    code: null
     value_min: null
     value_max: 13 # g/dL
     value_max_inclusive: False
-  abnormally_low_hemoglobin_2:
+  abnormally_low_hemoglobin_gdl_1:
+    expr: and(hemoglobin_gdl_1, abnormally_low_hemoglobin_gdl_1_range)
+  hemoglobin_gdl_2:
     code: LAB//50811//g/dL
+  abnormally_low_hemoglobin_gdl_2_range:
+    code: null
     value_min: null
     value_max: 13 # g/dL
     value_max_inclusive: False
+  abnormally_low_hemoglobin_gdl_2:
+    expr: and(hemoglobin_gdl_2, abnormally_low_hemoglobin_gdl_2_range)
   hemoglobin:
-    expr: or(hemoglobin_1, hemoglobin_2)
+    expr: or(hemoglobin_gdl_1, hemoglobin_gdl_2)
   abnormally_low_hemoglobin:
-    expr: or(abnormally_low_hemoglobin_1, abnormally_low_hemoglobin_2)
+    expr: or(abnormally_low_hemoglobin_gdl_1, abnormally_low_hemoglobin_gdl_2)
 
-  wbc_1:
+  wbc_kul_1:
     code: LAB//220546//K/uL
-  wbc_2:
-    code: LAB//51300//K/uL
-  abnormally_high_wbc_1:
-    code: LAB//220546//K/uL
+  abnormally_high_wbc_kul_1_range:
+    code: null
     value_min: 11 # K/uL
     value_min_inclusive: False
     value_max: null
-  abnormally_high_wbc_2:
+  abnormally_high_wbc_kul_1:
+    expr: and(wbc_kul_1, abnormally_high_wbc_kul_1_range)
+  wbc_kul_2:
     code: LAB//51300//K/uL
+  abnormally_high_wbc_kul_2_range:
+    code: null
     value_min: 11 # K/uL
     value_min_inclusive: False
     value_max: null
+  abnormally_high_wbc_kul_2:
+    expr: and(wbc_kul_2, abnormally_high_wbc_kul_2_range)
   wbc:
-    expr: or(wbc_1, wbc_2)
+    expr: or(wbc_kul_1, wbc_kul_2)
   abnormally_high_wbc:
-    expr: or(abnormally_high_wbc_1, abnormally_high_wbc_2)
+    expr: or(abnormally_high_wbc_kul_1, abnormally_high_wbc_kul_2)
 
-  platelets_1:
+  platelets_kul_1:
     code: LAB//227457//K/uL
-  platelets_2:
-    code: LAB//51265//K/uL
-  abnormally_low_platelets_1:
-    code: LAB//227457//K/uL
+  abnormally_low_platelets_kul_1_range:
+    code: null
     value_min: null
     value_max: 150 # K/uL
     value_max_inclusive: False
-  abnormally_low_platelets_2:
+  abnormally_low_platelets_kul_1:
+    expr: and(platelets_kul_1, abnormally_low_platelets_kul_1_range)
+  platelets_kul_2:
     code: LAB//51265//K/uL
+  abnormally_low_platelets_kul_2_range:
+    code: null
     value_min: null
     value_max: 150 # K/uL
     value_max_inclusive: False
+  abnormally_low_platelets_kul_2:
+    expr: and(platelets_kul_2, abnormally_low_platelets_kul_2_range)
   platelets:
-    expr: or(platelets_1, platelets_2)
+    expr: or(platelets_kul_1, platelets_kul_2)
   abnormally_low_platelets:
-    expr: or(abnormally_low_platelets_1, abnormally_low_platelets_2)
+    expr: or(abnormally_low_platelets_kul_1, abnormally_low_platelets_kul_2)
 
-  map_1:
+  map_mmhg_1:
     code: LAB//220052//mmHg
-  map_2:
+  abnormally_low_map_mmhg_1_range:
+    code: null
+    value_min: null
+    value_max: 65 # mmHg
+    value_max_inclusive: False
+  abnormally_low_map_mmhg_1:
+    expr: and(map_mmhg_1, abnormally_low_map_mmhg_1_range)
+  map_mmhg_2:
     code: LAB//220181//mmHg
-  map_3:
+  abnormally_low_map_2_range:
+    code: null
+    value_min: null
+    value_max: 65 # mmHg
+    value_max_inclusive: False
+  abnormally_low_map_mmhg_2:
+    expr: and(map_mmhg_2, abnormally_low_map_mmhg_2_range)
+  map_mmhg_3:
     code: LAB//225312//mmHg
-  abnormally_low_map_1:
-    code: LAB//220052//mmHg
+  abnormally_low_map_mmhg_3_range:
+    code: null
     value_min: null
     value_max: 65 # mmHg
     value_max_inclusive: False
-  abnormally_low_map_2:
-    code: LAB//220181//mmHg
-    value_min: null
-    value_max: 65 # mmHg
-    value_max_inclusive: False
-  abnormally_low_map_3:
-    code: LAB//225312//mmHg
-    value_min: null
-    value_max: 65 # mmHg
-    value_max_inclusive: False
+  abnormally_low_map_mmhg_3:
+    expr: and(map_mmhg_3, abnormally_low_map_mmhg_3_range)
   map:
-    expr: or(map_1, map_2, map_3)
+    expr: or(map_mmhg_1, map_mmhg_2, map_mmhg_3)
   abnormally_low_map:
-    expr: or(abnormally_low_map_1, abnormally_low_map_2, abnormally_low_map_3)
+    expr: or(abnormally_low_map_mmhg_1, abnormally_low_map_mmhg_2, abnormally_low_map_mmhg_3)

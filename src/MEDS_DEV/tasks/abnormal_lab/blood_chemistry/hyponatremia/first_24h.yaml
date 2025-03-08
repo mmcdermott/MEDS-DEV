@@ -19,13 +19,19 @@ predicates:
     expr: or(death, hospital_discharge)
 
   # Plain predicates
-  sodium:
+  sodium_meql:
     code: ???
-  abnormally_low_sodium:
-    code: ???
+  abnormally_low_sodium_meql_range:
+    code: null
     value_min: null
     value_max: 135 # mEq/L
     value_max_inclusive: False
+  abnormally_low_sodium_meql:
+    expr: and(sodium_meql, abnormally_low_sodium_meql_range)
+  sodium:
+    expr: sodium_meql # or(sodium_meql, ..., [other units])
+  abnormally_low_sodium:
+    expr: abnormally_low_sodium_meql # or(abnormally_low_sodium_meql, ..., [other units])
 
 trigger: hospital_admission
 

@@ -19,13 +19,19 @@ predicates:
     expr: or(death, hospital_discharge)
 
   # Plain predicates
-  platelets:
+  platelets_kul:
     code: ???
-  abnormally_low_platelets:
-    code: ???
+  abnormally_low_platelets_kul_range:
+    code: null
     value_min: null
     value_max: 150 # K/uL
     value_max_inclusive: False
+  abnormally_low_platelets_kul:
+    expr: and(platelets_kul, abnormally_low_platelets_kul_range)
+  platelets:
+    expr: platelets_kul # or(platelets_kul, ..., [other units])
+  abnormally_low_platelets:
+    expr: abnormally_low_platelets_kul # or(abnormally_low_platelets_kul, ..., [other units])
 
 trigger: hospital_admission
 
