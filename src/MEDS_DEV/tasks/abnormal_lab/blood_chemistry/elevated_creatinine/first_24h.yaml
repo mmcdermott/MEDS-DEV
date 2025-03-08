@@ -30,9 +30,11 @@ predicates:
     expr: and(creatinine_mgdl, abnormally_high_creatinine_mgdl_range)
 
   creatinine:
-    expr: creatinine_mgdl # or(creatinine_mgdl, ..., [other units])
+    # add other units by `or(creatinine_mgdl, ..., creatinine_other_unit)`
+    expr: creatinine_mgdl
   abnormally_high_creatinine:
-    expr: abnormally_high_creatinine_mgdl # or(abnormally_high_creatinine_mgdl, ..., [other units])
+    # add other units by `or(abnormally_high_creatinine_mgdl, ..., abnormally_high_creatinine_other_unit)`
+    expr: abnormally_high_creatinine_mgdl
 
 trigger: hospital_admission
 

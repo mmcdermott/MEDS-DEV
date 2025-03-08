@@ -29,9 +29,11 @@ predicates:
   abnormally_low_sodium_meql:
     expr: and(sodium_meql, abnormally_low_sodium_meql_range)
   sodium:
-    expr: sodium_meql # or(sodium_meql, ..., [other units])
+    # add other units by `or(sodium_meql, ..., sodium_other_unit)`
+    expr: sodium_meql
   abnormally_low_sodium:
-    expr: abnormally_low_sodium_meql # or(abnormally_low_sodium_meql, ..., [other units])
+    # add other units by `or(abnormally_low_sodium_meql, ..., abnormally_low_sodium_other_unit)`
+    expr: abnormally_low_sodium_meql
 
 trigger: hospital_admission
 

@@ -29,9 +29,11 @@ predicates:
   abnormally_low_hemoglobin_gdl:
     expr: and(hemoglobin_gdl, abnormally_low_hemoglobin_gdl_range)
   hemoglobin:
-    expr: hemoglobin_gdl # or(hemoglobin_gdl, ..., [other units])
+    # add other units by `or(hemoglobin_gdl, ..., hemoglobin_other_unit)`
+    expr: hemoglobin_gdl
   abnormally_low_hemoglobin:
-    expr: abnormally_low_hemoglobin_gdl # or(abnormally_low_hemoglobin_gdl, ..., [other units])
+    # add other units by `or(abnormally_low_hemoglobin_gdl, ..., abnormally_low_hemoglobin_other_unit)`
+    expr: abnormally_low_hemoglobin_gdl
 
 trigger: hospital_admission
 

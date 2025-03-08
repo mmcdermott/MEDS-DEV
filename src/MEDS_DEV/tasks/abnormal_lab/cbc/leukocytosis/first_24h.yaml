@@ -29,9 +29,11 @@ predicates:
   abnormally_high_wbc_kul:
     expr: and(wbc_kul, abnormally_high_wbc_kul_range)
   wbc:
-    expr: wbc_kul # or(wbc_kul, ..., [other units])
+    # add other units by `or(wbc_kul, ..., wbc_other_unit)`
+    expr: wbc_kul
   abnormally_high_wbc:
-    expr: abnormally_high_wbc_kul # or(abnormally_high_wbc_kul, ..., [other units])
+    # add other units by `or(abnormally_high_wbc_kul, ..., abnormally_high_wbc_other_unit)`
+    expr: abnormally_high_wbc_kul
 
 trigger: hospital_admission
 

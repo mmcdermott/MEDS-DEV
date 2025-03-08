@@ -29,9 +29,11 @@ predicates:
   abnormally_low_map_mmhg:
     expr: and(map_mmhg, abnormally_low_map_mmhg_range)
   map:
-    expr: map_mmhg # or(map_mmhg, ..., [other units])
+    # add other units by `or(map_mmhg, ..., map_other_unit)`
+    expr: map_mmhg
   abnormally_low_map:
-    expr: abnormally_low_map_mmhg # or(abnormally_low_map_mmhg, ..., [other units])
+    # add other units by `or(abnormally_low_map_mmhg, ..., abnormally_low_map_other_unit)`
+    expr: abnormally_low_map_mmhg
 
 trigger: hospital_admission
 

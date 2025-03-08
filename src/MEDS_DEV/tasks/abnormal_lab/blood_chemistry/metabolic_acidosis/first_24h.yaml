@@ -30,9 +30,11 @@ predicates:
   abnormally_low_bicarbonate_meql:
     expr: and(bicarbonate_meql, abnormally_low_bicarbonate_meql_range)
   bicarbonate:
-    expr: bicarbonate_meql # or(bicarbonate_meql, ..., [other units])
+    # add other units by `or(bicarbonate_meql, ..., bicarbonate_other_unit)`
+    expr: bicarbonate_meql
   abnormally_low_bicarbonate:
-    expr: abnormally_low_bicarbonate_meql # or(abnormally_low_bicarbonate_meql, ..., [other units])
+    # add other units by `or(abnormally_low_bicarbonate_meql, ..., abnormally_low_bicarbonate_other_unit)`
+    expr: abnormally_low_bicarbonate_meql
 
 trigger: hospital_admission
 
